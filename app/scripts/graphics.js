@@ -64,7 +64,7 @@
 							callback();
 						}
 					};
-					images[url].src = '/images/' + url;
+					images[url].src = 'images/' + url;
 				});
 
 				return {
