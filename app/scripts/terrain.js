@@ -65,6 +65,7 @@
 
 	var Map = {
 		BUTTLAND: {
+			tileSize: 50,
 			width: 14,
 			terrain:
 				'iiiiijaaaaaaaa' +

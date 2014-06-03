@@ -7,6 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		canvas: document.getElementById('viewport')
 	});
 	Game.world.loadMap(Map.BUTTLAND);
-	Game.world.addObject(new Player(0, 0, 20, 20));
+	Game.world.addObject(new Player(0, 0));
 	Game.start();
 });

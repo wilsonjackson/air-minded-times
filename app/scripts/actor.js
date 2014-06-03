@@ -13,11 +13,11 @@
 		player.sprites.push(nextSpriteName);
 	}
 
-	function Player(x, y, w, h) {
+	function Player(x, y) {
 		this.sprites = ['aero/extended-farewell', 'aero/biplane-dieplane', 'aero/justice-glider-mkiv'];
-		this.entity = Physics.newEntity(x, y, w, h);
-		this.entity.speed = 2;
 		cycleSprite(this);
+		this.entity = Physics.newEntity(x, y, this.sprite.w, this.sprite.h);
+		this.entity.speed = 3;
 		this.movement = PlayerMovementState.IDLE;
 	}
 
@@ -31,6 +31,7 @@
 			cycleSprite(this);
 			return true;
 		}
+		world.centerOn(this.entity.x, this.entity.y, this.entity.w, this.entity.h);
 		return newState !== false;
 	};
 

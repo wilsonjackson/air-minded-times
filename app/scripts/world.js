@@ -8,7 +8,13 @@
 		this.map = null;
 		this.terrain = [];
 		this.objects = [];
+		this.width = 0;
+		this.height = 0;
 	}
+
+	World.prototype.centerOn = function (x, y, w, h) {
+		this.viewport.centerOn(x, y, w, h, this.width, this.height);
+	};
 
 	World.prototype.addObject = function (object) {
 		this.objects.push(object);
@@ -17,6 +23,8 @@
 	World.prototype.loadMap = function (map) {
 		this.map = map;
 		this.terrain = Terrain.readMapTerrain(map.terrain);
+		this.width = map.width * map.tileSize;
+		this.height = Math.ceil(this.terrain.length / map.width) * map.tileSize;
 	};
 
 	World.prototype.update = function (inputState) {

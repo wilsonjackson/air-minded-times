@@ -11,22 +11,22 @@
 		this.viewport.canvas.width = this.viewport.canvas.width;
 	};
 
-//	Graphics.prototype.centerOn = function (actor) {
-//	};
-
 	Graphics.prototype.drawSprite = function (sprite, x, y) {
+		var translated;
 		var context = this.viewport.context;
 		if (sprite.direction !== 0) {
-			var offsetX = -sprite.w / 2;
-			var offsetY = -sprite.h / 2;
+			var spriteOffsetX = -sprite.w / 2;
+			var spriteOffsetY = -sprite.h / 2;
+			translated = this.viewport.translate(x - spriteOffsetX, y - spriteOffsetY);
 			context.save();
-			context.translate(x + -offsetX, y + -offsetY);
+			context.translate(translated.x, translated.y);
 			context.rotate(sprite.direction);
-			sprite.draw(context, offsetX, offsetY);
+			sprite.draw(context, spriteOffsetX, spriteOffsetY);
 			context.restore();
 		}
 		else {
-			sprite.draw(context, x, y);
+			translated = this.viewport.translate(x, y);
+			sprite.draw(context, translated.x, translated.y);
 		}
 	};
 
@@ -36,6 +36,18 @@
 		this.width = canvas.width;
 		this.height = canvas.height;
 	}
+
+	Viewport.prototype.centerOn = function (x, y, w, h, worldWidth, worldHeight) {
+		this.offsetX = Math.min(Math.max(0, x - ((this.width - (w || 0)) / 2)), worldWidth - this.width);
+		this.offsetY = Math.min(Math.max(0, y - ((this.height - (h || 0)) / 2)), worldHeight - this.height);
+	};
+
+	Viewport.prototype.translate = function (x, y) {
+		return {
+			x: x - this.offsetX,
+			y: y - this.offsetY
+		};
+	};
 
 	var SpriteFactory = (function () {
 		var images = {};

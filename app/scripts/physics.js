@@ -6,7 +6,7 @@
 			return new Entity(x, y, w, h);
 		},
 
-		resolveCollisions: function () {
+		resolveCollisions: function (world, entity) {
 
 		}
 	};
