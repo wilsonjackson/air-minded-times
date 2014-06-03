@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	Game.init({
 		canvas: document.getElementById('viewport')
 	});
-	Game.world.loadMap(Map.BUTTLAND);
+	Game.world.loadMap(Map.TEST_MAP);
 	Game.world.addObject(new Player(0, 0));
 	Game.start();
 });
