@@ -3,8 +3,8 @@
 (function () {
 	'use strict';
 
-	function World(viewport) {
-		this.viewport = viewport;
+	function World(graphics) {
+		this.graphics = graphics;
 		this.map = null;
 		this.terrain = [];
 		this.objects = [];
@@ -12,8 +12,12 @@
 		this.height = 0;
 	}
 
+	World.prototype.setBackground = function (background) {
+		this.graphics.setBackground(background);
+	};
+
 	World.prototype.centerOn = function (x, y, w, h) {
-		this.viewport.centerOn(x, y, w, h, this.width, this.height);
+		this.graphics.centerOn(x, y, w, h, this.width, this.height);
 	};
 
 	World.prototype.addObject = function (object) {

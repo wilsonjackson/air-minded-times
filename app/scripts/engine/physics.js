@@ -6,8 +6,8 @@
 			return new Entity(x, y, w, h);
 		},
 
-		resolveCollisions: function (world, entity) {
-
+		resolveCollisions: function (/*entity*/) {
+//			entity
 		}
 	};
 

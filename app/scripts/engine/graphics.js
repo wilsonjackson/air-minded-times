@@ -3,12 +3,33 @@
 
 	function Graphics(viewport) {
 		this.viewport = viewport;
+		this.background = '#ffffff';
+		this.offsetX = 0;
+		this.offsetY = 0;
 	}
 
 	Graphics.prototype.clear = function () {
 		// Assigning width to a canvas clears its contents
 		//noinspection SillyAssignmentJS
-		this.viewport.canvas.width = this.viewport.canvas.width;
+//		this.viewport.canvas.width = this.viewport.canvas.width;
+		this.viewport.context.fillStyle = this.background;
+		this.viewport.context.fillRect(0, 0, this.viewport.width, this.viewport.height);
+	};
+
+	Graphics.prototype.setBackground = function (background) {
+		this.background = background;
+	};
+
+	Graphics.prototype.centerOn = function (x, y, w, h, worldWidth, worldHeight) {
+		this.offsetX = Math.min(Math.max(0, x - ((this.viewport.width - (w || 0)) / 2)), worldWidth - this.viewport.width);
+		this.offsetY = Math.min(Math.max(0, y - ((this.viewport.height - (h || 0)) / 2)), worldHeight - this.viewport.height);
+	};
+
+	Graphics.prototype.translate = function (x, y) {
+		return {
+			x: x - this.offsetX,
+			y: y - this.offsetY
+		};
 	};
 
 	Graphics.prototype.drawSprite = function (sprite, x, y) {
@@ -17,7 +38,7 @@
 		if (sprite.direction !== 0) {
 			var spriteOffsetX = -sprite.w / 2;
 			var spriteOffsetY = -sprite.h / 2;
-			translated = this.viewport.translate(x - spriteOffsetX, y - spriteOffsetY);
+			translated = this.translate(x - spriteOffsetX, y - spriteOffsetY);
 			context.save();
 			context.translate(translated.x, translated.y);
 			context.rotate(sprite.direction);
@@ -25,7 +46,7 @@
 			context.restore();
 		}
 		else {
-			translated = this.viewport.translate(x, y);
+			translated = this.translate(x, y);
 			sprite.draw(context, translated.x, translated.y);
 		}
 	};
@@ -36,18 +57,6 @@
 		this.width = canvas.width;
 		this.height = canvas.height;
 	}
-
-	Viewport.prototype.centerOn = function (x, y, w, h, worldWidth, worldHeight) {
-		this.offsetX = Math.min(Math.max(0, x - ((this.width - (w || 0)) / 2)), worldWidth - this.width);
-		this.offsetY = Math.min(Math.max(0, y - ((this.height - (h || 0)) / 2)), worldHeight - this.height);
-	};
-
-	Viewport.prototype.translate = function (x, y) {
-		return {
-			x: x - this.offsetX,
-			y: y - this.offsetY
-		};
-	};
 
 	var SpriteFactory = (function () {
 		var images = {};
@@ -114,8 +123,36 @@
 	Sprite.D_LEFT = 270 * (Math.PI / 180);
 	Sprite.D_RIGHT = 90 * (Math.PI / 180);
 
+	var indexed = [null];
+	var Terrain = {
+		add: function (sprite) {
+			var tile = new Tile(sprite);
+			indexed.push(tile);
+			return tile;
+		},
+
+		readMapTerrain: function (mapTerrain) {
+			return mapTerrain.map(function (n) {
+				if (indexed[n] === null) {
+					throw 'Invalid terrain index: ' + n;
+				}
+				return indexed[n];
+			});
+		}
+	};
+
+	function Tile(sprite, impassable) {
+		this.sprite = sprite;
+		this.impassable = impassable || false;
+	}
+
+	Tile.prototype.render = function (graphics, gridX, gridY) {
+		graphics.drawSprite(this.sprite, gridX * 100, gridY * 100);
+	};
+
 	window.Graphics = Graphics;
 	window.Viewport = Viewport;
 	window.SpriteFactory = SpriteFactory;
 	window.Sprite = Sprite;
+	window.Terrain = Terrain;
 })();

@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	function Input(/*viewport*/) {
+	function Input() {
 		var keyMap = {
 			38: Input.UP,
 			40: Input.DOWN,

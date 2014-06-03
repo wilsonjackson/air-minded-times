@@ -6,15 +6,14 @@
 	var Game = {};
 
 	Game.init = function (config) {
-		this.config = config;
 		if (!config.canvas || !(config.canvas instanceof HTMLCanvasElement)) {
 			throw 'canvas element is required';
 		}
 
 		this.viewport = new Viewport(config.canvas);
-		this.input = new Input(this.viewport);
+		this.input = new Input();
 		this.graphics = new Graphics(this.viewport);
-		this.world = new World(this.viewport);
+		this.world = new World(this.graphics);
 	};
 
 	Game.start = function () {
