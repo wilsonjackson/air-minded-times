@@ -1,4 +1,4 @@
-/* global SpriteFactory */
+/* global SpriteFactory, Sprite */
 
 (function () {
 	'use strict';

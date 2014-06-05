@@ -111,7 +111,7 @@
 				document.body.appendChild(s.domElement);
 				return s;
 			}
-		}
+		};
 	}
 
 	document.addEventListener('visibilitychange', function () {
