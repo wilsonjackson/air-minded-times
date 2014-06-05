@@ -1,4 +1,4 @@
-/* global Terrain SpriteFactory */
+/* global Terrain, SpriteFactory */
 
 (function () {
 	'use strict';

@@ -32,7 +32,7 @@
 			return true;
 		}
 		world.centerOn(this.entity.x, this.entity.y, this.entity.w, this.entity.h);
-		return newState !== false;
+		return this.sprite.update() || newState !== false;
 	};
 
 	Player.prototype.render = function (graphics) {

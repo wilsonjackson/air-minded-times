@@ -67,8 +67,9 @@
 				if (!images[spriteDef.url]) {
 					images[spriteDef.url] = new Image();
 				}
-				sprites[spriteDef.name] =
-					new Sprite(images[spriteDef.url], spriteDef.x, spriteDef.y, spriteDef.w, spriteDef.h);
+				var sprite = new (spriteDef.constructor || Sprite);
+				sprite.init(images[spriteDef.url], spriteDef.x, spriteDef.y, spriteDef.w, spriteDef.h);
+				sprites[spriteDef.name] = sprite;
 			},
 
 			preload: function () {
@@ -104,24 +105,37 @@
 		};
 	})();
 
-	function Sprite(image, x, y, w, h) {
-		this.image = image;
-		this.x = x;
-		this.y = y;
-		this.w = w;
-		this.h = h;
-		this.direction = Sprite.D_UP;
+	function Sprite() {
+		// Empty constructor for easy extension; configured via init()
 	}
-
-	Sprite.prototype.draw = function (context, x, y) {
-		context.drawImage(this.image, this.x, this.y, this.w, this.h, x, y, this.w, this.h);
-	};
 
 	// Rotation in radians
 	Sprite.D_UP = 0;
 	Sprite.D_DOWN = 180 * (Math.PI / 180);
 	Sprite.D_LEFT = 270 * (Math.PI / 180);
 	Sprite.D_RIGHT = 90 * (Math.PI / 180);
+
+	Sprite.prototype.init = function (image, x, y, w, h) {
+		this.image = image;
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		this.direction = Sprite.D_UP;
+		// Inform subclasses of initialization.
+		if (this._init) {
+			this._init();
+		}
+	};
+
+	Sprite.prototype.update = function () {
+		// No default update action; this is where animation would occur.
+		return false;
+	};
+
+	Sprite.prototype.draw = function (context, x, y) {
+		context.drawImage(this.image, this.x, this.y, this.w, this.h, x, y, this.w, this.h);
+	};
 
 	var indexed = [null];
 	var Terrain = {
