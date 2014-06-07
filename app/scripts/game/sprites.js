@@ -1,10 +1,10 @@
-/* global SpriteFactory, Sprite */
+/* global SpriteRepository, Sprite */
 
 (function () {
 	'use strict';
 
 	function spriteDef(name, url, x, y, w, h, ctor) {
-		return {name: name, url: url, x: x * 100, y: y * 100, w: w, h: h, constructor: ctor};
+		return {name: name, url: url, x: x * w, y: y * h, w: w, h: h, constructor: ctor};
 	}
 
 	function PlaneSprite() {
@@ -24,9 +24,41 @@
 		}
 	};
 
-	[spriteDef('aero/extended-farewell', 'aero/planes.png', 1, 0, 100, 100, PlaneSprite),
-		spriteDef('aero/biplane-dieplane', 'aero/planes.png', 0, 0, 100, 100, PlaneSprite),
-		spriteDef('aero/justice-glider-mkiv', 'aero/planes.png', 2, 0, 100, 100, PlaneSprite),
+	function FontSprite() {
+		this.chars = ' !"# %&\'[]*+,-. 0123456789     ? ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+		this.buffer = [];
+	}
+
+	FontSprite.prototype = new Sprite();
+
+	FontSprite.prototype.text = function (text) {
+		var chars = this.chars;
+		this.buffer = text.toUpperCase().split('').map(function (char) {
+			return chars.indexOf(char);
+		});
+	};
+
+	FontSprite.prototype.draw = function (context, x, y) {
+		var self = this;
+		var n = 0;
+		this.buffer.forEach(function (index) {
+			context.drawImage(self.image, self.x + index * self.w, self.y, self.w, self.h, x + n, y, self.w, self.h);
+			n += self.w;
+		});
+		this.buffer = [];
+	};
+
+	[
+		// Aeroplanes
+		spriteDef('aero/extended-farewell', 'sprites/planes.png', 1, 0, 100, 100, PlaneSprite),
+		spriteDef('aero/biplanedieplane', 'sprites/planes.png', 0, 0, 100, 100, PlaneSprite),
+		spriteDef('aero/justice-glider-mkiv', 'sprites/planes.png', 2, 0, 100, 100, PlaneSprite),
+
+		// Items
+		spriteDef('item/sky-meat', 'sprites/meat.png', 0, 0, 100, 100),
+
+		// Fonts
+		spriteDef('font/fz', 'fonts/fz-fantasy_zone-sega.png', 0, 0, 16, 16, FontSprite),
 
 		// Default empty tile
 		spriteDef('terrain/empty', 'terrain/clouds.png', 5, 3, 100, 100),
@@ -80,6 +112,6 @@
 		spriteDef('terrain/heart-a-u-e', 'terrain/clouds.png', 7, 0, 100, 100),
 		spriteDef('terrain/puff', 'terrain/clouds.png', 6, 2, 100, 100)]
 		.forEach(function (spriteDef) {
-			SpriteFactory.add(spriteDef);
+			SpriteRepository.add(spriteDef);
 		});
 })();

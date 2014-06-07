@@ -1,11 +1,11 @@
-/* global SpriteFactory, Sprite, Physics, Input */
+/* global SpriteRepository, Sprite, Input, ObjectFactory, ObjectTypeRepository, SpriteObject, Inventory */
 
 (function () {
 	'use strict';
 
 	function cycleSprite(player) {
 		var nextSpriteName = player.sprites.shift();
-		var nextSprite = SpriteFactory.getSprite(nextSpriteName);
+		var nextSprite = SpriteRepository.retrieve(nextSpriteName);
 		if (player.sprite) {
 			nextSprite.direction = player.sprite.direction;
 		}
@@ -13,15 +13,41 @@
 		player.sprites.push(nextSpriteName);
 	}
 
-	function Player(x, y) {
-		this.sprites = ['aero/extended-farewell', 'aero/biplane-dieplane', 'aero/justice-glider-mkiv'];
+	function Player() {
+		this.type = ObjectTypeRepository.PLAYER;
+		this.inventory = new Inventory();
+		this.sprites = ['aero/extended-farewell', 'aero/biplanedieplane', 'aero/justice-glider-mkiv'];
 		cycleSprite(this);
-		this.entity = Physics.newEntity(x, y, this.sprite.w, this.sprite.h);
-		this.entity.speed = 3;
+		this.speed = 3;
 		this.movement = PlayerMovementState.IDLE;
 	}
 
+	Player.prototype = new SpriteObject();
+
+	Player.prototype._init = function () {
+		var self = this;
+		this.entity.onCollision(ObjectTypeRepository.ITEM, function (collision) {
+			collision.object.destroy();
+			self.inventory.get(collision.object.item).add();
+		});
+		this.entity.onCollision(ObjectTypeRepository.EDGE, function (collision) {
+			if (collision.offsetX === -1) {
+				self.entity.x = 0;
+			}
+			else if (collision.offsetX === 1) {
+				self.entity.x = collision.object.world.width - self.entity.w;
+			}
+			if (collision.offsetY === -1) {
+				self.entity.y = 0;
+			}
+			else if (collision.offsetY === 1) {
+				self.entity.y = collision.object.world.height - self.entity.h;
+			}
+		});
+	};
+
 	Player.prototype.update = function (world, inputState) {
+		this.entity.update();
 		var newState = this.movement.update(this, inputState);
 		if (newState) {
 			this.movement = newState;
@@ -33,10 +59,6 @@
 		}
 		world.centerOn(this.entity.x, this.entity.y, this.entity.w, this.entity.h);
 		return this.sprite.update() || newState !== false;
-	};
-
-	Player.prototype.render = function (graphics) {
-		graphics.drawSprite(this.sprite, this.entity.x, this.entity.y, this.entity.w, this.entity.h);
 	};
 
 	var PlayerMovementState = {
@@ -113,5 +135,5 @@
 		}
 	};
 
-	window.Player = Player;
+	ObjectFactory.register('player', Player);
 })();

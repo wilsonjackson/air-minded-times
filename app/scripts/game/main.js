@@ -1,4 +1,4 @@
-/* global Game, Map, Player */
+/* global Game, Map */
 
 document.addEventListener('DOMContentLoaded', function () {
 	'use strict';
@@ -8,6 +8,5 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 	Game.world.setBackground('#4d5967');
 	Game.world.loadMap(Map.TEST_MAP);
-	Game.world.addObject(new Player(0, 0));
 	Game.start();
 });

@@ -58,7 +58,7 @@
 		this.height = canvas.height;
 	}
 
-	var SpriteFactory = (function () {
+	var SpriteRepository = (function () {
 		var images = {};
 		var sprites = {};
 
@@ -97,7 +97,7 @@
 				};
 			},
 
-			getSprite: function (name) {
+			retrieve: function (name) {
 				if (!sprites[name]) {
 					throw 'unknown sprite: ' + name;
 				}
@@ -105,6 +105,17 @@
 			}
 		};
 	})();
+
+	SpriteRepository.NULL_SPRITE = {
+		w: 100,
+		h: 100,
+		init: function () {},
+		update: function () {},
+		draw: function (context, x, y) {
+			context.fillStyle = '#f00';
+			context.fillRect(x, y, this.w, this.h);
+		}
+	};
 
 	function Sprite() {
 		// Empty constructor for easy extension; configured via init()
@@ -156,9 +167,9 @@
 		}
 	};
 
-	function Tile(sprite, impassable) {
+	function Tile(sprite/*, impassable*/) {
 		this.sprite = sprite;
-		this.impassable = impassable || false;
+//		this.impassable = impassable || false;
 	}
 
 	Tile.prototype.render = function (graphics, gridX, gridY) {
@@ -167,7 +178,7 @@
 
 	window.Graphics = Graphics;
 	window.Viewport = Viewport;
-	window.SpriteFactory = SpriteFactory;
+	window.SpriteRepository = SpriteRepository;
 	window.Sprite = Sprite;
 	window.Terrain = Terrain;
 })();

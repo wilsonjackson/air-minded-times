@@ -18,7 +18,7 @@
 	QuadTree.prototype.clear = function () {
 		this.objects = [];
 		if (this.nodes.length) {
-			for (var i = 0; i < this.nodes.length; i++) {
+			for (var i = 0, len = this.nodes.length; i < len; i++) {
 				this.nodes[i].clear();
 			}
 			this.nodes = [];
@@ -39,10 +39,11 @@
 
 		if (this.objects.length === MAX_OBJECTS && this.level < MAX_LEVELS) {
 			this._split();
-			for (var i = 0; i < this.objects.length; i++) {
+			for (var i = 0, len = this.objects.length; i < len; i++) {
 				index = this._getIndex(this.objects[i]);
 				if (index !== -1) {
 					this.nodes[index].insert(this.objects.splice(i--, 1)[0]);
+					--len;
 				}
 			}
 		}

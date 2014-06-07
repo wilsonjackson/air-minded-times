@@ -1,4 +1,4 @@
-/* global Viewport, Input, Graphics, World, SpriteFactory, Stats */
+/* global Viewport, Input, Graphics, Physics, World, SpriteRepository, Stats */
 
 (function () {
 	'use strict';
@@ -22,11 +22,13 @@
 		this.input = new Input();
 		this.graphics = new Graphics(this.viewport);
 		this.world = new World(this.graphics);
+		Ui.init(this.world);
+		Physics.init(this.world);
 	};
 
 	Game.start = function () {
 		console.log('Starting preload');
-		SpriteFactory.preload().then(function () {
+		SpriteRepository.preload().then(function () {
 			console.log('Preload complete');
 			tick();
 		});
@@ -64,17 +66,18 @@
 		return function () {
 			loops = 0;
 
+			// Paused game bails immediately
+			if (paused) {
+				return;
+			}
+
 			while (new Date().getTime() > nextGameTick && loops < maxFrameSkip) {
 				tickStats.begin();
 				// Process input
 				var inputState = this.input.readInput();
 
-				// Paused game bails on tick
-				if (paused) {
-					return;
-				}
-
 				// Update
+				Ui.update(inputState);
 				var wasUpdated = this.world.update(inputState);
 				skipRender = !wasUpdated && skipRender;
 
@@ -88,6 +91,7 @@
 				renderStats.begin();
 				this.graphics.clear();
 				this.world.render(this.graphics);
+				Ui.render(this.graphics);
 				skipRender = true;
 				renderStats.end();
 			}
