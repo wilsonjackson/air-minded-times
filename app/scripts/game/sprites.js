@@ -7,16 +7,16 @@
 		return {name: name, url: url, x: x * w, y: y * h, w: w, h: h, constructor: ctor};
 	}
 
-	function PlaneSprite() {
+	function AnimatedSprite() {
 		this.count = 0;
 		this.animState = false;
 	}
 
-	PlaneSprite.prototype = new Sprite();
+	AnimatedSprite.prototype = new Sprite();
 
-	PlaneSprite.prototype.update = function () {
+	AnimatedSprite.prototype.update = function () {
 		this.count++;
-		if (this.count % 3 === 0) {
+		if (this.count % 30 === 0) {
 			this.count = 0;
 			this.animState = !this.animState;
 			this.y += this.h * (this.animState ? 1 : -1);
@@ -50,12 +50,15 @@
 
 	[
 		// Aeroplanes
-		spriteDef('aero/extended-farewell', 'sprites/planes.png', 1, 0, 100, 100, PlaneSprite),
-		spriteDef('aero/biplanedieplane', 'sprites/planes.png', 0, 0, 100, 100, PlaneSprite),
-		spriteDef('aero/justice-glider-mkiv', 'sprites/planes.png', 2, 0, 100, 100, PlaneSprite),
+		spriteDef('aero/extended-farewell', 'sprites/sprites.png', 5, 2, 100, 100, AnimatedSprite),
+		spriteDef('aero/biplanedieplane', 'sprites/sprites.png', 4, 2, 100, 100, AnimatedSprite),
+		spriteDef('aero/justice-glider-mkiv', 'sprites/sprites.png', 6, 2, 100, 100, AnimatedSprite),
 
 		// Items
-		spriteDef('item/sky-meat', 'sprites/meat.png', 0, 0, 100, 100),
+		spriteDef('item/sky-meat', 'sprites/sprites.png', 2, 2, 100, 100),
+
+		// Enemies & friends
+		spriteDef('enemy/shell', 'sprites/sprites.png', 3, 2, 100, 100, AnimatedSprite),
 
 		// Fonts
 		spriteDef('font/fz', 'fonts/fz-fantasy_zone-sega.png', 0, 0, 16, 16, FontSprite),
