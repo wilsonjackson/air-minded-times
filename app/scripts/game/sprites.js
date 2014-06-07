@@ -16,7 +16,7 @@
 
 	AnimatedSprite.prototype.update = function () {
 		this.count++;
-		if (this.count % 30 === 0) {
+		if (this.count % 3 === 0) {
 			this.count = 0;
 			this.animState = !this.animState;
 			this.y += this.h * (this.animState ? 1 : -1);
