@@ -68,13 +68,13 @@
 
 		return {
 			add: function (item) {
-				return items[item.id] = item;
+				return (items[item.id] = item);
 			},
 
 			retrieve: function (id) {
 				return items[id];
 			}
-		}
+		};
 	})();
 
 	window.Inventory = Inventory;

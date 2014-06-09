@@ -1,4 +1,4 @@
-/* global Ui, SpriteRepository, ObjectTypeRepository */
+/* global Ui, SpriteRepository, ObjectTypeRepository, ItemRepository */
 
 (function () {
 	'use strict';

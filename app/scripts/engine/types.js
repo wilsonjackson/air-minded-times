@@ -1,3 +1,5 @@
+/*jshint bitwise: false*/
+
 (function () {
 	'use strict';
 
@@ -20,7 +22,7 @@
 					type |= arguments[i];
 				}
 				nextType = nextType << 1;
-				return types[id] = new ObjectType(type);
+				return (types[id] = new ObjectType(type));
 			},
 
 			retrieve: function (id) {
@@ -36,7 +38,7 @@
 				}
 				return matching;
 			}
-		}
+		};
 	})();
 
 	ObjectTypeRepository.ACTOR = ObjectTypeRepository.add('actor');

@@ -1,4 +1,4 @@
-/* global Viewport, Input, Graphics, Physics, World, SpriteRepository, Stats */
+/* global Ui, Viewport, Input, Graphics, Physics, World, SpriteRepository, Stats */
 
 (function () {
 	'use strict';
@@ -56,7 +56,7 @@
 		var skipTicks = 1000 / 50;
 		var maxFrameSkip = 10;
 		var skipRender = false;
-		var enableRenderSkip = true;
+		var enableRenderSkip = false;
 		nextGameTick = new Date().getTime();
 
 		var fpsStats = createStats().add();

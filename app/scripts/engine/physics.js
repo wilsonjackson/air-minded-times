@@ -4,7 +4,6 @@
 	'use strict';
 
 	var Physics = (function () {
-		var edgeType;
 		var world;
 		var quadTree;
 

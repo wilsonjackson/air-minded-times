@@ -1,4 +1,4 @@
-/* global */
+/* global Graphics */
 
 (function () {
 	'use strict';
