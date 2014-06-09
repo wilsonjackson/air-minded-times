@@ -67,7 +67,7 @@
 				if (!images[spriteDef.url]) {
 					images[spriteDef.url] = new Image();
 				}
-				var Ctor = (spriteDef.constructor || Sprite);
+				var Ctor = (spriteDef.ctor || Sprite);
 				var sprite = new Ctor();
 				sprite.init(images[spriteDef.url], spriteDef.x, spriteDef.y, spriteDef.w, spriteDef.h);
 				sprites[spriteDef.name] = sprite;

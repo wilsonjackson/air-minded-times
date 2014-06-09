@@ -7,6 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		canvas: document.getElementById('viewport')
 	});
 	Game.world.setBackground('#4d5967');
-	Game.world.loadMap(Map.TEST_MAP);
+	Game.world.loadMap(Map.LEVEL1);
 	Game.start();
 });

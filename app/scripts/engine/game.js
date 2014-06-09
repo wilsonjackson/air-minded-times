@@ -53,7 +53,7 @@
 
 	Game.run = (function () {
 		var loops = 0;
-		var skipTicks = 1000 / 50;
+		var skipTicks = 1000 / 60;
 		var maxFrameSkip = 10;
 		var skipRender = false;
 		var enableRenderSkip = false;
