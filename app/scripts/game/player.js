@@ -1,4 +1,4 @@
-/* global SpriteRepository, Sprite, Input, ObjectFactory, ObjectTypeRepository, SpriteObject, Inventory */
+/* global Vector, SpriteRepository, Sprite, Input, ObjectFactory, ObjectType, EntityCategory, SpriteObject, Inventory */
 
 (function () {
 	'use strict';
@@ -14,40 +14,40 @@
 	}
 
 	function Player() {
-		this.type = ObjectTypeRepository.PLAYER;
+		this.type = ObjectType.PLAYER;
 		this.inventory = new Inventory();
 		this.sprites = ['aero/extended-farewell', 'aero/biplanedieplane', 'aero/justice-glider-mkiv'];
 		cycleSprite(this);
-		this.speed = 3;
+		this.speed = 4;
 		this.movement = PlayerMovementState.IDLE;
+		this.entityCategory = EntityCategory.PLAYER;
 	}
 
 	Player.prototype = new SpriteObject();
 
 	Player.prototype._init = function () {
 		var self = this;
-		this.entity.onCollision(ObjectTypeRepository.ITEM, function (collision) {
-			collision.object.destroy();
-			self.inventory.get(collision.object.item).add();
-		});
-		this.entity.onCollision(ObjectTypeRepository.EDGE, function (collision) {
-			if (collision.offsetX === -1) {
-				self.entity.x = 0;
-			}
-			else if (collision.offsetX === 1) {
-				self.entity.x = collision.object.world.width - self.entity.w;
-			}
-			if (collision.offsetY === -1) {
-				self.entity.y = 0;
-			}
-			else if (collision.offsetY === 1) {
-				self.entity.y = collision.object.world.height - self.entity.h;
+		this.entity.addCollisionListener({
+			solveCollision: function (collision) {
+				if (collision.entity.category.isA(EntityCategory.OBSTACLE)) {
+					if (self.entity.lastMovement.x !== 0) {
+						return new Vector(collision.intersection.width() * (self.entity.lastMovement.x > 0 ? -1 : 1), 0);
+					}
+					if (self.entity.lastMovement.y !== 0) {
+						return new Vector(0, collision.intersection.height() * (self.entity.lastMovement.y > 0 ? -1 : 1));
+					}
+				}
+			},
+			collide: function (collision) {
+				if (collision.entity.category.isA(EntityCategory.ITEM)) {
+					collision.entity.object.destroy();
+					self.inventory.get(collision.entity.object.item).add();
+				}
 			}
 		});
 	};
 
 	Player.prototype.update = function (world, inputState) {
-		this.entity.update();
 		var newState = this.movement.update(this, inputState);
 		if (newState) {
 			this.movement = newState;
@@ -57,7 +57,6 @@
 			cycleSprite(this);
 			return true;
 		}
-		world.centerOn(this.entity.x, this.entity.y, this.entity.w, this.entity.h);
 		return this.sprite.update() || newState !== false;
 	};
 
@@ -82,6 +81,7 @@
 		IDLE: {
 			enter: function (/*object*/) {},
 			update: function (object, inputState) {
+//				object.entity.();
 				return PlayerMovementState._getMovement(inputState) || false;
 			}
 		},
@@ -94,7 +94,7 @@
 				if (newState) {
 					return newState;
 				}
-				object.entity.moveY(-1);
+				object.entity.impulse(0, -object.speed);
 			}
 		},
 		MOVING_DOWN: {
@@ -106,7 +106,7 @@
 				if (newState) {
 					return newState;
 				}
-				object.entity.moveY(1);
+				object.entity.impulse(0, object.speed);
 			}
 		},
 		MOVING_LEFT: {
@@ -118,7 +118,7 @@
 				if (newState) {
 					return newState;
 				}
-				object.entity.moveX(-1);
+				object.entity.impulse(-object.speed, 0);
 			}
 		},
 		MOVING_RIGHT: {
@@ -130,7 +130,7 @@
 				if (newState) {
 					return newState;
 				}
-				object.entity.moveX(1);
+				object.entity.impulse(object.speed, 0);
 			}
 		}
 	};

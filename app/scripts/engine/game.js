@@ -53,7 +53,7 @@
 
 	Game.run = (function () {
 		var loops = 0;
-		var skipTicks = 1000 / 60;
+		var skipTicks = 1000 / 50; // Target 50fps game updates
 		var maxFrameSkip = 10;
 		var skipRender = false;
 		var enableRenderSkip = false;

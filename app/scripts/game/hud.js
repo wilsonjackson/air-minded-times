@@ -1,4 +1,4 @@
-/* global Ui, SpriteRepository, ObjectTypeRepository, ItemRepository */
+/* global Ui, SpriteRepository, ObjectType, ItemRepository */
 
 (function () {
 	'use strict';
@@ -9,7 +9,7 @@
 
 	var meatCounter = Ui.addHudComponent(Ui.CORNER_NE, 200, 16);
 	meatCounter.init = function (world) {
-		skyMeatBag = world.firstObjectOfType(ObjectTypeRepository.PLAYER).inventory.get(skyMeat);
+		skyMeatBag = world.firstObjectOfType(ObjectType.PLAYER).inventory.get(skyMeat);
 	};
 	meatCounter.render = function (graphics, x, y) {
 		fontSprite.text(skyMeatBag.qty + ' Sky Meat');

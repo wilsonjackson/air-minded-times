@@ -1,4 +1,4 @@
-/* globals ItemRepository, ObjectFactory, ObjectTypeRepository, SpriteObject, SpriteRepository */
+/* globals ItemRepository, ObjectFactory, ObjectType, SpriteObject, SpriteRepository */
 
 (function () {
 	'use strict';
@@ -11,9 +11,10 @@
 	});
 
 	function SkyMeat() {
-		this.type = ObjectTypeRepository.ITEM;
+		this.type = ObjectType.ITEM;
 		this.item = SKY_MEAT;
 		this.sprite = SpriteRepository.retrieve('item/sky-meat');
+		this.entityCategory = EntityCategory.ITEM;
 	}
 
 	SkyMeat.prototype = new SpriteObject();

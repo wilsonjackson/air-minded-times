@@ -9,9 +9,6 @@
 	}
 
 	Graphics.prototype.clear = function () {
-		// Assigning width to a canvas clears its contents
-		//noinspection SillyAssignmentJS
-//		this.viewport.canvas.width = this.viewport.canvas.width;
 		this.viewport.context.fillStyle = this.background;
 		this.viewport.context.fillRect(0, 0, this.viewport.width, this.viewport.height);
 	};
@@ -151,8 +148,8 @@
 
 	var indexed = [null];
 	var Terrain = {
-		add: function (sprite) {
-			var tile = new Tile(sprite);
+		add: function (sprite, impassable) {
+			var tile = new Tile(sprite, impassable);
 			indexed.push(tile);
 			return tile;
 		},
@@ -167,9 +164,9 @@
 		}
 	};
 
-	function Tile(sprite/*, impassable*/) {
+	function Tile(sprite, impassable) {
 		this.sprite = sprite;
-//		this.impassable = impassable || false;
+		this.impassable = impassable;
 	}
 
 	Tile.prototype.render = function (graphics, gridX, gridY) {
