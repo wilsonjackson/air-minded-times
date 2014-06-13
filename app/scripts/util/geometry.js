@@ -108,6 +108,15 @@
 		this.position = this.position.add(vector);
 	};
 
+	BoundingRect.prototype.rotate = function () {
+		var halfX = Math.round(this.size.x / 2);
+		var halfY = Math.round(this.size.y / 2);
+
+		//noinspection JSSuspiciousNameCombination
+		this.size = new Vector(this.size.y, this.size.x);
+		this.position = new Vector(this.position.x + halfX - halfY, this.position.y + halfY - halfX);
+	};
+
 	BoundingRect.prototype.toString = function () {
 		return 'BoundingRect(position=' + this.position + ', size=' + this.size + ')';
 	};
@@ -178,6 +187,10 @@
 
 	BoundingCircle.prototype.move = function (vector) {
 		this.position = this.position.add(vector);
+	};
+
+	BoundingCircle.prototype.rotate = function () {
+		// A circle doesn't change when it rotates. Easy!
 	};
 
 	BoundingCircle.prototype.toString = function () {

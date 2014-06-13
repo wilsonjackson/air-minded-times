@@ -1,3 +1,5 @@
+/* globals Orientation */
+
 (function () {
 	'use strict';
 
@@ -18,8 +20,8 @@
 	};
 
 	Graphics.prototype.centerOn = function (x, y, w, h, worldWidth, worldHeight) {
-		this.offsetX = Math.min(Math.max(0, x - ((this.viewport.width - (w || 0)) / 2)), worldWidth - this.viewport.width);
-		this.offsetY = Math.min(Math.max(0, y - ((this.viewport.height - (h || 0)) / 2)), worldHeight - this.viewport.height);
+		this.offsetX = Math.round(Math.min(Math.max(0, x - ((this.viewport.width - (w || 0)) / 2)), worldWidth - this.viewport.width));
+		this.offsetY = Math.round(Math.min(Math.max(0, y - ((this.viewport.height - (h || 0)) / 2)), worldHeight - this.viewport.height));
 	};
 
 	Graphics.prototype.translate = function (x, y) {
@@ -29,16 +31,27 @@
 		};
 	};
 
-	Graphics.prototype.drawSprite = function (sprite, x, y) {
+	Graphics.prototype.drawSprite = function (sprite, x, y, orientation) {
 		var translated;
 		var context = this.viewport.context;
-		if (sprite.direction !== 0) {
-			var spriteOffsetX = -sprite.w / 2;
-			var spriteOffsetY = -sprite.h / 2;
-			translated = this.translate(x - spriteOffsetX, y - spriteOffsetY);
+		if (orientation && orientation !== Orientation.NORTH) {
+			// Orientation involves the following steps:
+			// 1. Calculate the half-width and half-height of the sprite.
+			// 2. Use the half dimensions, rotated according to the object's orientation, to center the canvas over
+			//    the center of the sprite.
+			// 3. Rotate the canvas in accordance with the object's orientation (so the direction it should be facing
+			//    is up.
+			// 4. Tell the sprite to draw itself centered on the canvas (offset by half its dimensions).
+			// 5. Revert canvas to original center and rotation.
+
+			var spriteOffsetX = -Math.round(sprite.getWidth() / 2);
+			var spriteOffsetY = -Math.round(sprite.getHeight() / 2);
+			var rotatedOffset = orientation.translateXY(spriteOffsetX, spriteOffsetY);
+			translated = this.translate(x - rotatedOffset.x, y - rotatedOffset.y);
+
 			context.save();
 			context.translate(translated.x, translated.y);
-			context.rotate(sprite.direction);
+			context.rotate(orientation.asRadians());
 			sprite.draw(context, spriteOffsetX, spriteOffsetY);
 			context.restore();
 		}
@@ -66,7 +79,7 @@
 				}
 				var Ctor = (spriteDef.ctor || Sprite);
 				var sprite = new Ctor();
-				sprite.init(images[spriteDef.url], spriteDef.x, spriteDef.y, spriteDef.w, spriteDef.h);
+				sprite.init(images[spriteDef.url], spriteDef.x, spriteDef.y, spriteDef.w, spriteDef.h, spriteDef.margins);
 				sprites[spriteDef.name] = sprite;
 			},
 
@@ -114,27 +127,48 @@
 		}
 	};
 
+	// No constructor args for easy extension; configured via init()
 	function Sprite() {
-		// Empty constructor for easy extension; configured via init()
+
 	}
 
-	// Rotation in radians
-	Sprite.D_UP = 0;
-	Sprite.D_DOWN = 180 * (Math.PI / 180);
-	Sprite.D_LEFT = 270 * (Math.PI / 180);
-	Sprite.D_RIGHT = 90 * (Math.PI / 180);
-
-	Sprite.prototype.init = function (image, x, y, w, h) {
+	Sprite.prototype.init = function (image, x, y, w, h, margins) {
 		this.image = image;
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.direction = Sprite.D_UP;
+		this.margins = margins || [0, 0, 0, 0];
+		this._drawWidth = this.getWidth();
+		this._drawHeight = this.getHeight();
 		// Inform subclasses of initialization.
 		if (this._init) {
 			this._init();
 		}
+	};
+
+	Sprite.prototype.getWidth = function () {
+		return this.w - this.margins[1] - this.margins[3];
+	};
+
+	Sprite.prototype.getHeight = function () {
+		return this.h - this.margins[0] - this.margins[2];
+	};
+
+	Sprite.prototype.getTopMargin = function () {
+		return this.margins[0];
+	};
+
+	Sprite.prototype.getLeftMargin = function () {
+		return this.margins[3];
+	};
+
+	Sprite.prototype.getRightMargin = function () {
+		return this.margins[1];
+	};
+
+	Sprite.prototype.getBottomMargin = function () {
+		return this.margins[2];
 	};
 
 	Sprite.prototype.update = function () {
@@ -143,7 +177,80 @@
 	};
 
 	Sprite.prototype.draw = function (context, x, y) {
-		context.drawImage(this.image, this.x, this.y, this.w, this.h, x, y, this.w, this.h);
+		context.drawImage(this.image, this.x + this.margins[3], this.y + this.margins[0], this._drawWidth,
+			this._drawHeight, x, y, this._drawWidth, this._drawHeight);
+	};
+
+	function SpriteAnimator(interval, sprites) {
+		this.interval = interval || 10;
+		this.tickCount = -1;
+		this.frames = sprites;
+		this.nextIdx = 0;
+
+		this.w = sprites[0].w;
+		this.h = sprites[0].h;
+	}
+
+	SpriteAnimator.prototype.getWidth = function () {
+		return this.frames[0].getWidth();
+	};
+
+	SpriteAnimator.prototype.getHeight = function () {
+		return this.frames[0].getHeight();
+	};
+
+	SpriteAnimator.prototype.getTopMargin = function () {
+		return this.frames[0].getTopMargin();
+	};
+
+	SpriteAnimator.prototype.getLeftMargin = function () {
+		return this.frames[0].getLeftMargin();
+	};
+
+	SpriteAnimator.prototype.getRightMargin = function () {
+		return this.frames[0].getRightMargin();
+	};
+
+	SpriteAnimator.prototype.getBottomMargin = function () {
+		return this.frames[0].getBottomMargin();
+	};
+
+	SpriteAnimator.prototype.update = function () {
+		if (++this.tickCount === this.interval) {
+			this.tickCount = 0;
+			++this.nextIdx;
+			if (this.nextIdx === this.frames.length) {
+				this.nextIdx = 0;
+			}
+		}
+	};
+
+	SpriteAnimator.prototype.draw = function (context, x, y) {
+		this.frames[this.nextIdx].draw(context, x, y);
+	};
+
+	function FontSprite() {
+		this.chars = ' !"# %&\'[]*+,-. 0123456789     ? ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+		this.buffer = [];
+	}
+
+	FontSprite.prototype = new Sprite();
+
+	FontSprite.prototype.text = function (text) {
+		var chars = this.chars;
+		this.buffer = text.toUpperCase().split('').map(function (char) {
+			return chars.indexOf(char);
+		});
+	};
+
+	FontSprite.prototype.draw = function (context, x, y) {
+		var self = this;
+		var n = 0;
+		this.buffer.forEach(function (index) {
+			context.drawImage(self.image, self.x + index * self.w, self.y, self.w, self.h, x + n, y, self.w, self.h);
+			n += self.w;
+		});
+		this.buffer = [];
 	};
 
 	var indexed = [null];
@@ -177,5 +284,7 @@
 	window.Viewport = Viewport;
 	window.SpriteRepository = SpriteRepository;
 	window.Sprite = Sprite;
+	window.SpriteAnimator = SpriteAnimator;
+	window.FontSprite = FontSprite;
 	window.Terrain = Terrain;
 })();

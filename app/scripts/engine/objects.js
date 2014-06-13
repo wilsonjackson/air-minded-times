@@ -1,31 +1,33 @@
-/* globals Events, SpriteRepository, Sprite, Physics, EntityCategory */
+/* globals Events, SpriteRepository, Physics, EntityCategory, BoundingCircle, BoundingRect */
 
 (function () {
 	'use strict';
 
-	var DEBUG_COLLISIONS = false;
+	var DEBUG_COLLISIONS = true;
+	var DEBUG_SPRITE = true;
 
 	function SpriteObject() {
 		this.events = new Events();
 		this.sprite = SpriteRepository.NULL_SPRITE;
 
 		this.entityCategory = EntityCategory.OBSTACLE;
-		this.entityShape = SpriteObject.SHAPE_CIRCLE;
+		this.entityShape = SpriteObject.SHAPE_RECT;
 		this.entity = null;
-
-		this.direction = Sprite.D_UP;
 	}
 
-	SpriteObject.prototype.init = function (x, y, direction) {
+	SpriteObject.prototype.init = function (x, y, orientation) {
+		var xPlusMargin = x + this.sprite.getTopMargin();
+		var yPlusMargin = y + this.sprite.getLeftMargin();
 		switch (this.entityShape) {
 			case SpriteObject.SHAPE_CIRCLE:
-				this.entity = Physics.newCircleEntity(this.entityCategory, x, y, this.sprite.w / 2, this);
+				this.entity = Physics.newCircleEntity(
+					this.entityCategory, xPlusMargin, yPlusMargin, this.sprite.getWidth() / 2, orientation, this);
 				break;
 			case SpriteObject.SHAPE_RECT:
-				this.entity = Physics.newRectEntity(this.entityCategory, x, y, this.sprite.w, this.sprite.h, this);
+				this.entity = Physics.newRectEntity(
+					this.entityCategory, xPlusMargin, yPlusMargin, this.sprite.getWidth(), this.sprite.getHeight(), orientation, this);
 				break;
 		}
-		this.direction = direction;
 		if (this._init) {
 			this._init();
 		}
@@ -45,18 +47,44 @@
 	};
 
 	SpriteObject.prototype.render = function (graphics) {
+		var context;
+		graphics.drawSprite(this.sprite, this.entity.getX(), this.entity.getY(), this.entity.getOrientation());
 		if (DEBUG_COLLISIONS) {
-			var context = graphics.viewport.context;
-			var halfW = this.entity.getWidth() / 2;
-			context.save();
+			context = graphics.viewport.context;
 			context.strokeStyle = this.entity.isColliding ? '#f00' : '#fff';
-			context.beginPath();
-			context.arc(this.entity.getX() + halfW - graphics.offsetX, this.entity.getY() + halfW - graphics.offsetY, halfW, 0, Math.PI * 2);
-			context.stroke();
-			context.closePath();
-			context.restore();
+			if (this.entity.bounds instanceof BoundingCircle) {
+				var halfW = this.entity.getWidth() / 2;
+				context.save();
+				context.beginPath();
+				context.arc(this.entity.getX() + halfW - graphics.offsetX, this.entity.getY() + halfW - graphics.offsetY, halfW, 0, Math.PI * 2);
+				context.stroke();
+				context.closePath();
+				context.restore();
+			}
+			if (this.entity.bounds instanceof BoundingRect) {
+				context.strokeRect(
+						this.entity.getX() + 0.5 - graphics.offsetX,
+						this.entity.getY() + 0.5 - graphics.offsetY,
+						this.entity.getWidth(),
+						this.entity.getHeight());
+			}
 		}
-		graphics.drawSprite(this.sprite, this.entity.getX(), this.entity.getY());
+		if (DEBUG_SPRITE) {
+			var spriteSize = this.entity.getOrientation().translateXY(
+				this.sprite.getWidth() + this.sprite.getLeftMargin() + this.sprite.getRightMargin(),
+				this.sprite.getHeight() + this.sprite.getTopMargin() + this.sprite.getBottomMargin());
+			var spriteOffset = {
+				x: Math.round((this.entity.getWidth() - spriteSize.x) / 2),
+				y: Math.round((this.entity.getHeight() - spriteSize.y) / 2)
+			};
+			context = graphics.viewport.context;
+			context.strokeStyle = '#00f';
+			context.strokeRect(
+					this.entity.getX() + 0.5 + spriteOffset.x - graphics.offsetX,
+					this.entity.getY() + 0.5 + spriteOffset.y - graphics.offsetY,
+					this.sprite.getWidth() + this.sprite.getLeftMargin() + this.sprite.getRightMargin(),
+					this.sprite.getHeight() + this.sprite.getTopMargin() + this.sprite.getBottomMargin());
+		}
 	};
 
 	SpriteObject.SHAPE_CIRCLE = 'CIRCLE';
@@ -70,11 +98,11 @@
 				types[id] = ctor;
 			},
 
-			spawn: function (id, x, y, direction) {
+			spawn: function (id, x, y, orientation) {
 				console.log('Spawning ' + id + ' at ' + x + ',' + y);
 				var Ctor = types[id];
 				var object = new Ctor();
-				object.init(x, y, direction);
+				object.init(x, y, orientation);
 				return object;
 			}
 		};
@@ -82,7 +110,9 @@
 
 	var ObjectType = {
 		PLAYER: 'player',
-		ITEM: 'item'
+		ENEMY: 'enemy',
+		ITEM: 'item',
+		PROJECTILE: 'projectile'
 	};
 
 	window.SpriteObject = SpriteObject;

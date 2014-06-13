@@ -13,8 +13,8 @@
 		var nextEntity = 0;
 		var entities = [];
 
-		function newEntity(category, bounds, object) {
-			var entity = entities[entities.length] = new Entity(++nextEntity,category, bounds, object);
+		function newEntity(category, bounds, orientation, object) {
+			var entity = entities[entities.length] = new Entity(++nextEntity,category, bounds, orientation, object);
 			entity.onDestroy(function () {
 				var index = entities.indexOf(entity);
 				if (index > -1) {
@@ -67,12 +67,12 @@
 				world = _world;
 			},
 
-			newRectEntity: function (category, x, y, w, h, object) {
-				return newEntity(category, new BoundingRect(new Vector(x, y), new Vector(w, h)), object);
+			newRectEntity: function (category, x, y, w, h, orientation, object) {
+				return newEntity(category, new BoundingRect(new Vector(x, y), new Vector(w, h)), orientation, object);
 			},
 
 			newCircleEntity: function (category, x, y, r, object) {
-				return newEntity(category, new BoundingCircle(new Vector(x, y), r), object);
+				return newEntity(category, new BoundingCircle(new Vector(x, y), r), Orientation.NORTH, object);
 			},
 
 			update: function () {
@@ -108,6 +108,7 @@
 						detectObjectCollision(entity, nearbyEntity);
 						compared[entity._id][nearbyEntity._id] = true;
 					}
+					entity.isRotated = false;
 				}
 			}
 		};
@@ -118,19 +119,22 @@
 		this.intersection = intersection;
 	}
 
-	function Entity(id, category, bounds, object) {
+	function Entity(id, category, bounds, orientation, object) {
 		this._id = id;
 		this.events = new Events();
 		this.category = category;
 		this.object = object;
 		this.bounds = bounds;
+		this.orientation = orientation;
+		this.lastOrientation = null;
 		this.nextMovement = new Vector(0, 0);
-		this.lastMovement = new Vector(0, 0);
+		this.currentMovement = new Vector(0, 0);
 
 		this.isStatic = false;
 		this.collidable = true;
 		this.collisionListeners = [];
 		this.isColliding = false;
+		this.isRotated = false;
 	}
 
 	Entity.prototype.setStatic = function () {
@@ -156,6 +160,20 @@
 		this.nextMovement = this.nextMovement.add(new Vector(x, y));
 	};
 
+	Entity.prototype.getOrientation = function () {
+		return this.orientation;
+	};
+
+	Entity.prototype.setOrientation = function (orientation) {
+		// Detect x/y orientation change
+		if ((orientation.asRadians() + this.orientation.asRadians()) % Math.PI > 0) {
+			this.bounds.rotate();
+			this.isRotated = true;
+		}
+		this.lastOrientation = this.orientation;
+		this.orientation = orientation;
+	};
+
 	Entity.prototype.getX = function () {
 		return this.bounds.left();
 	};
@@ -174,7 +192,7 @@
 
 	Entity.prototype.integrate = function () {
 		this.bounds.move(this.nextMovement);
-		this.lastMovement = this.nextMovement;
+		this.currentMovement = this.nextMovement;
 		this.nextMovement = new Vector(0, 0);
 		this.isColliding = false;
 	};
@@ -249,7 +267,63 @@
 	EntityCategory.WALL = EntityCategory.add('wall', EntityCategory.OBSTACLE);
 	EntityCategory.EDGE = EntityCategory.add('edge', EntityCategory.OBSTACLE);
 	EntityCategory.ITEM = EntityCategory.add('item');
+	EntityCategory.PROJECTILE = EntityCategory.add('projectile');
+
+	// Rotation in radians
+	var RADIANS_N = 0;
+	var RADIANS_E = 90 * (Math.PI / 180);
+	var RADIANS_S = 180 * (Math.PI / 180);
+	var RADIANS_W = 270 * (Math.PI / 180);
+
+	function Orientation(radians) {
+		this.radians = radians;
+	}
+
+	Orientation.prototype.asRadians = function () {
+		return this.radians;
+	};
+
+	Orientation.prototype.isXAxis = function () {
+		return this.radians % Math.PI !== 0;
+	};
+
+	Orientation.prototype.isYAxis = function () {
+		return this.radians % Math.PI === 0;
+	};
+
+	Orientation.prototype.translateXY = function (x, y) {
+		if (this.radians === RADIANS_W || this.radians === RADIANS_E) {
+			//noinspection JSSuspiciousNameCombination
+			return {x: y, y: x};
+		}
+		else {
+			return {x: x, y: y};
+		}
+	};
+
+	Orientation.prototype.translateNESW = function (north, east, south, west) {
+		switch (this.radians) {
+			case RADIANS_N:
+				return {n: north, e: east, s: south, w: west};
+			case RADIANS_E:
+				return {n: east, e: south, s: west, w: north};
+			case RADIANS_S:
+				return {n: south, e: west, s: north, w: east};
+			case RADIANS_W:
+				return {n: west, e: north, s: east, w: south};
+		}
+	};
+
+	Orientation.prototype.toString = function () {
+		return 'Orientation(radians=' + this.radians + ')';
+	};
+
+	Orientation.NORTH = new Orientation(RADIANS_N);
+	Orientation.EAST = new Orientation(RADIANS_E);
+	Orientation.SOUTH = new Orientation(RADIANS_S);
+	Orientation.WEST = new Orientation(RADIANS_W);
 
 	window.Physics = Physics;
 	window.EntityCategory = EntityCategory;
+	window.Orientation = Orientation;
 })();

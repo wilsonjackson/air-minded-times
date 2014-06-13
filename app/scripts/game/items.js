@@ -1,4 +1,4 @@
-/* globals ItemRepository, ObjectFactory, ObjectType, SpriteObject, SpriteRepository */
+/* globals ItemRepository, ObjectFactory, ObjectType, SpriteObject, SpriteRepository, EntityCategory */
 
 (function () {
 	'use strict';

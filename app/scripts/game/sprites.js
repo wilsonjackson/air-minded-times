@@ -1,67 +1,52 @@
-/* global SpriteRepository, Sprite */
+/* global SpriteRepository, FontSprite */
 
 (function () {
 	'use strict';
 
-	function spriteDef(name, url, x, y, w, h, ctor) {
-		return {name: name, url: url, x: x * w, y: y * h, w: w, h: h, ctor: ctor};
+	function isFunction(o) {
+		return !!(o && o.constructor && o.call && o.apply);
 	}
 
-	function AnimatedSprite() {
-		this.count = 0;
-		this.animState = false;
-	}
-
-	AnimatedSprite.prototype = new Sprite();
-
-	AnimatedSprite.prototype.update = function () {
-		this.count++;
-		if (this.count % 3 === 0) {
-			this.count = 0;
-			this.animState = !this.animState;
-			this.y += this.h * (this.animState ? 1 : -1);
-			return true;
+	function spriteDef(name, url, grid, w, h, margins, ctor) {
+		if (isFunction(margins)) {
+			ctor = margins;
+			margins = undefined;
 		}
-	};
-
-	function FontSprite() {
-		this.chars = ' !"# %&\'[]*+,-. 0123456789     ? ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-		this.buffer = [];
+		return {name: name, url: url, x: grid.x, y: grid.y, w: w, h: h, ctor: ctor, margins: margins};
 	}
 
-	FontSprite.prototype = new Sprite();
+	function _grid(size, offsetX, offsetY) {
+		return function (x, y) {
+			x = x * size + offsetX;
+			y = y * size + offsetY;
+			return {x: x, y: y, sub: _grid(grids[grids.indexOf(size) + 1], x, y)};
+		};
+	}
 
-	FontSprite.prototype.text = function (text) {
-		var chars = this.chars;
-		this.buffer = text.toUpperCase().split('').map(function (char) {
-			return chars.indexOf(char);
-		});
-	};
-
-	FontSprite.prototype.draw = function (context, x, y) {
-		var self = this;
-		var n = 0;
-		this.buffer.forEach(function (index) {
-			context.drawImage(self.image, self.x + index * self.w, self.y, self.w, self.h, x + n, y, self.w, self.h);
-			n += self.w;
-		});
-		this.buffer = [];
-	};
+	var grids = [100, 50, 10];
+	var grid = _grid(100, 0, 0);
 
 	[
 		// Aeroplanes
-		spriteDef('aero/extended-farewell', 'sprites/sprites.png', 5, 2, 100, 100, AnimatedSprite),
-		spriteDef('aero/biplanedieplane', 'sprites/sprites.png', 4, 2, 100, 100, AnimatedSprite),
-		spriteDef('aero/justice-glider-mkiv', 'sprites/sprites.png', 6, 2, 100, 100, AnimatedSprite),
-
-		// Items
-		spriteDef('item/sky-meat', 'sprites/sprites.png', 2, 2, 100, 100),
+		spriteDef('aero/extended-farewell', 'sprites/sprites.png', grid(5, 2), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/extended-farewell-2', 'sprites/sprites.png', grid(5, 3), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/biplanedieplane', 'sprites/sprites.png', grid(4, 2), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/biplanedieplane-2', 'sprites/sprites.png', grid(4, 3), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/justice-glider-mkiv', 'sprites/sprites.png', grid(6, 2), 100, 100, [18, 3, 14, 5]),
+		spriteDef('aero/justice-glider-mkiv-2', 'sprites/sprites.png', grid(6, 3), 100, 100, [18, 3, 14, 5]),
 
 		// Enemies & friends
-		spriteDef('enemy/shell', 'sprites/sprites.png', 3, 2, 100, 100, AnimatedSprite),
+		spriteDef('enemy/shell', 'sprites/sprites.png', grid(3, 2), 100, 100, [8, 20, 8, 20]),
+		spriteDef('enemy/shell-2', 'sprites/sprites.png', grid(3, 3), 100, 100, [8, 20, 8, 20]),
+
+		// Projectiles
+		spriteDef('projectile/bullet', 'sprites/sprites.png', grid(2, 3).sub(0, 0).sub(0, 0), 10, 10),
+
+		// Items
+		spriteDef('item/sky-meat', 'sprites/sprites.png', grid(5, 1), 100, 100, [25, 4, 23, 8]),
 
 		// Fonts
-		spriteDef('font/fz', 'fonts/fz-fantasy_zone-sega.png', 0, 0, 16, 16, FontSprite)]
+		spriteDef('font/fz', 'fonts/fz-fantasy_zone-sega.png', grid(0, 0), 16, 16, FontSprite)]
 		.forEach(function (spriteDef) {
 			SpriteRepository.add(spriteDef);
 		});

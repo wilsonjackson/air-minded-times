@@ -120,11 +120,24 @@
 
 		it('should allow the position of the rect to be changed', function () {
 			rect.move(new Vector(-4, 2));
-			expect(rect.position.x).to.equal(1);
-			expect(rect.position.y).to.equal(7);
+			expect(rect.left()).to.equal(1);
+			expect(rect.top()).to.equal(7);
 			rect.move(new Vector(0, -1));
-			expect(rect.position.x).to.equal(1);
-			expect(rect.position.y).to.equal(6);
+			expect(rect.left()).to.equal(1);
+			expect(rect.top()).to.equal(6);
+		});
+
+		it('should allow the rect to be rotated around its center', function () {
+			rect.rotate();
+			expect(rect.left()).to.equal(6);
+			expect(rect.top()).to.equal(4);
+			expect(rect.width()).to.equal(3);
+			expect(rect.height()).to.equal(5);
+			rect.rotate();
+			expect(rect.left()).to.equal(5);
+			expect(rect.top()).to.equal(5);
+			expect(rect.width()).to.equal(5);
+			expect(rect.height()).to.equal(3);
 		});
 
 		it('should calculate the vector between the centers of two rects', function () {

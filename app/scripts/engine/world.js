@@ -1,4 +1,4 @@
-/* global Physics, Terrain, ObjectFactory, ObjectType, EntityCategory, Sprite */
+/* global Physics, Terrain, ObjectFactory, ObjectType, EntityCategory, Orientation */
 
 (function () {
 	'use strict';
@@ -31,6 +31,10 @@
 		if (i > -1) {
 			this.objects.splice(i, 1);
 		}
+	};
+
+	World.prototype.spawnObject = function (id, x, y, orientation) {
+		this.addObject(ObjectFactory.spawn(id, x, y, orientation));
 	};
 
 	World.prototype.firstObjectOfType = function (type) {
@@ -67,7 +71,7 @@
 
 		// Populate world with level objects
 		map.objects.forEach(function (object) {
-			world.addObject(ObjectFactory.spawn(object.id, object.x, object.y, object.direction || Sprite.D_UP));
+			world.spawnObject(object.id, object.x, object.y, object.orientation || Orientation.NORTH);
 		});
 	};
 

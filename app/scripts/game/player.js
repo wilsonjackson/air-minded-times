@@ -1,26 +1,18 @@
-/* global Vector, SpriteRepository, Sprite, Input, ObjectFactory, ObjectType, EntityCategory, SpriteObject, Inventory */
+/* global Vector, SpriteRepository, SpriteAnimator, Orientation, Input, ObjectFactory, ObjectType, EntityCategory, SpriteObject, Inventory */
 
 (function () {
 	'use strict';
 
-	function cycleSprite(player) {
-		var nextSpriteName = player.sprites.shift();
-		var nextSprite = SpriteRepository.retrieve(nextSpriteName);
-		if (player.sprite) {
-			nextSprite.direction = player.sprite.direction;
-		}
-		player.sprite = nextSprite;
-		player.sprites.push(nextSpriteName);
-	}
-
 	function Player() {
 		this.type = ObjectType.PLAYER;
-		this.inventory = new Inventory();
-		this.sprites = ['aero/extended-farewell', 'aero/biplanedieplane', 'aero/justice-glider-mkiv'];
-		cycleSprite(this);
-		this.speed = 4;
-		this.movement = PlayerMovementState.IDLE;
 		this.entityCategory = EntityCategory.PLAYER;
+		this.movement = PlayerMovementState.IDLE;
+		this.sprite = new SpriteAnimator(3, [
+			SpriteRepository.retrieve('aero/extended-farewell'),
+			SpriteRepository.retrieve('aero/extended-farewell-2')
+		]);
+		this.inventory = new Inventory();
+		this.speed = 4;
 	}
 
 	Player.prototype = new SpriteObject();
@@ -30,11 +22,25 @@
 		this.entity.addCollisionListener({
 			solveCollision: function (collision) {
 				if (collision.entity.category.isA(EntityCategory.OBSTACLE)) {
-					if (self.entity.lastMovement.x !== 0) {
-						return new Vector(collision.intersection.width() * (self.entity.lastMovement.x > 0 ? -1 : 1), 0);
+					if (self.entity.isRotated) {
+						if (self.entity.lastOrientation === Orientation.NORTH) {
+							return new Vector(0, collision.intersection.height());
+						}
+						if (self.entity.lastOrientation === Orientation.EAST) {
+							return new Vector(-collision.intersection.width(), 0);
+						}
+						if (self.entity.lastOrientation === Orientation.SOUTH) {
+							return new Vector(0, -collision.intersection.height());
+						}
+						if (self.entity.lastOrientation === Orientation.WEST) {
+							return new Vector(collision.intersection.width(), 0);
+						}
 					}
-					if (self.entity.lastMovement.y !== 0) {
-						return new Vector(0, collision.intersection.height() * (self.entity.lastMovement.y > 0 ? -1 : 1));
+					if (self.entity.currentMovement.x !== 0) {
+						return new Vector(collision.intersection.width() * (self.entity.currentMovement.x > 0 ? -1 : 1), 0);
+					}
+					if (self.entity.currentMovement.y !== 0) {
+						return new Vector(0, collision.intersection.height() * (self.entity.currentMovement.y > 0 ? -1 : 1));
 					}
 				}
 			},
@@ -54,11 +60,29 @@
 			this.movement.enter(this);
 		}
 		if (inputState.isPressed(Input.ACTION)) {
-			cycleSprite(this);
-			return true;
+			fireBullet(this.entity, this.entity.getOrientation(), world);
 		}
 		return this.sprite.update() || newState !== false;
 	};
+
+	function fireBullet(entity, orientation, world) {
+		var bulletPosition;
+		switch (orientation) {
+			case Orientation.NORTH:
+				bulletPosition = new Vector(entity.getX() + entity.getWidth() / 2, entity.getY());
+				break;
+			case Orientation.EAST:
+				bulletPosition = new Vector(entity.getX() + entity.getWidth(), entity.getY() + entity.getHeight() / 2);
+				break;
+			case Orientation.SOUTH:
+				bulletPosition = new Vector(entity.getX() + entity.getWidth() / 2, entity.getY() + entity.getHeight());
+				break;
+			case Orientation.WEST:
+				bulletPosition = new Vector(entity.getX(), entity.getY() + entity.getHeight() / 2);
+				break;
+		}
+		world.spawnObject('bullet', bulletPosition.x, bulletPosition.y, orientation);
+	}
 
 	var PlayerMovementState = {
 		_getMovement: function (inputState) {
@@ -87,7 +111,7 @@
 		},
 		MOVING_UP: {
 			enter: function (object) {
-				object.sprite.direction = Sprite.D_UP;
+				object.entity.setOrientation(Orientation.NORTH);
 			},
 			update: function (object, inputState) {
 				var newState = PlayerMovementState._getMovement(inputState) || PlayerMovementState._getIdle(inputState, Input.UP);
@@ -99,7 +123,7 @@
 		},
 		MOVING_DOWN: {
 			enter: function (object) {
-				object.sprite.direction = Sprite.D_DOWN;
+				object.entity.setOrientation(Orientation.SOUTH);
 			},
 			update: function (object, inputState) {
 				var newState = PlayerMovementState._getMovement(inputState) || PlayerMovementState._getIdle(inputState, Input.DOWN);
@@ -111,7 +135,7 @@
 		},
 		MOVING_LEFT: {
 			enter: function (object) {
-				object.sprite.direction = Sprite.D_LEFT;
+				object.entity.setOrientation(Orientation.WEST);
 			},
 			update: function (object, inputState) {
 				var newState = PlayerMovementState._getMovement(inputState) || PlayerMovementState._getIdle(inputState, Input.LEFT);
@@ -123,7 +147,7 @@
 		},
 		MOVING_RIGHT: {
 			enter: function (object) {
-				object.sprite.direction = Sprite.D_RIGHT;
+				object.entity.setOrientation(Orientation.EAST);
 			},
 			update: function (object, inputState) {
 				var newState = PlayerMovementState._getMovement(inputState) || PlayerMovementState._getIdle(inputState, Input.RIGHT);
