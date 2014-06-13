@@ -181,39 +181,31 @@
 			this._drawHeight, x, y, this._drawWidth, this._drawHeight);
 	};
 
+	function DelegatingSprite() {
+	}
+
+	DelegatingSprite.prototype = new Sprite();
+
+	DelegatingSprite.prototype._copy = function () {
+		var delegate = this.delegate;
+		for (var i in delegate) {
+			if (!(i in Sprite.prototype) && i in delegate) {
+				//noinspection JSUnfilteredForInLoop
+				this[i] = delegate[i];
+			}
+		}
+	};
+
 	function SpriteAnimator(interval, sprites) {
 		this.interval = interval || 10;
 		this.tickCount = -1;
 		this.frames = sprites;
 		this.nextIdx = 0;
-
-		this.w = sprites[0].w;
-		this.h = sprites[0].h;
+		this.delegate = this.frames[this.nextIdx];
+		this._copy();
 	}
 
-	SpriteAnimator.prototype.getWidth = function () {
-		return this.frames[0].getWidth();
-	};
-
-	SpriteAnimator.prototype.getHeight = function () {
-		return this.frames[0].getHeight();
-	};
-
-	SpriteAnimator.prototype.getTopMargin = function () {
-		return this.frames[0].getTopMargin();
-	};
-
-	SpriteAnimator.prototype.getLeftMargin = function () {
-		return this.frames[0].getLeftMargin();
-	};
-
-	SpriteAnimator.prototype.getRightMargin = function () {
-		return this.frames[0].getRightMargin();
-	};
-
-	SpriteAnimator.prototype.getBottomMargin = function () {
-		return this.frames[0].getBottomMargin();
-	};
+	SpriteAnimator.prototype = new DelegatingSprite();
 
 	SpriteAnimator.prototype.update = function () {
 		if (++this.tickCount === this.interval) {
@@ -222,11 +214,29 @@
 			if (this.nextIdx === this.frames.length) {
 				this.nextIdx = 0;
 			}
+			this.delegate = this.frames[this.nextIdx];
+			this._copy();
 		}
 	};
 
-	SpriteAnimator.prototype.draw = function (context, x, y) {
-		this.frames[this.nextIdx].draw(context, x, y);
+	function SpriteStack(sprites) {
+		this.spriteStack = sprites;
+		this.delegate = this.spriteStack[0];
+		this._copy();
+	}
+
+	SpriteStack.prototype = new DelegatingSprite();
+
+	SpriteStack.prototype.update = function () {
+		for (var i = 0, len = this.spriteStack.length; i < len; i++) {
+			this.spriteStack[i].update();
+		}
+	};
+
+	SpriteStack.prototype.draw = function (context, x, y) {
+		for (var i = 0, len = this.spriteStack.length; i < len; i++) {
+			this.spriteStack[i].draw(context, x, y);
+		}
 	};
 
 	function FontSprite() {
@@ -285,6 +295,7 @@
 	window.SpriteRepository = SpriteRepository;
 	window.Sprite = Sprite;
 	window.SpriteAnimator = SpriteAnimator;
+	window.SpriteStack = SpriteStack;
 	window.FontSprite = FontSprite;
 	window.Terrain = Terrain;
 })();
