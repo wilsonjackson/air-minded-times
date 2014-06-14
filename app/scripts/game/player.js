@@ -1,16 +1,16 @@
-/* global Vector, SpriteRepository, SpriteAnimator, Orientation, Input, ObjectFactory, ObjectType, EntityCategory, SpriteObject, Inventory */
+/* global Vector, Orientation, Input, ObjectFactory, ObjectType, EntityCategory, SpriteObject, Inventory, Planes */
 
 (function () {
 	'use strict';
+
+	var planes = [Planes.EXTENDED_FAREWELL, Planes.BIPLANEDIEPLANE];
 
 	function Player() {
 		this.type = ObjectType.PLAYER;
 		this.entityCategory = EntityCategory.PLAYER;
 		this.movement = PlayerMovementState.IDLE;
-		this.sprite = new SpriteAnimator(3, [
-			SpriteRepository.retrieve('aero/extended-farewell'),
-			SpriteRepository.retrieve('aero/extended-farewell-2')
-		]);
+		this.plane = new Planes.EXTENDED_FAREWELL();
+		this.sprite = this.plane.sprite;
 		this.inventory = new Inventory();
 		this.speed = 4;
 	}
@@ -60,29 +60,18 @@
 			this.movement.enter(this);
 		}
 		if (inputState.isPressed(Input.ACTION)) {
-			fireBullet(this.entity, this.entity.getOrientation(), world);
+			this.plane.fire(this.entity, this.entity.getOrientation(), world);
 		}
+		if (inputState.isPressed(Input.D)) {
+			var PlaneConstructor = planes.pop();
+			this.plane = new PlaneConstructor();
+			this.sprite = this.plane.sprite;
+			planes.unshift(PlaneConstructor);
+		}
+		this.plane.update(world, inputState);
 		return this.sprite.update() || newState !== false;
 	};
 
-	function fireBullet(entity, orientation, world) {
-		var bulletPosition;
-		switch (orientation) {
-			case Orientation.NORTH:
-				bulletPosition = new Vector(entity.getX() + entity.getWidth() / 2, entity.getY());
-				break;
-			case Orientation.EAST:
-				bulletPosition = new Vector(entity.getX() + entity.getWidth(), entity.getY() + entity.getHeight() / 2);
-				break;
-			case Orientation.SOUTH:
-				bulletPosition = new Vector(entity.getX() + entity.getWidth() / 2, entity.getY() + entity.getHeight());
-				break;
-			case Orientation.WEST:
-				bulletPosition = new Vector(entity.getX(), entity.getY() + entity.getHeight() / 2);
-				break;
-		}
-		world.spawnObject('bullet', bulletPosition.x, bulletPosition.y, orientation);
-	}
 
 	var PlayerMovementState = {
 		_getMovement: function (inputState) {

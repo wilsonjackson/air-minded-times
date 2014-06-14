@@ -29,7 +29,17 @@
 	World.prototype.removeObject = function (object) {
 		var i = this.objects.indexOf(object);
 		if (i > -1) {
-			this.objects.splice(i, 1);
+			// The reference to the removed object is broken, and will be cleaned up at the end of the current/next
+			// update loop. If it were spliced immediately, it could cause unpredictable skipping of updates.
+			this.objects[i] = null;
+		}
+	};
+
+	World.prototype._cleanRemovedObjects = function () {
+		for (var i = 0, len = this.objects.length; i < len; i++) {
+			if (this.objects[i] === null) {
+				this.objects.splice(i--, 1);
+			}
 		}
 	};
 
@@ -77,11 +87,17 @@
 
 	World.prototype.update = function (inputState) {
 		var wasUpdated = false;
-		for (var i = 0; i < this.objects.length; i++) {
+		for (var i = 0, len = this.objects.length; i < len; i++) {
+			// Defend against objects deleted during update
+			if (this.objects[i] === null) {
+				continue;
+			}
 			var updated = this.objects[i].update(this, inputState);
 			wasUpdated = wasUpdated || updated;
 		}
 		Physics.update();
+		// Clean up deleted objects after update and physics
+		this._cleanRemovedObjects();
 		return wasUpdated;
 	};
 
@@ -102,7 +118,7 @@
 			}
 		}
 
-		for (var i = 0; i < this.objects.length; i++) {
+		for (var i = 0, len = this.objects.length; i < len; i++) {
 			this.objects[i].render(graphics);
 		}
 	};

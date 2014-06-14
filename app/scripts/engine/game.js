@@ -9,9 +9,12 @@
 	var paused = false;
 
 	function tick() {
+		++Game.tick;
 		Game.run();
 		window.requestAnimationFrame(tick, document.body);
 	}
+
+	Game.tick = 0;
 
 	Game.init = function (config) {
 		if (!config.canvas || !(config.canvas instanceof HTMLCanvasElement)) {

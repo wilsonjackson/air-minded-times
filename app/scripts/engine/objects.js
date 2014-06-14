@@ -3,8 +3,8 @@
 (function () {
 	'use strict';
 
-	var DEBUG_COLLISIONS = true;
-	var DEBUG_SPRITE = true;
+	var DEBUG_COLLISIONS = false;
+	var DEBUG_SPRITE = false;
 
 	function SpriteObject() {
 		this.events = new Events();

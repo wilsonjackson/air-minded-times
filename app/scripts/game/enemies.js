@@ -16,8 +16,9 @@
 
 	ShellEnemy.prototype._init = function () {
 		var self = this;
-		this.entity.addCollisionListener(function (collision) {
+		this.entity.addCollisionListener(function (collision, world) {
 			if (collision.entity.category === EntityCategory.PROJECTILE) {
+				world.spawnObject('sky-meat', self.entity.getX(), self.entity.getY());
 				self.destroy();
 				collision.entity.object.destroy();
 			}

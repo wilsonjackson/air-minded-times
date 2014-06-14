@@ -43,5 +43,16 @@
 		this.entity.impulse(this.movementVector.x, this.movementVector.y);
 	};
 
-	ObjectFactory.register('bullet', Bullet);
+	Bullet.prototype.render = function () {
+		SpriteObject.prototype.render.apply(this, arguments);
+	};
+
+	function Tesla() {
+		this.sprite = SpriteRepository.retrieve('projectile/tesla');
+	}
+
+	Tesla.prototype = new Bullet();
+
+	ObjectFactory.register('projectile/bullet', Bullet);
+	ObjectFactory.register('projectile/tesla', Tesla);
 })();

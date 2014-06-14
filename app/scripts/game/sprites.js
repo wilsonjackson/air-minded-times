@@ -28,11 +28,16 @@
 
 	[
 		// Aeroplanes
-		spriteDef('aero/extended-farewell', 'sprites/sprites.png', grid(5, 2), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/extended-farewell-1', 'sprites/sprites.png', grid(5, 2), 100, 100, [14, 0, 8, 1]),
 		spriteDef('aero/extended-farewell-2', 'sprites/sprites.png', grid(5, 3), 100, 100, [14, 0, 8, 1]),
-		spriteDef('aero/biplanedieplane', 'sprites/sprites.png', grid(4, 2), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/extended-farewell-muzzle-1', 'sprites/sprites.png', grid(5, 4), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/extended-farewell-muzzle-2', 'sprites/sprites.png', grid(5, 5), 100, 100, [14, 0, 8, 1]),
+
+		spriteDef('aero/biplanedieplane-1', 'sprites/sprites.png', grid(4, 2), 100, 100, [14, 0, 8, 1]),
 		spriteDef('aero/biplanedieplane-2', 'sprites/sprites.png', grid(4, 3), 100, 100, [14, 0, 8, 1]),
-		spriteDef('aero/justice-glider-mkiv', 'sprites/sprites.png', grid(6, 2), 100, 100, [18, 3, 14, 5]),
+		spriteDef('aero/biplanedieplane-muzzle', 'sprites/sprites.png', grid(4, 4), 100, 100, [14, 0, 8, 1]),
+
+		spriteDef('aero/justice-glider-mkiv-1', 'sprites/sprites.png', grid(6, 2), 100, 100, [18, 3, 14, 5]),
 		spriteDef('aero/justice-glider-mkiv-2', 'sprites/sprites.png', grid(6, 3), 100, 100, [18, 3, 14, 5]),
 
 		// Enemies & friends
@@ -41,6 +46,10 @@
 
 		// Projectiles
 		spriteDef('projectile/bullet', 'sprites/sprites.png', grid(2, 3).sub(0, 0).sub(0, 0), 10, 10),
+		spriteDef('projectile/tesla', 'sprites/sprites.png', grid(2, 3).sub(0, 0).sub(1, 0), 10, 10),
+		spriteDef('projectile/spray-1', 'sprites/sprites.png', grid(2, 3).sub(0, 0).sub(2, 0), 10, 10),
+		spriteDef('projectile/spray-2', 'sprites/sprites.png', grid(2, 3).sub(0, 0).sub(3, 0), 10, 10),
+		spriteDef('projectile/spray-3', 'sprites/sprites.png', grid(2, 3).sub(0, 0).sub(4, 0), 10, 10),
 
 		// Items
 		spriteDef('item/sky-meat', 'sprites/sprites.png', grid(5, 1), 100, 100, [25, 4, 23, 8]),

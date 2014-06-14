@@ -34,10 +34,10 @@
 				var intersection = entityA.bounds.intersection(entityB.bounds);
 				if (intersection !== null) {
 					var collisionA = new Collision(entityB, intersection);
-					var solutionA = entityA.solveCollision(collisionA);
+					var solutionA = entityA.solveCollision(collisionA, world);
 
 					var collisionB = new Collision(entityA, intersection);
-					var solutionB = entityB.solveCollision(collisionB);
+					var solutionB = entityB.solveCollision(collisionB, world);
 
 					if (solutionA) {
 						entityA.bounds.move(solutionA);
@@ -46,8 +46,8 @@
 						entityB.bounds.move(solutionB);
 					}
 
-					entityA.collide(new Collision(entityB));
-					entityB.collide(new Collision(entityA));
+					entityA.collide(collisionA, world);
+					entityB.collide(collisionB, world);
 				}
 			}
 		}
@@ -197,18 +197,18 @@
 		this.isColliding = false;
 	};
 
-	Entity.prototype.solveCollision = function (collision) {
+	Entity.prototype.solveCollision = function (collision, world) {
 		for (var i = 0, len = this.collisionListeners.length; i < len; i++) {
-			var adjustment = this.collisionListeners[i].solveCollision(collision);
+			var adjustment = this.collisionListeners[i].solveCollision(collision, world);
 			if (adjustment) {
 				return adjustment;
 			}
 		}
 	};
 
-	Entity.prototype.collide = function (collision) {
+	Entity.prototype.collide = function (collision, world) {
 		for (var i = 0, len = this.collisionListeners.length; i < len; i++) {
-			this.collisionListeners[i].collide(collision);
+			this.collisionListeners[i].collide(collision, world);
 			this.isColliding = true;
 		}
 	};

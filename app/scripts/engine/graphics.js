@@ -220,12 +220,34 @@
 	};
 
 	function SpriteStack(sprites) {
-		this.spriteStack = sprites;
-		this.delegate = this.spriteStack[0];
-		this._copy();
+		this.spriteStack = sprites || [];
+		if (sprites.length > 0) {
+			this._initStack();
+		}
 	}
 
 	SpriteStack.prototype = new DelegatingSprite();
+
+	SpriteStack.prototype._initStack = function () {
+		this.delegate = this.spriteStack[0];
+		this._copy();
+	};
+
+	SpriteStack.prototype.push = function (/*sprite...*/) {
+		var init = this.spriteStack.length === 0;
+		Array.prototype.push.apply(this.spriteStack, arguments);
+		if (init) {
+			this._initStack();
+		}
+	};
+
+	SpriteStack.prototype.pop = function () {
+		return this.spriteStack.pop();
+	};
+
+	SpriteStack.prototype.get = function (index) {
+		return this.spriteStack[index];
+	};
 
 	SpriteStack.prototype.update = function () {
 		for (var i = 0, len = this.spriteStack.length; i < len; i++) {
