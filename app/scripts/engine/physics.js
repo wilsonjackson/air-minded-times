@@ -268,6 +268,7 @@
 	EntityCategory.EDGE = EntityCategory.add('edge', EntityCategory.OBSTACLE);
 	EntityCategory.ITEM = EntityCategory.add('item');
 	EntityCategory.PROJECTILE = EntityCategory.add('projectile');
+	EntityCategory.DECORATION = EntityCategory.add('decoration');
 
 	// Rotation in radians
 	var RADIANS_N = 0;

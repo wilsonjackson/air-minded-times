@@ -117,6 +117,7 @@
 	var ObjectType = {
 		PLAYER: 'player',
 		ENEMY: 'enemy',
+		DECORATION: 'decoration',
 		ITEM: 'item',
 		PROJECTILE: 'projectile'
 	};

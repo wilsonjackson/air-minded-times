@@ -198,14 +198,18 @@
 
 	function SpriteAnimator(interval, sprites) {
 		this.interval = interval || 10;
-		this.tickCount = -1;
 		this.frames = sprites;
-		this.nextIdx = 0;
-		this.delegate = this.frames[this.nextIdx];
-		this._copy();
+		this.reset();
 	}
 
 	SpriteAnimator.prototype = new DelegatingSprite();
+
+	SpriteAnimator.prototype.reset = function () {
+		this.tickCount = -1;
+		this.nextIdx = 0;
+		this.delegate = this.frames[this.nextIdx];
+		this._copy();
+	};
 
 	SpriteAnimator.prototype.update = function () {
 		if (++this.tickCount === this.interval) {

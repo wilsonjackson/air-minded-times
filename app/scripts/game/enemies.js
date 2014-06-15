@@ -3,33 +3,137 @@
 (function () {
 	'use strict';
 
-	function ShellEnemy() {
-		this.alive = true;
+	function Enemy() {
 		this.type = ObjectType.ENEMY;
 		this.entityCategory = EntityCategory.ENEMY;
-		this.sprite = new SpriteAnimator(25, [
-			SpriteRepository.retrieve('enemy/shell'),
-			SpriteRepository.retrieve('enemy/shell-2')
-		]);
+
+		this.alive = true;
+		this.hp = 1;
+		this.state = new EnemyIdleState();
 	}
 
-	ShellEnemy.prototype = new SpriteObject();
+	Enemy.prototype = new SpriteObject();
 
-	ShellEnemy.prototype._init = function () {
+	Enemy.prototype._init = function () {
 		var self = this;
 		this.entity.addCollisionListener(function (collision, world) {
 			if (collision.entity.category === EntityCategory.PROJECTILE && self.alive) {
-				self.alive = false;
-				world.spawnObject('sky-meat', self.entity.getX(), self.entity.getY());
-				self.destroy();
 				collision.entity.object.destroy();
+				if (--self.hp === 0) {
+					self.onDeath(world);
+				}
+				else {
+					self.onDamage(world);
+				}
 			}
 		});
 	};
 
-	ShellEnemy.prototype.update = function () {
+	Enemy.prototype.update = function (world) {
+		var newState = this.state.update(world);
+		if (newState) {
+			this.state = newState;
+		}
 		this.sprite.update();
 	};
 
-	ObjectFactory.register('shell-enemy', ShellEnemy);
+	Enemy.prototype.onDamage = function (world) {
+		if (!(this.state instanceof EnemyDamageState)) {
+			this.damageSprite.reset();
+			this.state = new EnemyDamageState(this);
+			this.state.update(world);
+		}
+	};
+
+	Enemy.prototype.onDeath = function (world) {
+		this.alive = false;
+		this.state = new EnemyDeathState(this);
+		this.state.update(world);
+	};
+
+	Enemy.prototype.drop = function () {};
+
+	function ShellEnemy() {
+		this.hp = 5;
+		this.sprite = new SpriteAnimator(25, [
+			SpriteRepository.retrieve('enemy/shell-1'),
+			SpriteRepository.retrieve('enemy/shell-2')
+		]);
+		this.damageSprite = new SpriteAnimator(5, [
+			SpriteRepository.retrieve('enemy/shell-2'),
+			SpriteRepository.retrieve('enemy/shell-damage')
+		]);
+		this.damageTicks = 25;
+	}
+
+	ShellEnemy.prototype = new Enemy();
+
+	ShellEnemy.prototype.drop = function (world) {
+		world.spawnObject('sky-meat', this.entity.getX(), this.entity.getY());
+	};
+
+	function EggPileEnemy() {
+		this.hp = 1;
+		this.sprite = SpriteRepository.retrieve('enemy/egg-pile');
+		this.deathSprite = SpriteRepository.retrieve('enemy/egg-pile-damage');
+		this.deathTicks = 10;
+	}
+
+	EggPileEnemy.prototype = new Enemy();
+
+	EggPileEnemy.prototype.drop = function (world) {
+		world.spawnObject('enemy/broken-egg-pile', this.entity.getX(), this.entity.getY());
+	};
+
+	function BrokenEggPile() {
+		this.type = ObjectType.DECORATION;
+		this.entityCategory = EntityCategory.DECORATION;
+		this.sprite = SpriteRepository.retrieve('enemy/broken-egg-pile');
+	}
+
+	BrokenEggPile.prototype = new SpriteObject();
+
+	function EnemyIdleState() {
+
+	}
+
+	EnemyIdleState.prototype.update = function () {
+
+	};
+
+	function EnemyDamageState(enemy) {
+		this.enemy = enemy;
+		this.originalSprite = enemy.sprite;
+		this.countDown = enemy.damageTicks || 0;
+	}
+
+	EnemyDamageState.prototype.update = function (/*world*/) {
+		if (!this.enemy.damageSprite || --this.countDown === 0) {
+			this.enemy.sprite = this.originalSprite;
+			return new EnemyIdleState();
+		}
+		else {
+			this.enemy.sprite = this.enemy.damageSprite;
+		}
+	};
+
+	function EnemyDeathState(enemy) {
+		this.enemy = enemy;
+		this.countDown = enemy.deathTicks || 0;
+	}
+
+	EnemyDeathState.prototype.update = function (world) {
+		if (!this.enemy.deathSprite || --this.countDown === 0) {
+			this.enemy.alive = false;
+			this.enemy.drop(world);
+			this.enemy.destroy();
+		}
+		else {
+			this.enemy.sprite = this.enemy.deathSprite;
+		}
+	};
+
+	ObjectFactory.register('enemy/shell', ShellEnemy);
+	ObjectFactory.register('enemy/egg-pile', EggPileEnemy);
+	ObjectFactory.register('enemy/broken-egg-pile', BrokenEggPile);
 })();
