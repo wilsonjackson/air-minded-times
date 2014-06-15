@@ -64,26 +64,59 @@
 			SpriteRepository.retrieve('enemy/shell-damage')
 		]);
 		this.damageTicks = 25;
+		this.deathSprite = new SpriteAnimator(5, [
+			new SpriteStack([
+				SpriteRepository.retrieve('enemy/shell-2'),
+				SpriteRepository.retrieve('effect/explode-1')
+			]),
+			SpriteRepository.retrieve('effect/explode-2'),
+			SpriteRepository.retrieve('effect/explode-3')
+		]);
+		this.deathTicks = 15;
 	}
 
 	ShellEnemy.prototype = new Enemy();
 
 	ShellEnemy.prototype.drop = function (world) {
-		world.spawnObject('sky-meat', this.entity.getX(), this.entity.getY());
+		world.spawnObject('item/sky-meat', this.entity.getX(), this.entity.getY());
 	};
 
-	function EggPileEnemy() {
+	function BabyEnemy() {
 		this.hp = 1;
-		this.sprite = SpriteRepository.retrieve('enemy/egg-pile');
-		this.deathSprite = SpriteRepository.retrieve('enemy/egg-pile-damage');
-		this.deathTicks = 10;
+		this.sprite = new SpriteAnimator(25, [
+			SpriteRepository.retrieve('enemy/baby-1'),
+			SpriteRepository.retrieve('enemy/baby-2'),
+			SpriteRepository.retrieve('enemy/baby-1'),
+			SpriteRepository.retrieve('enemy/baby-2'),
+			SpriteRepository.retrieve('enemy/baby-3'),
+			SpriteRepository.retrieve('enemy/baby-4'),
+			SpriteRepository.retrieve('enemy/baby-3'),
+			SpriteRepository.retrieve('enemy/baby-4')
+		]);
+		this.deathSprite = new SpriteAnimator(5, [
+			new SpriteStack([
+				SpriteRepository.retrieve('enemy/baby-1'),
+				SpriteRepository.retrieve('effect/explode-1')
+			]),
+			SpriteRepository.retrieve('effect/explode-2'),
+			SpriteRepository.retrieve('effect/explode-3')
+		]);
+		this.deathTicks = 15;
 	}
 
-	EggPileEnemy.prototype = new Enemy();
+	BabyEnemy.prototype = new Enemy();
 
-	EggPileEnemy.prototype.drop = function (world) {
-		world.spawnObject('enemy/broken-egg-pile', this.entity.getX(), this.entity.getY());
+	BabyEnemy.prototype.drop = function (world) {
+		world.spawnObject('item/small-sky-meat', this.entity.getX(), this.entity.getY());
 	};
+
+	function EggPile() {
+		this.type = ObjectType.DECORATION;
+		this.entityCategory = EntityCategory.DECORATION;
+		this.sprite = SpriteRepository.retrieve('enemy/egg-pile');
+	}
+
+	EggPile.prototype = new SpriteObject();
 
 	function BrokenEggPile() {
 		this.type = ObjectType.DECORATION;
@@ -134,6 +167,7 @@
 	};
 
 	ObjectFactory.register('enemy/shell', ShellEnemy);
-	ObjectFactory.register('enemy/egg-pile', EggPileEnemy);
+	ObjectFactory.register('enemy/baby', BabyEnemy);
+	ObjectFactory.register('enemy/egg-pile', EggPile);
 	ObjectFactory.register('enemy/broken-egg-pile', BrokenEggPile);
 })();

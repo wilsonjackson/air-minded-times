@@ -19,5 +19,15 @@
 
 	SkyMeat.prototype = new SpriteObject();
 
-	ObjectFactory.register('sky-meat', SkyMeat);
+	function SmallSkyMeat() {
+		this.type = ObjectType.ITEM;
+		this.item = SKY_MEAT;
+		this.sprite = SpriteRepository.retrieve('item/small-sky-meat');
+		this.entityCategory = EntityCategory.ITEM;
+	}
+
+	SmallSkyMeat.prototype = new SpriteObject();
+
+	ObjectFactory.register('item/sky-meat', SkyMeat);
+	ObjectFactory.register('item/small-sky-meat', SmallSkyMeat);
 })();

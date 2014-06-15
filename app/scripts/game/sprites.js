@@ -43,12 +43,15 @@
 		// Enemies & friends
 		spriteDef('enemy/shell-1', 'sprites/sprites.png', grid(3, 4), 100, 100, [8, 20, 8, 20]),
 		spriteDef('enemy/shell-2', 'sprites/sprites.png', grid(3, 5), 100, 100, [8, 20, 8, 20]),
-//		spriteDef('enemy/shell-damage', 'sprites/sprites.png', grid(3, 8), 100, 100, [8, 20, 8, 20]),
-		spriteDef('enemy/shell-damage', 'sprites/sprites.png', grid(3, 7), 100, 100, [8, 20, 8, 20]),
+		spriteDef('enemy/shell-damage', 'sprites/sprites.png', grid(3, 6), 100, 100, [8, 20, 8, 20]),
+
+		spriteDef('enemy/baby-1', 'sprites/sprites.png', grid(4, 7).sub(0, 0), 50, 50),
+		spriteDef('enemy/baby-2', 'sprites/sprites.png', grid(4, 7).sub(0, 1), 50, 50),
+		spriteDef('enemy/baby-3', 'sprites/sprites.png', grid(4, 7).sub(1, 0), 50, 50),
+		spriteDef('enemy/baby-4', 'sprites/sprites.png', grid(4, 7).sub(1, 1), 50, 50),
 
 		spriteDef('enemy/egg-pile', 'sprites/sprites.png', grid(2, 6), 100, 100),
-		spriteDef('enemy/egg-pile-damage', 'sprites/sprites.png', grid(2, 8), 100, 100),
-		spriteDef('enemy/broken-egg-pile', 'sprites/sprites.png', grid(2, 9), 100, 100),
+		spriteDef('enemy/broken-egg-pile', 'sprites/sprites.png', grid(2, 7), 100, 100),
 
 		// Projectiles
 		spriteDef('projectile/bullet', 'sprites/sprites.png', grid(2, 5).sub(0, 0).sub(0, 0), 10, 10),
@@ -57,8 +60,14 @@
 		spriteDef('projectile/spray-2', 'sprites/sprites.png', grid(2, 5).sub(0, 0).sub(3, 0), 10, 10),
 		spriteDef('projectile/spray-3', 'sprites/sprites.png', grid(2, 5).sub(0, 0).sub(4, 0), 10, 10),
 
+		// Effects
+		spriteDef('effect/explode-1', 'sprites/sprites.png', grid(3, 7), 100, 100),
+		spriteDef('effect/explode-2', 'sprites/sprites.png', grid(3, 8), 100, 100),
+		spriteDef('effect/explode-3', 'sprites/sprites.png', grid(3, 9), 100, 100),
+
 		// Items
 		spriteDef('item/sky-meat', 'sprites/sprites.png', grid(5, 3), 100, 100, [25, 4, 23, 8]),
+		spriteDef('item/small-sky-meat', 'sprites/sprites.png', grid(2, 4).sub(0, 0), 50, 50),
 
 		// Fonts
 		spriteDef('font/fz', 'fonts/fz-fantasy_zone-sega.png', grid(0, 0), 16, 16, FontSprite)]
