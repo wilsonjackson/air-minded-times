@@ -1,7 +1,9 @@
-/* global Physics, Terrain, ObjectFactory, ObjectType, EntityCategory, Orientation */
+/* global Physics, Terrain, ObjectFactory, ObjectType, EntityCategory */
 
 (function () {
 	'use strict';
+
+	var DEBUG_DRAW_MAP_OBSTACLES = false;
 
 	function World(graphics) {
 		this.graphics = graphics;
@@ -69,19 +71,20 @@
 		Physics.newRectEntity(EntityCategory.EDGE, 0, world.height, world.width, map.tileSize, world).setStatic();
 		Physics.newRectEntity(EntityCategory.EDGE, -map.tileSize, 0, map.tileSize, world.height, world).setStatic();
 
+		this.mapEntities = [];
 		// Create impassable tile entities
 		for (var i = 0, len = world.terrain.length; i < len; i++) {
 			if (world.terrain[i].impassable) {
 				var row = Math.floor(i / map.width);
 				var col = i % map.width;
-				Physics.newRectEntity(EntityCategory.WALL, col * map.tileSize, row * map.tileSize, map.tileSize, map.tileSize, world.terrain[i])
+				this.mapEntities[this.mapEntities.length] = Physics.newRectEntity(EntityCategory.WALL, col * map.tileSize, row * map.tileSize, map.tileSize, map.tileSize, world.terrain[i])
 					.setStatic();
 			}
 		}
 
 		// Populate world with level objects
 		map.objects.forEach(function (object) {
-			world.spawnObject(object.id, object.x, object.y, object.orientation || Orientation.NORTH);
+			world.spawnObject(object.id, object.x, object.y, object.orientation);
 		});
 	};
 
@@ -120,6 +123,17 @@
 
 		for (var i = 0, len = this.objects.length; i < len; i++) {
 			this.objects[i].render(graphics);
+		}
+
+		if (DEBUG_DRAW_MAP_OBSTACLES) {
+			for (var j = 0, jlen = this.mapEntities.length; j < jlen; j++) {
+				var mapEntity = this.mapEntities[j];
+				graphics.viewport.context.strokeStyle = mapEntity.category.isA(EntityCategory.OBSTACLE) ? '#ff0' : '#0f0';
+				graphics.viewport.context.strokeRect(
+						mapEntity.getX() - graphics.offsetX,
+						mapEntity.getY() - graphics.offsetY,
+					mapEntity.getWidth(), mapEntity.getHeight());
+			}
 		}
 	};
 

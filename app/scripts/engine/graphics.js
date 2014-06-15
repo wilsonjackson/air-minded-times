@@ -1,4 +1,4 @@
-/* globals Orientation */
+/* globals Game, Orientation */
 
 (function () {
 	'use strict';
@@ -87,12 +87,12 @@
 				var callback = null;
 				var urls = Object.keys(images);
 				var countdown = urls.length;
-				console.log('Preloading ' + countdown + ' sprite(s)');
+				Game.logger.debug('Preloading ' + countdown + ' sprite(s)');
 
 				urls.forEach(function(url) {
 					images[url].onload = function () {
 						countdown--;
-						console.log(url + ' loaded; ' + countdown + ' sprite(s) remaining');
+						Game.logger.debug(url + ' loaded; ' + countdown + ' sprite(s) remaining');
 						if (countdown === 0 && callback) {
 							callback();
 						}

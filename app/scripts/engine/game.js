@@ -9,12 +9,34 @@
 	var paused = false;
 
 	function tick() {
-		++Game.tick;
 		Game.run();
 		window.requestAnimationFrame(tick, document.body);
 	}
 
 	Game.tick = 0;
+	Game.delta = 0;
+
+	Game.logger = {
+		trace: function (message) {
+			console.trace('[' + Game.tick + ']', message);
+		},
+
+		debug: function (message) {
+			console.debug('[' + Game.tick + ']', message);
+		},
+
+		info: function (message) {
+			console.info('[' + Game.tick + ']', message);
+		},
+
+		warn: function (message) {
+			console.warn('[' + Game.tick + ']', message);
+		},
+
+		error: function (message) {
+			console.error('[' + Game.tick + ']', message);
+		}
+	};
 
 	Game.init = function (config) {
 		if (!config.canvas || !(config.canvas instanceof HTMLCanvasElement)) {
@@ -30,9 +52,10 @@
 	};
 
 	Game.start = function () {
-		console.log('Starting preload');
+		Game.logger.info('Starting preload');
 		SpriteRepository.preload().then(function () {
-			console.log('Preload complete');
+			Game.logger.info('Preload complete');
+			nextGameTick = new Date().getTime();
 			tick();
 		});
 	};
@@ -41,7 +64,7 @@
 		if (paused) {
 			return;
 		}
-		console.log('Game paused');
+		Game.logger.info('Game paused');
 		paused = true;
 	};
 
@@ -49,7 +72,7 @@
 		if (!paused) {
 			return;
 		}
-		console.log('Game resumed');
+		Game.logger.info('Game resumed');
 		nextGameTick = new Date().getTime();
 		paused = false;
 	};
@@ -60,7 +83,7 @@
 		var maxFrameSkip = 10;
 		var skipRender = false;
 		var enableRenderSkip = false;
-		nextGameTick = new Date().getTime();
+		var time;
 
 		var fpsStats = createStats().add();
 		var tickStats = createStats(1).after(fpsStats);
@@ -74,7 +97,9 @@
 				return;
 			}
 
-			while (new Date().getTime() > nextGameTick && loops < maxFrameSkip) {
+			while ((time = new Date().getTime()) > nextGameTick && loops < maxFrameSkip) {
+				++Game.tick;
+				Game.delta = time - nextGameTick;
 				tickStats.begin();
 				// Process input
 				var inputState = this.input.readInput();

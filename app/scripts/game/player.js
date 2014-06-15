@@ -3,7 +3,7 @@
 (function () {
 	'use strict';
 
-	var planes = [Planes.EXTENDED_FAREWELL, Planes.BIPLANEDIEPLANE];
+	var planes = [Planes.EXTENDED_FAREWELL, Planes.JUSTICE_GLIDER_MKIV, Planes.BIPLANEDIEPLANE];
 
 	function Player() {
 		this.type = ObjectType.PLAYER;
@@ -23,17 +23,11 @@
 			solveCollision: function (collision) {
 				if (collision.entity.category.isA(EntityCategory.OBSTACLE)) {
 					if (self.entity.isRotated) {
-						if (self.entity.lastOrientation === Orientation.NORTH) {
-							return new Vector(0, collision.intersection.height());
+						if (self.entity.lastOrientation === Orientation.NORTH || self.entity.lastOrientation === Orientation.SOUTH) {
+							return new Vector(0, collision.intersection.height() * (self.entity.getY() < collision.intersection.top() ? -1 : 1));
 						}
-						if (self.entity.lastOrientation === Orientation.EAST) {
-							return new Vector(-collision.intersection.width(), 0);
-						}
-						if (self.entity.lastOrientation === Orientation.SOUTH) {
-							return new Vector(0, -collision.intersection.height());
-						}
-						if (self.entity.lastOrientation === Orientation.WEST) {
-							return new Vector(collision.intersection.width(), 0);
+						else if (self.entity.lastOrientation === Orientation.EAST || self.entity.lastOrientation === Orientation.WEST) {
+							return new Vector(collision.intersection.width() * (self.entity.getX() < collision.intersection.left() ? -1 : 1), 0);
 						}
 					}
 					if (self.entity.currentMovement.x !== 0) {
@@ -67,6 +61,12 @@
 			this.plane = new PlaneConstructor();
 			this.sprite = this.plane.sprite;
 			planes.unshift(PlaneConstructor);
+
+			var x = this.entity.getX();
+			var y = this.entity.getY();
+			var orientation = this.entity.getOrientation();
+			this.entity.destroy();
+			this.init(x, y, orientation);
 		}
 		this.plane.update(world, inputState);
 		return this.sprite.update() || newState !== false;

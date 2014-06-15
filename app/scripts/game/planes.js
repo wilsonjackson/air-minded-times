@@ -15,7 +15,9 @@
 
 	Plane.prototype.fire = function (entity, orientation, world) {
 		if (this.readyToFire) {
-			this.sprite.push(this.muzzleFlashSprite);
+			if (this.muzzleFlashSprite) {
+				this.sprite.push(this.muzzleFlashSprite);
+			}
 			this._spawnBullets(entity, orientation, world);
 			this.firing = true;
 			this.readyToFire = false;
@@ -47,7 +49,9 @@
 		if (this.firing) {
 			if (++this.tickCount === this.ticksPerFrame) {
 				this.firing = false;
-				this.sprite.pop();
+				if (this.muzzleFlashSprite) {
+					this.sprite.pop();
+				}
 			}
 		}
 		else if (!this.readyToFire) {
@@ -101,13 +105,34 @@
 
 	Biplanedieplane.prototype = new Plane();
 
+	function JusticeGliderMkiv() {
+		this.bulletType = 'projectile/spray';
+		this.sprite.push(
+			new SpriteAnimator(3, [
+				SpriteRepository.retrieve('aero/justice-glider-mkiv-1'),
+				SpriteRepository.retrieve('aero/justice-glider-mkiv-2')
+			]));
+		this.bulletOffsets = [2];
+	}
+
+	JusticeGliderMkiv.prototype = new Plane();
+
+	JusticeGliderMkiv.prototype._getBulletStartPosition = function (entity, orientation) {
+		switch (orientation) {
+			case Orientation.NORTH:
+				return new Vector(entity.getX() + Math.round(entity.getWidth() / 2), entity.getY());
+			case Orientation.EAST:
+				return new Vector(entity.getX() + entity.getWidth(), entity.getY() + Math.round(entity.getHeight() / 2));
+			case Orientation.SOUTH:
+				return new Vector(entity.getX() + Math.round(entity.getWidth() / 2), entity.getY() + entity.getHeight());
+			case Orientation.WEST:
+				return new Vector(entity.getX(), entity.getY() + Math.round(entity.getHeight() / 2));
+		}
+	};
+
 	window.Planes = {
 		EXTENDED_FAREWELL: ExtendedFarewell,
-
 		BIPLANEDIEPLANE: Biplanedieplane,
-
-		JUSTICEGLIDERMKIV: {
-
-		}
+		JUSTICE_GLIDER_MKIV: JusticeGliderMkiv
 	};
 })();

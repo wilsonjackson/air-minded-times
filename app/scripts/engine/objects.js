@@ -1,4 +1,4 @@
-/* globals Events, SpriteRepository, Physics, EntityCategory, BoundingCircle, BoundingRect */
+/* globals Game, Events, SpriteRepository, Physics, EntityCategory, Orientation, BoundingCircle, BoundingRect */
 
 (function () {
 	'use strict';
@@ -16,16 +16,22 @@
 	}
 
 	SpriteObject.prototype.init = function (x, y, orientation) {
-		var xPlusMargin = x + this.sprite.getTopMargin();
-		var yPlusMargin = y + this.sprite.getLeftMargin();
+		var dimensions = orientation.translateXY(this.sprite.getWidth(), this.sprite.getHeight());
+		var margin = orientation.translateNESW(
+			this.sprite.getTopMargin(),
+			this.sprite.getRightMargin(),
+			this.sprite.getBottomMargin(),
+			this.sprite.getLeftMargin());
+		var xPlusMargin = x + margin.w;
+		var yPlusMargin = y + margin.n;
 		switch (this.entityShape) {
 			case SpriteObject.SHAPE_CIRCLE:
 				this.entity = Physics.newCircleEntity(
-					this.entityCategory, xPlusMargin, yPlusMargin, this.sprite.getWidth() / 2, orientation, this);
+					this.entityCategory, xPlusMargin, yPlusMargin, dimensions.x() / 2, orientation, this);
 				break;
 			case SpriteObject.SHAPE_RECT:
 				this.entity = Physics.newRectEntity(
-					this.entityCategory, xPlusMargin, yPlusMargin, this.sprite.getWidth(), this.sprite.getHeight(), orientation, this);
+					this.entityCategory, xPlusMargin, yPlusMargin, dimensions.x, dimensions.y, orientation, this);
 				break;
 		}
 		if (this._init) {
@@ -99,10 +105,10 @@
 			},
 
 			spawn: function (id, x, y, orientation) {
-				console.log('Spawning ' + id + ' at ' + x + ',' + y);
+				Game.logger.info('Spawning ' + id + ' at ' + x + ',' + y);
 				var Ctor = types[id];
 				var object = new Ctor();
-				object.init(x, y, orientation);
+				object.init(x, y, orientation || Orientation.NORTH);
 				return object;
 			}
 		};
