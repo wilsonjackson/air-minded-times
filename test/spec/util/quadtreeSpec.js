@@ -64,6 +64,34 @@
 				expect(tree.nodes).to.have.length(0);
 				expect(tree.objects).to.have.length(0);
 			});
+
+			it('should add an object right on the edge of a node to that node', function () {
+				for (var i = 0; i < 10; i++) {
+					tree.insert(nwObject);
+				}
+				// Upper-left corner of NE quadrant
+				var cornerObject = {x: 50, y: 0, w: 10, h: 10};
+				tree.insert(cornerObject);
+
+				expect(tree.nodes[0].objects).to.have.members([cornerObject]);
+			});
+
+			it('should only split the quadtree once', function () {
+				var i;
+				for (i = 0; i < 10; i++) {
+					tree.insert(nwObject);
+				}
+				var splitNodes = tree.nodes.concat([]);
+
+				for (i = 0; i < 10; i++) {
+					tree.insert(oddObject);
+				}
+
+				expect(tree.nodes[0]).to.equal(splitNodes[0]);
+				expect(tree.nodes[1]).to.equal(splitNodes[1]);
+				expect(tree.nodes[2]).to.equal(splitNodes[2]);
+				expect(tree.nodes[3]).to.equal(splitNodes[3]);
+			});
 		});
 
 		describe('retrieval', function () {

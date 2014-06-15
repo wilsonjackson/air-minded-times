@@ -37,7 +37,7 @@
 
 		this.objects.push(object);
 
-		if (this.objects.length === MAX_OBJECTS && this.level < MAX_LEVELS) {
+		if (this.objects.length === MAX_OBJECTS && this.nodes.length === 0 && this.level < MAX_LEVELS) {
 			this._split();
 			for (var i = 0, len = this.objects.length; i < len; i++) {
 				index = this._getIndex(this.objects[i]);
@@ -68,7 +68,7 @@
 		var hMid = this.bounds.y + this.bounds.h / 2;
 
 		var isNorth = object.y + object.h < hMid;
-		var isSouth = object.y > hMid;
+		var isSouth = object.y >= hMid;
 
 		// isWest
 		if (object.x + object.w < vMid) {
@@ -80,7 +80,7 @@
 			}
 		}
 		// isEast
-		else if (object.x > vMid) {
+		else if (object.x >= vMid) {
 			if (isNorth) {
 				index = 0;
 			}
@@ -102,6 +102,14 @@
 		this.nodes[1] = new QuadTree(this.level + 1, bounds(x, y, halfW, halfH));
 		this.nodes[2] = new QuadTree(this.level + 1, bounds(x, y + halfH, halfW, halfH));
 		this.nodes[3] = new QuadTree(this.level + 1, bounds(x + halfW, y + halfH, halfW, halfH));
+	};
+
+	QuadTree.prototype.toString = function () {
+		function toString(o) {
+			return o ? o.toString() : 'NULL';
+		}
+
+		return 'QuadTree{' + this.objects.map(toString).join(',') + '}[' + this.nodes.map(toString).join(',') + ']';
 	};
 
 	window.QuadTree = QuadTree;
