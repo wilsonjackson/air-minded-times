@@ -108,7 +108,11 @@
 						detectObjectCollision(entity, nearbyEntity);
 						compared[entity._id][nearbyEntity._id] = true;
 					}
-					entity.isRotated = false;
+				}
+				for (i = 0; i < len; i++) {
+					if (entities[i]) {
+						entities[i].isRotated = false;
+					}
 				}
 			}
 		};
@@ -225,8 +229,9 @@
 		return 'Entity(id=' + this._id + ', category=' + this.category + ')';
 	};
 
-	function EntityCategory(value) {
+	function EntityCategory(value, id) {
 		this.value = value;
+		this.id = id;
 	}
 
 	EntityCategory.prototype.isA = function (type) {
@@ -234,7 +239,7 @@
 	};
 
 	EntityCategory.prototype.toString = function () {
-		return 'EntityCategory(' + this.value + ')';
+		return 'EntityCategory(id=' + this.id + ', value=' + this.value + ')';
 	};
 
 	var nextType = 1;
@@ -246,7 +251,7 @@
 			type |= arguments[i].value;
 		}
 		nextType = nextType << 1;
-		return (types[id] = new EntityCategory(type));
+		return (types[id] = new EntityCategory(type, id));
 	};
 
 	EntityCategory.retrieve = function (id) {

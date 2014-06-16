@@ -112,22 +112,6 @@
 		world.spawnObject('item/small-sky-meat', center.x, center.y);
 	};
 
-	function EggPile() {
-		this.type = ObjectType.DECORATION;
-		this.entityCategory = EntityCategory.DECORATION;
-		this.sprite = SpriteRepository.retrieve('enemy/egg-pile');
-	}
-
-	EggPile.prototype = new SpriteObject();
-
-	function BrokenEggPile() {
-		this.type = ObjectType.DECORATION;
-		this.entityCategory = EntityCategory.DECORATION;
-		this.sprite = SpriteRepository.retrieve('enemy/broken-egg-pile');
-	}
-
-	BrokenEggPile.prototype = new SpriteObject();
-
 	function EnemyIdleState() {
 
 	}
@@ -168,8 +152,23 @@
 		}
 	};
 
+	function createEggPileConstructor(spriteName) {
+		var EggPileCtor = function () {
+			this.type = ObjectType.DECORATION;
+			this.entityCategory = EntityCategory.OBSTACLE;
+			this.sprite = SpriteRepository.retrieve(spriteName);
+		};
+
+		EggPileCtor.prototype = new SpriteObject();
+
+		return EggPileCtor;
+	}
+
 	ObjectFactory.register('enemy/shell', ShellEnemy);
 	ObjectFactory.register('enemy/baby', BabyEnemy);
-	ObjectFactory.register('enemy/egg-pile', EggPile);
-	ObjectFactory.register('enemy/broken-egg-pile', BrokenEggPile);
+	ObjectFactory.register('decoration/egg-pile', createEggPileConstructor('decoration/egg-pile'));
+	ObjectFactory.register('decoration/egg-mound', createEggPileConstructor('decoration/egg-mound'));
+	ObjectFactory.register('decoration/egg-mountain', createEggPileConstructor('decoration/egg-mountain'));
+	ObjectFactory.register('decoration/hatched-egg-pile', createEggPileConstructor('decoration/hatched-egg-pile'));
+	ObjectFactory.register('decoration/hatched-egg-mound', createEggPileConstructor('decoration/hatched-egg-mound'));
 })();

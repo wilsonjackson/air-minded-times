@@ -50,8 +50,11 @@
 		spriteDef('enemy/baby-3', 'sprites/sprites.png', grid(4, 7).sub(1, 0), 50, 50),
 		spriteDef('enemy/baby-4', 'sprites/sprites.png', grid(4, 7).sub(1, 1), 50, 50),
 
-		spriteDef('enemy/egg-pile', 'sprites/sprites.png', grid(2, 6), 100, 100),
-		spriteDef('enemy/broken-egg-pile', 'sprites/sprites.png', grid(2, 7), 100, 100),
+		spriteDef('decoration/egg-pile', 'sprites/sprites.png', grid(2, 6), 100, 100),
+		spriteDef('decoration/egg-mound', 'sprites/sprites.png', grid(2, 8), 100, 100),
+		spriteDef('decoration/egg-mountain', 'sprites/sprites.png', grid(0, 7), 200, 200),
+		spriteDef('decoration/hatched-egg-pile', 'sprites/sprites.png', grid(2, 7), 100, 100),
+		spriteDef('decoration/hatched-egg-mound', 'sprites/sprites.png', grid(0, 9), 200, 100),
 
 		// Projectiles
 		spriteDef('projectile/bullet', 'sprites/sprites.png', grid(2, 5).sub(0, 0).sub(0, 0), 10, 10),

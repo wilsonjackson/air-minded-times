@@ -18,23 +18,23 @@
 
 	Game.logger = {
 		trace: function (message) {
-			console.trace('[' + Game.tick + ']', message);
+			console.trace.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 		},
 
 		debug: function (message) {
-			console.debug('[' + Game.tick + ']', message);
+			console.debug.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 		},
 
 		info: function (message) {
-			console.info('[' + Game.tick + ']', message);
+			console.info.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 		},
 
 		warn: function (message) {
-			console.warn('[' + Game.tick + ']', message);
+			console.warn.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 		},
 
 		error: function (message) {
-			console.error('[' + Game.tick + ']', message);
+			console.error.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 		}
 	};
 
