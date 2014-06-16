@@ -17,21 +17,16 @@
 
 	SpriteObject.prototype.init = function (x, y, orientation) {
 		var dimensions = orientation.translateXY(this.sprite.getWidth(), this.sprite.getHeight());
-		var margin = orientation.translateNESW(
-			this.sprite.getTopMargin(),
-			this.sprite.getRightMargin(),
-			this.sprite.getBottomMargin(),
-			this.sprite.getLeftMargin());
-		var xPlusMargin = x + margin.w;
-		var yPlusMargin = y + margin.n;
+		var leftEdge = x - Math.round(dimensions.x / 2);
+		var topEdge = y - Math.round(dimensions.y / 2);
 		switch (this.entityShape) {
 			case SpriteObject.SHAPE_CIRCLE:
 				this.entity = Physics.newCircleEntity(
-					this.entityCategory, xPlusMargin, yPlusMargin, dimensions.x() / 2, orientation, this);
+					this.entityCategory, leftEdge, topEdge, dimensions.x() / 2, orientation, this);
 				break;
 			case SpriteObject.SHAPE_RECT:
 				this.entity = Physics.newRectEntity(
-					this.entityCategory, xPlusMargin, yPlusMargin, dimensions.x, dimensions.y, orientation, this);
+					this.entityCategory, leftEdge, topEdge, dimensions.x, dimensions.y, orientation, this);
 				break;
 		}
 		if (this._init) {
@@ -54,7 +49,26 @@
 
 	SpriteObject.prototype.render = function (graphics) {
 		var context;
-		graphics.drawSprite(this.sprite, this.entity.getX(), this.entity.getY(), this.entity.getOrientation());
+		graphics.drawSprite(this.sprite,
+			this.entity.getX() + Math.round(this.entity.getWidth() / 2),
+			this.entity.getY() + Math.round(this.entity.getHeight() / 2),
+			this.entity.getOrientation());
+		if (DEBUG_SPRITE) {
+			var spriteSize = this.entity.getOrientation().translateXY(
+					this.sprite.getWidth() + this.sprite.getLeftMargin() + this.sprite.getRightMargin(),
+					this.sprite.getHeight() + this.sprite.getTopMargin() + this.sprite.getBottomMargin());
+			var spriteOffset = {
+				x: Math.round((this.entity.getWidth() - spriteSize.x) / 2),
+				y: Math.round((this.entity.getHeight() - spriteSize.y) / 2)
+			};
+			context = graphics.viewport.context;
+			context.strokeStyle = '#00f';
+			context.strokeRect(
+					this.entity.getX() + 0.5 + spriteOffset.x - graphics.offsetX,
+					this.entity.getY() + 0.5 + spriteOffset.y - graphics.offsetY,
+					this.sprite.getWidth() + this.sprite.getLeftMargin() + this.sprite.getRightMargin(),
+					this.sprite.getHeight() + this.sprite.getTopMargin() + this.sprite.getBottomMargin());
+		}
 		if (DEBUG_COLLISIONS) {
 			context = graphics.viewport.context;
 			context.strokeStyle = this.entity.isColliding ? '#f00' : '#fff';
@@ -74,22 +88,6 @@
 						this.entity.getWidth(),
 						this.entity.getHeight());
 			}
-		}
-		if (DEBUG_SPRITE) {
-			var spriteSize = this.entity.getOrientation().translateXY(
-				this.sprite.getWidth() + this.sprite.getLeftMargin() + this.sprite.getRightMargin(),
-				this.sprite.getHeight() + this.sprite.getTopMargin() + this.sprite.getBottomMargin());
-			var spriteOffset = {
-				x: Math.round((this.entity.getWidth() - spriteSize.x) / 2),
-				y: Math.round((this.entity.getHeight() - spriteSize.y) / 2)
-			};
-			context = graphics.viewport.context;
-			context.strokeStyle = '#00f';
-			context.strokeRect(
-					this.entity.getX() + 0.5 + spriteOffset.x - graphics.offsetX,
-					this.entity.getY() + 0.5 + spriteOffset.y - graphics.offsetY,
-					this.sprite.getWidth() + this.sprite.getLeftMargin() + this.sprite.getRightMargin(),
-					this.sprite.getHeight() + this.sprite.getTopMargin() + this.sprite.getBottomMargin());
 		}
 	};
 

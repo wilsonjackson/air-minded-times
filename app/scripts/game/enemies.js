@@ -1,4 +1,4 @@
-/* globals ObjectFactory, ObjectType, SpriteObject, SpriteRepository, SpriteAnimator, EntityCategory */
+/* globals ObjectFactory, ObjectType, SpriteObject, SpriteRepository, SpriteAnimator, SpriteStack, EntityCategory */
 
 (function () {
 	'use strict';
@@ -78,7 +78,8 @@
 	ShellEnemy.prototype = new Enemy();
 
 	ShellEnemy.prototype.drop = function (world) {
-		world.spawnObject('item/sky-meat', this.entity.getX(), this.entity.getY());
+		var center = this.entity.getCenter();
+		world.spawnObject('item/sky-meat', center.x, center.y);
 	};
 
 	function BabyEnemy() {
@@ -107,7 +108,8 @@
 	BabyEnemy.prototype = new Enemy();
 
 	BabyEnemy.prototype.drop = function (world) {
-		world.spawnObject('item/small-sky-meat', this.entity.getX(), this.entity.getY());
+		var center = this.entity.getCenter();
+		world.spawnObject('item/small-sky-meat', center.x, center.y);
 	};
 
 	function EggPile() {

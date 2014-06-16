@@ -35,24 +35,16 @@
 		var translated;
 		var context = this.viewport.context;
 		if (orientation && orientation !== Orientation.NORTH) {
-			// Orientation involves the following steps:
-			// 1. Calculate the half-width and half-height of the sprite.
-			// 2. Use the half dimensions, rotated according to the object's orientation, to center the canvas over
-			//    the center of the sprite.
-			// 3. Rotate the canvas in accordance with the object's orientation (so the direction it should be facing
-			//    is up.
-			// 4. Tell the sprite to draw itself centered on the canvas (offset by half its dimensions).
-			// 5. Revert canvas to original center and rotation.
-
-			var spriteOffsetX = -Math.round(sprite.getWidth() / 2);
-			var spriteOffsetY = -Math.round(sprite.getHeight() / 2);
-			var rotatedOffset = orientation.translateXY(spriteOffsetX, spriteOffsetY);
-			translated = this.translate(x - rotatedOffset.x, y - rotatedOffset.y);
-
+			// 1. Center the canvas over the center of the sprite.
+			// 2. Rotate the canvas in accordance with the object's orientation (so the direction it should be facing
+			//    is up).
+			// 3. Tell the sprite to draw itself centered on the canvas.
+			// 4. Revert canvas to original center and rotation.
 			context.save();
+			translated = this.translate(x, y);
 			context.translate(translated.x, translated.y);
 			context.rotate(orientation.asRadians());
-			sprite.draw(context, spriteOffsetX, spriteOffsetY);
+			sprite.draw(context, 0, 0);
 			context.restore();
 		}
 		else {
@@ -177,8 +169,15 @@
 	};
 
 	Sprite.prototype.draw = function (context, x, y) {
-		context.drawImage(this.image, this.x + this.margins[3], this.y + this.margins[0], this._drawWidth,
-			this._drawHeight, x, y, this._drawWidth, this._drawHeight);
+		context.drawImage(this.image,
+				this.x + this.margins[3],
+				this.y + this.margins[0],
+			this._drawWidth,
+			this._drawHeight,
+			x - Math.round(this.getWidth() / 2),
+			y - Math.round(this.getHeight() / 2),
+			this._drawWidth,
+			this._drawHeight);
 	};
 
 	function DelegatingSprite() {
@@ -313,7 +312,7 @@
 	}
 
 	Tile.prototype.render = function (graphics, gridX, gridY) {
-		graphics.drawSprite(this.sprite, gridX * 100, gridY * 100);
+		graphics.drawSprite(this.sprite, gridX, gridY);
 	};
 
 	window.Graphics = Graphics;

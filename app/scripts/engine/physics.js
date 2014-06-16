@@ -190,6 +190,10 @@
 		return this.bounds.height();
 	};
 
+	Entity.prototype.getCenter = function () {
+		return this.bounds.center();
+	};
+
 	Entity.prototype.integrate = function () {
 		this.bounds.move(this.nextMovement);
 		this.currentMovement = this.nextMovement;

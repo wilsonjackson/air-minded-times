@@ -115,9 +115,10 @@
 		var lastRow = Math.min(firstRow + Math.ceil(graphics.viewport.height / this.map.tileSize) + 1, this.terrain.length / this.map.width);
 		var firstCol = Math.floor(graphics.offsetX / this.map.tileSize);
 		var lastCol = Math.min(firstCol + Math.ceil(graphics.viewport.width / this.map.tileSize) + 1, this.map.width);
+		var halfTileSize = Math.round(this.map.tileSize / 2);
 		for (var row = firstRow; row < lastRow; row++) {
 			for (var col = firstCol; col < lastCol; col++) {
-				this.terrain[(row * this.map.width + col)].render(graphics, col, row);
+				this.terrain[(row * this.map.width + col)].render(graphics, col * this.map.tileSize + halfTileSize, row * this.map.tileSize + halfTileSize);
 			}
 		}
 
