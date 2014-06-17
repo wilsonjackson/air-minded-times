@@ -6,6 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	Game.init({
 		canvas: document.getElementById('viewport')
 	});
-	Game.world.loadMap(Map.LEVEL1);
+	Game.world.loadMap(Map.LEVEL2);
 	Game.start();
 });
