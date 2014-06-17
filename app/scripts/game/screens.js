@@ -1,10 +1,14 @@
-/* global Game, Input, Ui, SpriteRepository, CoverScreen */
+/* global Game, Input, Ui, SpriteRepository, TextSprite, CoverScreen */
 
 (function () {
 	'use strict';
 
+	var titleScreenSprite = SpriteRepository.retrieve('title');
+	var fontSprite = SpriteRepository.retrieve('font/fz');
+
 	function TitleScreen() {
 		this.startOnNextTick = false;
+		this.text = new TextSprite(fontSprite, ['Press the SPACE BAR to start.']);
 	}
 
 	TitleScreen.prototype = new CoverScreen();
@@ -22,21 +26,14 @@
 	TitleScreen.prototype.render = function (graphics) {
 		var screenWidth = graphics.viewport.width;
 		var screenHeight = graphics.viewport.height;
-		var context = graphics.viewport.context;
-		context.fillStyle = '#000';
-		context.fillRect(0, 0, screenWidth, screenHeight);
 
-		graphics.drawSprite(SpriteRepository.retrieve('title'), screenWidth / 2, screenHeight / 2);
-
-		var fontSprite = SpriteRepository.retrieve('font/fz');
-		var text = 'Press the SPACE BAR to start.';
-		fontSprite.text(text);
-		graphics.drawSprite(fontSprite, 330, 435);
+		graphics.drawSprite(titleScreenSprite, screenWidth / 2, screenHeight / 2);
+		graphics.drawSprite(this.text, graphics.getCenter().x, 435);
 	};
-
 
 	function PauseScreen() {
 		this.firstTick = true;
+		this.text = new TextSprite(fontSprite, ['Paused']);
 	}
 
 	PauseScreen.prototype = new CoverScreen();
@@ -49,17 +46,8 @@
 	};
 
 	PauseScreen.prototype.render = function (graphics) {
-		var screenWidth = graphics.viewport.width;
-		var screenHeight = graphics.viewport.height;
-		var context = graphics.viewport.context;
-		context.fillStyle = '#000';
-		context.fillRect(0, 0, screenWidth, screenHeight);
-
-		var fontSprite = SpriteRepository.retrieve('font/fz');
-		fontSprite.text('PAUSED');
-		graphics.drawSprite(fontSprite,
-			Math.round((screenWidth - 'PAUSED'.length * fontSprite.getWidth()) / 2),
-			Math.round((screenHeight - fontSprite.getHeight()) / 2));
+		var center = graphics.getCenter();
+		graphics.drawSprite(this.text, center.x, center.y);
 	};
 
 	window.TitleScreen = TitleScreen;

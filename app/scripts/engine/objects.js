@@ -105,7 +105,7 @@
 			},
 
 			spawn: function (id, x, y, orientation) {
-				Game.logger.info('Spawning ' + id + ' at ' + x + ',' + y);
+				Game.logger.debug('Spawning ' + id + ' at ' + x + ',' + y);
 				var Ctor = types[id];
 				var object = new Ctor();
 				object.init(x, y, orientation || Orientation.NORTH);

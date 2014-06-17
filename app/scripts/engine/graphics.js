@@ -1,11 +1,11 @@
-/* globals Game, Orientation */
+/* globals Vector, Game, Orientation */
 
 (function () {
 	'use strict';
 
 	function Graphics(viewport) {
 		this.viewport = viewport;
-		this.background = '#ffffff';
+		this.background = '#000000';
 		this.offsetX = 0;
 		this.offsetY = 0;
 	}
@@ -29,6 +29,12 @@
 			x: x - this.offsetX,
 			y: y - this.offsetY
 		};
+	};
+
+	Graphics.prototype.getCenter = function () {
+		return new Vector(
+				Math.round(this.viewport.width / 2) + this.offsetX,
+				Math.round(this.viewport.height / 2) + this.offsetY);
 	};
 
 	Graphics.prototype.drawSprite = function (sprite, x, y, orientation) {
@@ -288,6 +294,66 @@
 		this.buffer = [];
 	};
 
+	function TextSprite(fontSprite, text) {
+		this.fontSprite = fontSprite;
+		this.text = text;
+		this.w = null;
+		this.h = null;
+		this.c = false;
+	}
+
+	TextSprite.prototype = new Sprite();
+
+	TextSprite.prototype.width = function (w) {
+		this.w = w;
+		return this;
+	};
+
+	TextSprite.prototype.height = function (h) {
+		this.h = h;
+		return this;
+	};
+
+	TextSprite.prototype.fullWidth = function () {
+		this.w = Game.uiGraphics.viewport.width;
+		return this;
+	};
+
+	TextSprite.prototype.fullHeight = function () {
+		this.h = Game.uiGraphics.viewport.height;
+		return this;
+	};
+
+	TextSprite.prototype.center = function () {
+		this.c = true;
+		return this;
+	};
+
+	TextSprite.prototype.getWidth = function () {
+		return this.w || this.fontSprite.getWidth() * Math.max(this.text.map(function (s) {
+			return s.length;
+		}));
+	};
+
+	TextSprite.prototype.getHeight = function () {
+		return this.h || this.fontSprite.getHeight() * this.text.length;
+	};
+
+	TextSprite.prototype.draw = function (context, x, y) {
+		var self = this;
+		var charW = self.fontSprite.getWidth();
+		var charH = self.fontSprite.getHeight();
+		var topLineY = Math.round(y - (self.c ? charH * self.text.length : this.getHeight()) / 2);
+
+		for (var i = 0, len = self.text.length; i < len; i++) {
+			var line = self.text[i];
+			self.fontSprite.text(line);
+			self.fontSprite.draw(context,
+				Math.round(x - (self.c ? charW * line.length : this.getWidth()) / 2),
+				topLineY + charH * i);
+		}
+	};
+
 	var indexed = [null];
 	var Terrain = {
 		add: function (sprite, impassable) {
@@ -322,5 +388,6 @@
 	window.SpriteAnimator = SpriteAnimator;
 	window.SpriteStack = SpriteStack;
 	window.FontSprite = FontSprite;
+	window.TextSprite = TextSprite;
 	window.Terrain = Terrain;
 })();
