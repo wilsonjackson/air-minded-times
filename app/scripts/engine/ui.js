@@ -1,5 +1,3 @@
-/* global Graphics, Ui, Input, SpriteRepository */
-
 (function () {
 	'use strict';
 

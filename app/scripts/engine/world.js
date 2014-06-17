@@ -1,4 +1,4 @@
-/* global Physics, Terrain, ObjectFactory, ObjectType, EntityCategory */
+/* global Physics, Terrain, ObjectFactory, EntityCategory */
 
 (function () {
 	'use strict';

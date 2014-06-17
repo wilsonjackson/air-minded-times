@@ -1,4 +1,4 @@
-/* global Game, TitleScreen, Input */
+/* global Game, Input, ObjectType, Ui, IntroScene1, PauseScreen */
 
 (function () {
 	'use strict';
@@ -10,7 +10,7 @@
 	AirMindedTimes.prototype = new Game.Bootstrap();
 
 	AirMindedTimes.prototype.start = function () {
-		Ui.activateScreen(new TitleScreen());
+		Ui.activateScreen(new IntroScene1());
 	};
 
 	AirMindedTimes.prototype.preUpdate = function (input) {
@@ -26,7 +26,9 @@
 	};
 
 	AirMindedTimes.prototype.suspend = function () {
-		Ui.activateScreen(new PauseScreen());
+		if (!Ui.isScreenActive()) {
+			Ui.activateScreen(new PauseScreen());
+		}
 	};
 
 	window.AirMindedTimes = AirMindedTimes;

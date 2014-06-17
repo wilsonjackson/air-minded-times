@@ -1,4 +1,4 @@
-/* global CoverScreen, Maps */
+/* global Game, Input, Ui, SpriteRepository, CoverScreen */
 
 (function () {
 	'use strict';
@@ -26,15 +26,12 @@
 		context.fillStyle = '#000';
 		context.fillRect(0, 0, screenWidth, screenHeight);
 
+		graphics.drawSprite(SpriteRepository.retrieve('title'), screenWidth / 2, screenHeight / 2);
+
 		var fontSprite = SpriteRepository.retrieve('font/fz');
-		fontSprite.text('AIR MINDED TIMES!');
-		graphics.drawSprite(fontSprite,
-			Math.round((screenWidth - 'AIR MINDED TIMES!'.length * fontSprite.getWidth()) / 2),
-			Math.round((screenHeight - fontSprite.getHeight() * 3) / 2));
-		fontSprite.text('Press the SPACE BAR to start.');
-		graphics.drawSprite(fontSprite,
-			Math.round((screenWidth - 'Press the SPACE BAR to start.'.length * fontSprite.getWidth()) / 2),
-			Math.round(((screenHeight - fontSprite.getHeight() * 3) + fontSprite.getHeight() * 3) / 2));
+		var text = 'Press the SPACE BAR to start.';
+		fontSprite.text(text);
+		graphics.drawSprite(fontSprite, 330, 435);
 	};
 
 

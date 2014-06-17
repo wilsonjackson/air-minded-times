@@ -27,6 +27,11 @@
 	var grid = _grid(100, 0, 0);
 
 	[
+		// Cinematics
+		spriteDef('title', 'sprites/title.png', grid(0, 0), 800, 600),
+		spriteDef('intro/governments', 'sprites/intro.png', grid(0, 0), 800, 300),
+		spriteDef('intro/sky-meat', 'sprites/intro.png', grid(0, 3), 800, 300),
+
 		// Aeroplanes
 		spriteDef('aero/extended-farewell-1', 'sprites/sprites.png', grid(5, 4), 100, 100, [14, 0, 8, 1]),
 		spriteDef('aero/extended-farewell-2', 'sprites/sprites.png', grid(5, 5), 100, 100, [14, 0, 8, 1]),
