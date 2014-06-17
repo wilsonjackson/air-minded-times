@@ -1,11 +1,11 @@
-/* global Game, Map */
+/* global Game, AirMindedTimes */
 
 document.addEventListener('DOMContentLoaded', function () {
 	'use strict';
 
 	Game.init({
-		canvas: document.getElementById('viewport')
+		canvas: document.getElementById('viewport'),
+		bootstrap: new AirMindedTimes()
 	});
-	Game.world.loadMap(Map.LEVEL2);
 	Game.start();
 });

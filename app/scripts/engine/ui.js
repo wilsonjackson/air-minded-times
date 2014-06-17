@@ -1,7 +1,12 @@
-/* global Graphics */
+/* global Graphics, Ui, Input, SpriteRepository */
 
 (function () {
 	'use strict';
+
+	function CoverScreen() {}
+	CoverScreen.prototype.activate = function () {};
+	CoverScreen.prototype.update = function (/*input*/) {};
+	CoverScreen.prototype.render = function (/*graphics*/) {};
 
 	function HudComponent(offset, width, height) {
 		this.offset = offset;
@@ -40,6 +45,19 @@
 				this.world = world;
 			},
 
+			activateScreen: function (screen) {
+				this.activeScreen = screen;
+				screen.activate();
+			},
+
+			deactivateScreen: function () {
+				this.activeScreen = null;
+			},
+
+			isScreenActive: function () {
+				return this.activeScreen !== null;
+			},
+
 			addHudComponent: function (corner, width, height) {
 				hud[corner] = new HudComponent(offsets[corner], width, height);
 				return hud[corner];
@@ -49,24 +67,32 @@
 
 			},
 
-			update: function (/*input*/) {
-
+			update: function (input) {
+				if (this.activeScreen !== null) {
+					this.activeScreen.update(input);
+				}
 			},
 
 			render: function (graphics) {
-				var hudGraphics = new Graphics(graphics.viewport);
-				for (var i = 0; i < 4; i++) {
-					if (hud[i] !== null) {
-						if (!hud[i].initialized) {
-							hud[i].init(this.world);
-							hud[i].initialized = true;
+				if (this.activeScreen !== null) {
+					this.activeScreen.render(graphics);
+				}
+				else {
+					for (var i = 0; i < 4; i++) {
+						if (hud[i] !== null) {
+							if (!hud[i].initialized) {
+								hud[i].init(this.world);
+								hud[i].initialized = true;
+							}
+							hud[i].render(graphics,
+								hud[i].offset[0] ? graphics.viewport.width - hud[i].width : 0,
+								hud[i].offset[1] ? graphics.viewport.height - hud[i].height : 0);
 						}
-						hud[i].render(hudGraphics,
-							hud[i].offset[0] ? graphics.viewport.width - hud[i].width : 0,
-							hud[i].offset[1] ? graphics.viewport.height - hud[i].height : 0);
 					}
 				}
 			}
 		};
 	})();
+
+	window.CoverScreen = CoverScreen;
 })();

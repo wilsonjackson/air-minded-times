@@ -75,6 +75,15 @@
 				return newEntity(category, new BoundingCircle(new Vector(x, y), r), Orientation.NORTH, object);
 			},
 
+			destroyAllEntities: function () {
+				for (var i = 0, len = entities.length; i < len; i++) {
+					if (entities[i]) {
+						entities[i].destroy();
+					}
+				}
+				entities = [];
+			},
+
 			update: function () {
 				var i, j, len = entities.length;
 				var compared = {};
@@ -223,6 +232,12 @@
 
 	Entity.prototype.destroy = function () {
 		this.events.trigger('destroy', this);
+		delete this.events;
+		delete this.object;
+		delete this.bounds;
+		delete this.nextMovement;
+		delete this.currentMovement;
+		delete this.collisionListeners;
 	};
 
 	Entity.prototype.toString = function () {

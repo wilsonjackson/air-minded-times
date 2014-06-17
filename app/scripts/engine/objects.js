@@ -41,6 +41,8 @@
 	SpriteObject.prototype.destroy = function () {
 		this.events.trigger('destroy', this);
 		this.entity.destroy();
+		delete this.events;
+		delete this.entity;
 	};
 
 	SpriteObject.prototype.update = function () {

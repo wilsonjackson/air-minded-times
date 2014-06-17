@@ -58,7 +58,25 @@
 		return null;
 	};
 
+	World.prototype.reset = function () {
+		for (var i = 0, len = this.objects.length; i < len; i++) {
+			if (this.objects[i]) {
+				this.objects[i].destroy();
+			}
+		}
+		Physics.destroyAllEntities();
+
+		this.map = null;
+		this.mapEntities = [];
+		this.terrain = [];
+		this.objects = [];
+		this.width = 0;
+		this.height = 0;
+	};
+
 	World.prototype.loadMap = function (map) {
+		this.reset();
+
 		var world = this;
 		world.map = map;
 		world.terrain = Terrain.readMapTerrain(map.terrain);
@@ -105,9 +123,6 @@
 	};
 
 	World.prototype.render = function (graphics) {
-		var player = this.firstObjectOfType(ObjectType.PLAYER);
-		this.centerOn(player.entity.getX(), player.entity.getY(), player.entity.getWidth(), player.entity.getHeight());
-
 		// Pre-calculate the visible part of the map and only render enough tiles to keep it filled.
 		// Safety conditions are attached to the calculation of the last row and last column to ensure it never tries
 		// to render a tile that doesn't exist (when you're near the extreme right or bottom edge).

@@ -29,9 +29,6 @@
 				this.movementVector = new Vector(this.speed, 0);
 				break;
 		}
-
-		// Bullet is initialized with its intended center position instead of top/left, so it's corrected here.
-		this.entity.impulse(-(this.entity.getWidth() / 2), -(this.entity.getHeight() / 2));
 	};
 
 	Bullet.prototype.update = function () {
