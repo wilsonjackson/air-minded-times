@@ -42,8 +42,8 @@
 			},
 			collide: function (collision) {
 				if (collision.entity.category.isA(EntityCategory.ITEM)) {
-					collision.entity.object.destroy();
 					self.inventory.get(collision.entity.object.item).add();
+					collision.entity.object.destroy();
 				}
 			}
 		});

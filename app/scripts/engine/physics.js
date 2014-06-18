@@ -95,8 +95,8 @@
 				}
 				for (i = 0; i < len; i++) {
 					var entity = entities[i];
-					if (!entity) {
-						// Safety check, as entities may be deleted by collision handlers.
+					if (!entity || entity.isDestroyed) {
+						// Safety check, as entities may be destroyed/deleted by collision handlers.
 						continue;
 					}
 
@@ -107,7 +107,7 @@
 					}
 					var nearby = quadTree.retrieve(entityToQuadTreeObject(entity));
 					var nlen = nearby.length;
-					for (j = 0; j < nlen; j++) {
+					for (j = 0; j < nlen && !entity.isDestroyed; j++) {
 						var nearbyEntity = nearby[j].e;
 						var alreadyChecked = compared[nearbyEntity._id] && compared[nearbyEntity._id][entity._id];
 						if (alreadyChecked || nearbyEntity.collidable === false || nearbyEntity === entity ||
@@ -143,6 +143,7 @@
 		this.nextMovement = new Vector(0, 0);
 		this.currentMovement = new Vector(0, 0);
 
+		this.isDestroyed = false;
 		this.isStatic = false;
 		this.collidable = true;
 		this.collisionListeners = [];
@@ -231,13 +232,14 @@
 	};
 
 	Entity.prototype.destroy = function () {
+		this.isDestroyed = true;
 		this.events.trigger('destroy', this);
 		delete this.events;
 		delete this.object;
 		delete this.bounds;
 		delete this.nextMovement;
 		delete this.currentMovement;
-		delete this.collisionListeners;
+		this.collisionListeners = [];
 	};
 
 	Entity.prototype.toString = function () {
