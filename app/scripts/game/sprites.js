@@ -1,4 +1,4 @@
-/* global SpriteRepository, FontSprite */
+/* global SpriteRepository, FontSprite, BoxSprite */
 
 (function () {
 	'use strict';
@@ -27,6 +27,9 @@
 	var grid = _grid(100, 0, 0);
 
 	[
+		// Interface
+		spriteDef('interface/box', 'sprites/interface.png', {x: 0, y: 0}, 30, 30, BoxSprite),
+
 		// Cinematics
 		spriteDef('title', 'sprites/title.png', grid(0, 0), 800, 600),
 		spriteDef('intro/governments', 'sprites/intro.png', grid(0, 0), 800, 300),

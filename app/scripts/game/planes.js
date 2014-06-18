@@ -75,6 +75,20 @@
 				SpriteRepository.retrieve('aero/extended-farewell-1'),
 				SpriteRepository.retrieve('aero/extended-farewell-2')
 			]));
+
+		this.name = 'Extended Farewell';
+		this.description = [
+				'Cutting edge technology and startling',
+				'design come together in THE EXTENDED',
+				'FAREWELL. Its unique 4-gun system',
+				'puts this machine at the forefront of',
+				'the preferential ladder for aeroplane',
+				'enthusiasts who are out to do some',
+				'real or extreme damage.'];
+//		Its sleek body allows air currents to glide ' +
+//			'gracefully around whilst the plane itself flies through the air, defying the laws of gravity and of ' +
+//			'speed. Though the origins of this aeroplane are wrapped in a veil of secrecy so thick that no one even ' +
+//			'knows how to go about finding them, it is slowly becoming the "gold standard" of the skies.';
 	}
 
 	ExtendedFarewell.prototype = new Plane();
@@ -101,6 +115,19 @@
 			]));
 		this.muzzleFlashSprite = SpriteRepository.retrieve('aero/biplanedieplane-muzzle');
 		this.bulletOffsets = [-14, 14];
+
+		this.name = 'Biplanedieplane';
+		this.description = [
+				'Perhaps a true hero of the skies if',
+				'there ever were one, the BIPLANE',
+				'DIEPLANE is a sight to behold when',
+				'it darts left and right, forward and',
+				'backward.'];
+//		Renowned for its ability to fly through ' +
+//			'the air, this is one aeroplane that has definitely earned its reputation as "The Great Green Aluminum ' +
+//			'Bird Of The Sky." While not the fastest aeroplane, in so far as measured velocity, the Biplane Dieplane ' +
+//			'is applauded by aeroplane enthusiasts for its intuitive handling and ability to weather whatever storms ' +
+//			'Mother Nature could (so foolishly) think to heap upon it.';
 	}
 
 	Biplanedieplane.prototype = new Plane();

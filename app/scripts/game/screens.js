@@ -1,4 +1,4 @@
-/* global Game, Input, Ui, SpriteRepository, TextSprite, CoverScreen */
+/* global Input, Ui, SpriteRepository, TextSprite, CoverScreen, CharacterSelectionScreen */
 
 (function () {
 	'use strict';
@@ -15,8 +15,7 @@
 
 	TitleScreen.prototype.update = function (input) {
 		if (this.startOnNextTick) {
-			Ui.deactivateScreen();
-			Game.world.loadMap(Map.LEVEL2);
+			Ui.activateScreen(new CharacterSelectionScreen());
 		}
 		if (input.isPressed(Input.ACTION)) {
 			this.startOnNextTick = true;

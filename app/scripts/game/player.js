@@ -3,13 +3,15 @@
 (function () {
 	'use strict';
 
-	var planes = [Planes.EXTENDED_FAREWELL, Planes.JUSTICE_GLIDER_MKIV, Planes.BIPLANEDIEPLANE];
+	var PlaneSelection = {
+		plane: new Planes.BIPLANEDIEPLANE()
+	};
 
 	function Player() {
 		this.type = ObjectType.PLAYER;
 		this.entityCategory = EntityCategory.PLAYER;
 		this.movement = PlayerMovementState.IDLE;
-		this.plane = new Planes.EXTENDED_FAREWELL();
+		this.plane = PlaneSelection.plane;
 		this.sprite = this.plane.sprite;
 		this.inventory = new Inventory();
 		this.speed = 4;
@@ -55,18 +57,6 @@
 		}
 		if (inputState.isPressed(Input.ACTION)) {
 			this.plane.fire(this.entity, this.entity.getOrientation(), world);
-		}
-		if (inputState.isPressed(Input.D)) {
-			var PlaneConstructor = planes.pop();
-			this.plane = new PlaneConstructor();
-			this.sprite = this.plane.sprite;
-			planes.unshift(PlaneConstructor);
-
-			var x = this.entity.getX();
-			var y = this.entity.getY();
-			var orientation = this.entity.getOrientation();
-			this.entity.destroy();
-			this.init(x, y, orientation);
 		}
 		this.plane.update(world, inputState);
 		return this.sprite.update() || newState !== false;
@@ -149,4 +139,6 @@
 	};
 
 	ObjectFactory.register('player', Player);
+
+	window.PlaneSelection = PlaneSelection;
 })();
