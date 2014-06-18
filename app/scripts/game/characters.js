@@ -7,9 +7,9 @@
 
 	function CharacterSelectionScreen() {
 		this.heading = new TextSprite(fontSprite, ['Select your plane!']);
-		this.biplanedieplane = new Planes.BIPLANEDIEPLANE();
-		this.extendedFarewell = new Planes.EXTENDED_FAREWELL();
-		this.selection = this.biplanedieplane;
+		this.greenWonderful = new Planes.GREEN_WONDERFUL();
+		this.theExtendedFarewell = new Planes.THE_EXTENDED_FAREWELL();
+		this.selection = this.greenWonderful;
 		this.selected = false;
 		this.startCountdown = 50;
 		this.hideBox = false;
@@ -32,20 +32,20 @@
 			}
 		}
 		else if (input.isPressed(Input.LEFT) || input.isPressed(Input.RIGHT)) {
-			this.selection = this.selection === this.biplanedieplane ? this.extendedFarewell : this.biplanedieplane;
+			this.selection = this.selection === this.greenWonderful ? this.theExtendedFarewell : this.greenWonderful;
 		}
-		this.biplanedieplane.sprite.update();
-		this.extendedFarewell.sprite.update();
+		this.greenWonderful.sprite.update();
+		this.theExtendedFarewell.sprite.update();
 	};
 
 	CharacterSelectionScreen.prototype.render = function (graphics) {
 		var center = graphics.getCenter();
-		var selectionOffset = this.selection === this.biplanedieplane ? -125 : 125;
-		var selectionVertCenter = center.y - 50;
+		var selectionOffset = this.selection === this.greenWonderful ? -125 : 125;
+		var selectionVertCenter = center.y - 80;
 		var boxSize = 180;
 		var fillSize = boxSize - 6;
 
-		graphics.drawSprite(this.heading, center.x, 80);
+		graphics.drawSprite(this.heading, center.x, 100);
 
 		if (!this.hideBox) {
 			graphics.viewport.context.fillStyle = '#fff';
@@ -60,14 +60,14 @@
 			graphics.drawSprite(box, center.x + selectionOffset, selectionVertCenter);
 		}
 
-		graphics.drawSprite(this.biplanedieplane.sprite, center.x - 125, selectionVertCenter);
-		graphics.drawSprite(this.extendedFarewell.sprite, center.x + 125, selectionVertCenter);
+		graphics.drawSprite(this.greenWonderful.sprite, center.x - 125, selectionVertCenter);
+		graphics.drawSprite(this.theExtendedFarewell.sprite, center.x + 125, selectionVertCenter);
 
-		graphics.drawSprite(new TextSprite(fontSprite, [this.selection.name]), center.x + selectionOffset, selectionVertCenter + boxSize / 2 + 40);
+		graphics.drawSprite(new TextSprite(fontSprite, [this.selection.name]), center.x, selectionVertCenter + boxSize / 2 + 60);
 		var description = new TextSprite(fontSprite, this.selection.description);
 		description.width(600);
 		description.height(300);
-		graphics.drawSprite(description, center.x, selectionVertCenter + boxSize / 2 + 230);
+		graphics.drawSprite(description, center.x, selectionVertCenter + boxSize / 2 + 270);
 	};
 
 	window.CharacterSelectionScreen = CharacterSelectionScreen;

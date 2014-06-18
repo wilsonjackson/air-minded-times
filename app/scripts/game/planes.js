@@ -62,7 +62,7 @@
 		}
 	};
 
-	function ExtendedFarewell() {
+	function TheExtendedFarewell() {
 		this.bulletType = 'projectile/tesla';
 		this.fireModes = [
 			{bulletOffsets: [-30, 30], sprite: SpriteRepository.retrieve('aero/extended-farewell-muzzle-1')},
@@ -76,29 +76,25 @@
 				SpriteRepository.retrieve('aero/extended-farewell-2')
 			]));
 
-		this.name = 'Extended Farewell';
+		this.name = 'The Extended Farewell';
 		this.description = [
 				'Cutting edge technology and startling',
-				'design come together in THE EXTENDED',
-				'FAREWELL. Its unique 4-gun system',
-				'puts this machine at the forefront of',
-				'the preferential ladder for aeroplane',
+				'design come together in creating the',
+				'unique 4-gun system that puts this',
+				'machine at the forefront of the',
+				'preferential ladder for aeroplane',
 				'enthusiasts who are out to do some',
 				'real or extreme damage.'];
-//		Its sleek body allows air currents to glide ' +
-//			'gracefully around whilst the plane itself flies through the air, defying the laws of gravity and of ' +
-//			'speed. Though the origins of this aeroplane are wrapped in a veil of secrecy so thick that no one even ' +
-//			'knows how to go about finding them, it is slowly becoming the "gold standard" of the skies.';
 	}
 
-	ExtendedFarewell.prototype = new Plane();
+	TheExtendedFarewell.prototype = new Plane();
 
-	ExtendedFarewell.prototype.setFireMode = function (fireMode) {
+	TheExtendedFarewell.prototype.setFireMode = function (fireMode) {
 		this.muzzleFlashSprite = fireMode.sprite;
 		this.bulletOffsets = fireMode.bulletOffsets;
 	};
 
-	ExtendedFarewell.prototype.fire = function () {
+	TheExtendedFarewell.prototype.fire = function () {
 		if (this.readyToFire) {
 			var fireMode = this.fireModes.pop();
 			this.setFireMode(fireMode);
@@ -107,30 +103,27 @@
 		}
 	};
 
-	function Biplanedieplane() {
+	function GreenWonderful() {
 		this.sprite.push(
 			new SpriteAnimator(3, [
-				SpriteRepository.retrieve('aero/biplanedieplane-1'),
-				SpriteRepository.retrieve('aero/biplanedieplane-2')
+				SpriteRepository.retrieve('aero/green-wonderful-1'),
+				SpriteRepository.retrieve('aero/green-wonderful-2')
 			]));
-		this.muzzleFlashSprite = SpriteRepository.retrieve('aero/biplanedieplane-muzzle');
+		this.muzzleFlashSprite = SpriteRepository.retrieve('aero/green-wonderful-muzzle');
 		this.bulletOffsets = [-14, 14];
 
-		this.name = 'Biplanedieplane';
+		this.name = 'Green Wonderful';
 		this.description = [
-				'Perhaps a true hero of the skies if',
-				'there ever were one, the BIPLANE',
-				'DIEPLANE is a sight to behold when',
-				'it darts left and right, forward and',
-				'backward.'];
-//		Renowned for its ability to fly through ' +
-//			'the air, this is one aeroplane that has definitely earned its reputation as "The Great Green Aluminum ' +
-//			'Bird Of The Sky." While not the fastest aeroplane, in so far as measured velocity, the Biplane Dieplane ' +
-//			'is applauded by aeroplane enthusiasts for its intuitive handling and ability to weather whatever storms ' +
-//			'Mother Nature could (so foolishly) think to heap upon it.';
+				'A sight to behold when it darts left',
+				'and right, forward and backward.',
+				'Renowned for its ability to fly',
+				'through the air, this is one',
+				'aeroplane that has definitely earned',
+				'its reputation as "Green Aluminum',
+				'Bird Of The Sky".'];
 	}
 
-	Biplanedieplane.prototype = new Plane();
+	GreenWonderful.prototype = new Plane();
 
 	function JusticeGliderMkiv() {
 		this.bulletType = 'projectile/spray';
@@ -158,8 +151,8 @@
 	};
 
 	window.Planes = {
-		EXTENDED_FAREWELL: ExtendedFarewell,
-		BIPLANEDIEPLANE: Biplanedieplane,
+		THE_EXTENDED_FAREWELL: TheExtendedFarewell,
+		GREEN_WONDERFUL: GreenWonderful,
 		JUSTICE_GLIDER_MKIV: JusticeGliderMkiv
 	};
 })();

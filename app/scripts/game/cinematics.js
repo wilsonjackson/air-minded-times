@@ -6,14 +6,14 @@
 	var fontSprite = SpriteRepository.retrieve('font/fz');
 
 	function IntroScene1() {
-		this.frames = 360;
+		this.frames = 200;
 		this.slide = new Slide(SpriteRepository.retrieve('intro/governments'), 10, 60, -1, 50);
 		this.text = new Slide(
 			new TextSprite(fontSprite, ['All governments have fallen.'])
 				.fullWidth()
 				.height(200)
 				.center(),
-			10, 60, 1, 350);
+			10, 60, 1, 450);
 	}
 
 	IntroScene1.prototype = new CoverScreen();
@@ -34,14 +34,14 @@
 	};
 
 	function IntroScene2() {
-		this.frames = 360;
+		this.frames = 200;
 		this.slide = new Slide(SpriteRepository.retrieve('intro/sky-meat'), 10, 60, 1, 50);
 		this.text = new Slide(
 			new TextSprite(fontSprite, ['Sky meat has become a commodity.'])
 				.fullWidth()
 				.height(200)
 				.center(),
-			10, 60, -1, 350);
+			10, 60, -1, 450);
 	}
 
 	IntroScene2.prototype = new CoverScreen();
@@ -62,7 +62,7 @@
 	};
 
 	function IntroScene3() {
-		this.frames = 280;
+		this.frames = 180;
 		this.frameCount = -1;
 		this.alpha = [0, 0.25, 0.5, 0.75, 1];
 		this.alphaFrames = 25;

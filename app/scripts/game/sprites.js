@@ -31,9 +31,9 @@
 		spriteDef('interface/box', 'sprites/interface.png', {x: 0, y: 0}, 30, 30, BoxSprite),
 
 		// Cinematics
-		spriteDef('title', 'sprites/title.png', grid(0, 0), 800, 600),
-		spriteDef('intro/governments', 'sprites/intro.png', grid(0, 0), 800, 300),
-		spriteDef('intro/sky-meat', 'sprites/intro.png', grid(0, 3), 800, 300),
+		spriteDef('title', 'sprites/title.png', grid(0, 0), 900, 700),
+		spriteDef('intro/governments', 'sprites/intro.png', grid(0, 0), 900, 400),
+		spriteDef('intro/sky-meat', 'sprites/intro.png', grid(0, 4), 900, 400),
 
 		// Aeroplanes
 		spriteDef('aero/extended-farewell-1', 'sprites/sprites.png', grid(5, 4), 100, 100, [14, 0, 8, 1]),
@@ -41,9 +41,9 @@
 		spriteDef('aero/extended-farewell-muzzle-1', 'sprites/sprites.png', grid(5, 6), 100, 100, [14, 0, 8, 1]),
 		spriteDef('aero/extended-farewell-muzzle-2', 'sprites/sprites.png', grid(5, 7), 100, 100, [14, 0, 8, 1]),
 
-		spriteDef('aero/biplanedieplane-1', 'sprites/sprites.png', grid(4, 4), 100, 100, [14, 0, 8, 1]),
-		spriteDef('aero/biplanedieplane-2', 'sprites/sprites.png', grid(4, 5), 100, 100, [14, 0, 8, 1]),
-		spriteDef('aero/biplanedieplane-muzzle', 'sprites/sprites.png', grid(4, 6), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/green-wonderful-1', 'sprites/sprites.png', grid(4, 4), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/green-wonderful-2', 'sprites/sprites.png', grid(4, 5), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/green-wonderful-muzzle', 'sprites/sprites.png', grid(4, 6), 100, 100, [14, 0, 8, 1]),
 
 		spriteDef('aero/justice-glider-mkiv-1', 'sprites/sprites.png', grid(6, 4), 100, 100, [18, 3, 14, 5]),
 		spriteDef('aero/justice-glider-mkiv-2', 'sprites/sprites.png', grid(6, 5), 100, 100, [18, 3, 14, 5]),

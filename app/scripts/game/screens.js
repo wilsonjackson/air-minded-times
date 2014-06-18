@@ -27,7 +27,7 @@
 		var screenHeight = graphics.viewport.height;
 
 		graphics.drawSprite(titleScreenSprite, screenWidth / 2, screenHeight / 2);
-		graphics.drawSprite(this.text, graphics.getCenter().x, 435);
+		graphics.drawSprite(this.text, graphics.getCenter().x, 625);
 	};
 
 	function PauseScreen() {

@@ -4,7 +4,7 @@
 	'use strict';
 
 	var PlaneSelection = {
-		plane: new Planes.BIPLANEDIEPLANE()
+		plane: new Planes.GREEN_WONDERFUL()
 	};
 
 	function Player() {
