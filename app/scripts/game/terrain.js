@@ -24,7 +24,10 @@
 		}
 	}
 
-	addTerrainSprite('terrain/level1', 'terrain/level1.png', 100, 10, 7, [
-			5 * 10 + 1, 5 * 10 + 2, 5 * 10 + 3
+	addTerrainSprite('terrain/level1', 'terrain/level1.png', 100, 10, 10, [
+			5 * 10 + 1,
+			5 * 10 + 2,
+			5 * 10 + 3,
+			5 * 10 + 4
 	]);
 })(Game);
