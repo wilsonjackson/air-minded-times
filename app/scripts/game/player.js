@@ -16,7 +16,7 @@
 	function Player() {
 		this.type = ObjectType.PLAYER;
 		this.entityCategory = EntityCategory.PLAYER;
-		this.movement = PlayerMovementState.IDLE;
+		this.movement = AirMindedTimes.gameplay.GameplayMode.createMovementControl();
 		this.plane = PlaneSelection.plane;
 		this.sprite = this.plane.sprite;
 		this.inventory = new Inventory();
@@ -56,92 +56,12 @@
 	};
 
 	Player.prototype.update = function (world, inputState) {
-		var newState = this.movement.update(this, inputState);
-		if (newState) {
-			this.movement = newState;
-			this.movement.enter(this);
-		}
+		this.movement.update(this, world, inputState);
 		if (inputState.isPressed(Input.ACTION)) {
 			this.plane.fire(this.entity, this.entity.getOrientation(), world);
 		}
 		this.plane.update(world, inputState);
-		return this.sprite.update() || newState !== false;
-	};
-
-
-	var PlayerMovementState = {
-		_getMovement: function (inputState) {
-			if (inputState.isPressed(Input.UP)) {
-				return PlayerMovementState.MOVING_UP;
-			}
-			if (inputState.isPressed(Input.DOWN)) {
-				return PlayerMovementState.MOVING_DOWN;
-			}
-			if (inputState.isPressed(Input.LEFT)) {
-				return PlayerMovementState.MOVING_LEFT;
-			}
-			if (inputState.isPressed(Input.RIGHT)) {
-				return PlayerMovementState.MOVING_RIGHT;
-			}
-		},
-		_getIdle: function (inputState, button) {
-			return inputState.isReleased(button) ? PlayerMovementState.IDLE : null;
-		},
-		IDLE: {
-			enter: function (/*object*/) {},
-			update: function (object, inputState) {
-//				object.entity.();
-				return PlayerMovementState._getMovement(inputState) || false;
-			}
-		},
-		MOVING_UP: {
-			enter: function (object) {
-				object.entity.setOrientation(Orientation.NORTH);
-			},
-			update: function (object, inputState) {
-				var newState = PlayerMovementState._getMovement(inputState) || PlayerMovementState._getIdle(inputState, Input.UP);
-				if (newState) {
-					return newState;
-				}
-				object.entity.impulse(0, -object.speed);
-			}
-		},
-		MOVING_DOWN: {
-			enter: function (object) {
-				object.entity.setOrientation(Orientation.SOUTH);
-			},
-			update: function (object, inputState) {
-				var newState = PlayerMovementState._getMovement(inputState) || PlayerMovementState._getIdle(inputState, Input.DOWN);
-				if (newState) {
-					return newState;
-				}
-				object.entity.impulse(0, object.speed);
-			}
-		},
-		MOVING_LEFT: {
-			enter: function (object) {
-				object.entity.setOrientation(Orientation.WEST);
-			},
-			update: function (object, inputState) {
-				var newState = PlayerMovementState._getMovement(inputState) || PlayerMovementState._getIdle(inputState, Input.LEFT);
-				if (newState) {
-					return newState;
-				}
-				object.entity.impulse(-object.speed, 0);
-			}
-		},
-		MOVING_RIGHT: {
-			enter: function (object) {
-				object.entity.setOrientation(Orientation.EAST);
-			},
-			update: function (object, inputState) {
-				var newState = PlayerMovementState._getMovement(inputState) || PlayerMovementState._getIdle(inputState, Input.RIGHT);
-				if (newState) {
-					return newState;
-				}
-				object.entity.impulse(object.speed, 0);
-			}
-		}
+		this.sprite.update();
 	};
 
 	Game.objects.ObjectFactory.register('player', Player);

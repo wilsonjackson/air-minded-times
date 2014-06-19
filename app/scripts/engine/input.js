@@ -19,7 +19,7 @@
 
 		var pressed = this.pressed = [];
 		var released = this.released = [];
-		var state = {};
+		var state = this.state = {};
 
 		function onKeyDown(e) {
 			var button = keyMap[e.keyCode];
@@ -58,20 +58,32 @@
 	Input.PAUSE = 'pause';
 
 	Input.prototype.readInput = function () {
+		var self = this;
+		var stateSnapshot = {};
+		Object.keys(self.state).forEach(function (key) {
+			stateSnapshot[key] = self.state[key];
+		});
 		return new InputState(
-			this.pressed.splice(0, this.pressed.length),
-			this.released.splice(0, this.released.length));
+			self.pressed.splice(0, self.pressed.length),
+			self.released.splice(0, self.released.length),
+			stateSnapshot);
 	};
 
-	function InputState(pressed, released) {
+	function InputState(pressed, released, state) {
 		this.pressed = pressed;
 		this.released = released;
+		this.state = state;
 	}
 
 	InputState.prototype.isPressed = function (button) {
 		return this.pressed.indexOf(button) !== -1;
 	};
 
+	InputState.prototype.isDown = function (button) {
+		return !!this.state[button];
+	};
+
+	//noinspection JSUnusedGlobalSymbols
 	InputState.prototype.isReleased = function (button) {
 		return this.released.indexOf(button) !== -1;
 	};
