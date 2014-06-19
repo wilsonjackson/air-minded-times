@@ -46,6 +46,9 @@
 		this.entity.destroy();
 		delete this.events;
 		delete this.entity;
+		if (this._destroy) {
+			this._destroy();
+		}
 	};
 
 	SpriteObject.prototype.update = function () {

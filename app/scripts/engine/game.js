@@ -3,6 +3,7 @@
 (function (window, document) {
 	'use strict';
 
+	var setup = [];
 	var session;
 	var nextGameTick;
 	var suspended = false;
@@ -12,11 +13,18 @@
 	Game.tick = 0;
 	Game.delta = 0;
 
+	Game.setup = function (callback) {
+		checkNotInitialized();
+		setup.push(callback);
+	};
+
 	Game.init = function (config) {
-		if (session) {
-			throw 'Game is already initialized';
-		}
+		checkNotInitialized();
 		this.logger = new Game.logging.DefaultLogger();
+		setup.forEach(function (callback) {
+			callback();
+		});
+		setup = [];
 		session = new GameSession(config);
 		registerGlobalEventHandlers();
 	};
@@ -141,6 +149,12 @@
 	function tick() {
 		session.run();
 		window.requestAnimationFrame(tick, document.body);
+	}
+
+	function checkNotInitialized() {
+		if (session) {
+			throw 'Game already initialized';
+		}
 	}
 
 	function createStats(mode) {

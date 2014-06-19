@@ -16,7 +16,7 @@
 	function Player() {
 		this.type = ObjectType.PLAYER;
 		this.entityCategory = EntityCategory.PLAYER;
-		this.movement = AirMindedTimes.gameplay.GameplayMode.createMovementControl();
+		this.movement = new AirMindedTimes.controls.PlayerMovement();
 		this.plane = PlaneSelection.plane;
 		this.sprite = this.plane.sprite;
 		this.inventory = new Inventory();
@@ -53,6 +53,13 @@
 				}
 			}
 		});
+	};
+
+	Player.prototype._destroy = function () {
+		this.movement.destroy();
+		delete this.movement;
+		delete this.plane;
+		delete this.inventory;
 	};
 
 	Player.prototype.update = function (world, inputState) {
