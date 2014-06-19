@@ -1,10 +1,16 @@
-/* global Vector, Orientation, Input, ObjectFactory, ObjectType, EntityCategory, SpriteObject, Inventory, Planes */
+/* global Game, AirMindedTimes, Vector */
 
-(function () {
+(function (Game, AirMindedTimes, Vector) {
 	'use strict';
 
+	var EntityCategory = Game.physics.EntityCategory;
+	var Orientation = Game.physics.Orientation;
+	var Input = Game.input.Input;
+	var Inventory = Game.inventory.Inventory;
+	var ObjectType = Game.objects.ObjectType;
+
 	var PlaneSelection = {
-		plane: new Planes.GREEN_WONDERFUL()
+		plane: new AirMindedTimes.planes.GREEN_WONDERFUL()
 	};
 
 	function Player() {
@@ -17,7 +23,7 @@
 		this.speed = 4;
 	}
 
-	Player.prototype = new SpriteObject();
+	Player.prototype = new Game.objects.SpriteObject();
 
 	Player.prototype._init = function () {
 		var self = this;
@@ -138,7 +144,9 @@
 		}
 	};
 
-	ObjectFactory.register('player', Player);
+	Game.objects.ObjectFactory.register('player', Player);
 
-	window.PlaneSelection = PlaneSelection;
-})();
+	AirMindedTimes.player = {
+		PlaneSelection: PlaneSelection
+	};
+})(Game, AirMindedTimes, Vector);

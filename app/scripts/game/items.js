@@ -1,7 +1,14 @@
-/* globals ItemRepository, ObjectFactory, ObjectType, SpriteObject, SpriteRepository, EntityCategory */
+/* globals Game */
 
-(function () {
+(function (Game) {
 	'use strict';
+
+	var EntityCategory = Game.physics.EntityCategory;
+	var ObjectFactory = Game.objects.ObjectFactory;
+	var ObjectType = Game.objects.ObjectType;
+	var SpriteObject = Game.objects.SpriteObject;
+	var SpriteRepository = Game.graphics.SpriteRepository;
+	var ItemRepository = Game.inventory.ItemRepository;
 
 	var SKY_MEAT = ItemRepository.add({
 		id: 'sky-meat',
@@ -30,4 +37,4 @@
 
 	ObjectFactory.register('item/sky-meat', SkyMeat);
 	ObjectFactory.register('item/small-sky-meat', SmallSkyMeat);
-})();
+})(Game);

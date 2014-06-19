@@ -1,9 +1,11 @@
-/* globals Orientation */
+/* globals Game, AirMindedTimes */
 
-(function () {
+(function (Game, AirMindedTimes) {
 	'use strict';
 
-	window.Map = {
+	var Orientation = Game.physics.Orientation;
+
+	AirMindedTimes.maps = {
 		TEST_MAP: {
 			tileSize: 100,
 			width: 14,
@@ -74,4 +76,4 @@
 			]
 		}
 	};
-})();
+})(Game, AirMindedTimes);

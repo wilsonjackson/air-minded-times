@@ -1,45 +1,31 @@
-/* global Ui, Viewport, Input, Graphics, Physics, World, SpriteRepository, DefaultLogger, Stats */
+/* global Stats */
 
-(function () {
+(function (window, document) {
 	'use strict';
 
-	var Game = {};
-
+	var session;
 	var nextGameTick;
 	var suspended = false;
 
-	function tick() {
-		Game.run();
-		window.requestAnimationFrame(tick, document.body);
-	}
+	var Game = {};
 
 	Game.tick = 0;
 	Game.delta = 0;
 
 	Game.init = function (config) {
-		if (!config.canvas || !(config.canvas instanceof HTMLCanvasElement)) {
-			throw 'canvas element is required';
+		if (session) {
+			throw 'Game is already initialized';
 		}
-		if (!config.bootstrap) {
-			throw 'bootstrap object is required';
-		}
-
-		this.logger = new DefaultLogger();
-		this.bootstrap = config.bootstrap;
-		this.viewport = new Viewport(config.canvas);
-		this.input = new Input();
-		this.graphics = new Graphics(this.viewport);
-		this.uiGraphics = new Graphics(this.viewport);
-		this.world = new World(this.graphics);
-		Ui.init(this.world);
-		Physics.init(this.world);
+		this.logger = new Game.logging.DefaultLogger();
+		session = new GameSession(config);
+		registerGlobalEventHandlers();
 	};
 
 	Game.start = function () {
 		Game.logger.info('Starting preload');
-		SpriteRepository.preload().then(function () {
+		Game.graphics.SpriteRepository.preload().then(function () {
 			Game.logger.info('Preload complete');
-			Game.bootstrap.start();
+			session.bootstrap.start();
 			nextGameTick = new Date().getTime();
 			tick();
 		});
@@ -51,7 +37,7 @@
 		}
 		Game.logger.info('Game suspended');
 		suspended = true;
-		this.bootstrap.suspend();
+		session.bootstrap.suspend();
 	};
 
 	Game.resume = function () {
@@ -61,10 +47,44 @@
 		Game.logger.info('Game resumed');
 		nextGameTick = new Date().getTime();
 		suspended = false;
-		this.bootstrap.resume();
+		session.bootstrap.resume();
 	};
 
-	Game.run = (function () {
+	Game.getViewport = function () {
+		return session.viewport;
+	};
+
+	Game.Bootstrap = function () {};
+	Game.Bootstrap.prototype.start = function () {
+		throw 'The game must implement a start method.';
+	};
+	Game.Bootstrap.prototype.preUpdate = function (/*world, input*/) {};
+	Game.Bootstrap.prototype.postUpdate = function (/*world, input*/) {};
+	Game.Bootstrap.prototype.preRender = function (/*graphics*/) {};
+	Game.Bootstrap.prototype.postRender = function (/*graphics*/) {};
+	Game.Bootstrap.prototype.suspend = function () {};
+	Game.Bootstrap.prototype.resume = function () {};
+
+	function GameSession(config) {
+		if (!config.canvas || !(config.canvas instanceof HTMLCanvasElement)) {
+			throw 'canvas element is required';
+		}
+		if (!config.bootstrap) {
+			throw 'bootstrap object is required';
+		}
+
+		this.bootstrap = config.bootstrap;
+		this.viewport = new Game.graphics.Viewport(config.canvas);
+		this.input = new Game.input.Input();
+		this.graphics = new Game.graphics.Graphics(this.viewport);
+		this.uiGraphics = new Game.graphics.Graphics(this.viewport);
+		this.world = new Game.world.World(this.graphics);
+		Game.ui.Ui.init(this.world);
+		Game.physics.Physics.init(this.world);
+	}
+
+	GameSession.prototype.run = (function () {
+		var Ui;
 		var loops = 0;
 		var skipTicks = 1000 / 50; // Target 50fps game updates
 		var maxFrameSkip = 10;
@@ -75,6 +95,7 @@
 		var renderStats = createStats(1).after(tickStats);
 
 		return function () {
+			Ui = Game.ui.Ui;
 			loops = 0;
 
 			// Suspended game bails immediately
@@ -90,12 +111,12 @@
 				var inputState = this.input.readInput();
 
 				// Update
-				this.bootstrap.preUpdate(inputState);
-				Ui.update(inputState);
+				this.bootstrap.preUpdate(this.world, inputState);
+				Ui.update(this.world, inputState);
 				if (!Ui.isScreenActive()) {
 					this.world.update(inputState);
 				}
-				this.bootstrap.postUpdate(inputState);
+				this.bootstrap.postUpdate(this.world, inputState);
 
 				nextGameTick += skipTicks;
 				loops++;
@@ -104,29 +125,23 @@
 
 			// Render
 			renderStats.begin();
-			this.bootstrap.preRender();
+			this.bootstrap.preRender(this.graphics);
 			this.graphics.clear();
 			if (!Ui.isScreenActive()) {
 				this.world.render(this.graphics);
 			}
 			Ui.render(this.uiGraphics);
-			this.bootstrap.postRender();
+			this.bootstrap.postRender(this.graphics);
 			renderStats.end();
 
 			fpsStats.update();
 		};
 	})();
 
-	Game.Bootstrap = function () {};
-	Game.Bootstrap.prototype.start = function () {
-		throw 'The game must implement a start method.';
-	};
-	Game.Bootstrap.prototype.preUpdate = function () {};
-	Game.Bootstrap.prototype.postUpdate = function () {};
-	Game.Bootstrap.prototype.preRender = function () {};
-	Game.Bootstrap.prototype.postRender = function () {};
-	Game.Bootstrap.prototype.suspend = function () {};
-	Game.Bootstrap.prototype.resume = function () {};
+	function tick() {
+		session.run();
+		window.requestAnimationFrame(tick, document.body);
+	}
 
 	function createStats(mode) {
 		var s = new Stats();
@@ -147,21 +162,23 @@
 		};
 	}
 
-	document.addEventListener('visibilitychange', function () {
-		if (document.hidden) {
-			Game.suspend();
-		}
-		else {
-			Game.resume();
-		}
-	}, false);
+	function registerGlobalEventHandlers() {
+		document.addEventListener('visibilitychange', function () {
+			if (document.hidden) {
+				Game.suspend();
+			}
+			else {
+				Game.resume();
+			}
+		}, false);
 
-	window.addEventListener('blur', function () {
-		Game.suspend();
-	}, false);
-	window.addEventListener('focus', function () {
-		Game.resume();
-	}, false);
+		window.addEventListener('blur', function () {
+			Game.suspend();
+		}, false);
+		window.addEventListener('focus', function () {
+			Game.resume();
+		}, false);
+	}
 
 	window.Game = Game;
-})();
+})(window, document);

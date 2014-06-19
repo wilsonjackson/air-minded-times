@@ -1,6 +1,6 @@
-/* globals Vector, Game, Orientation */
+/* globals Game, Vector */
 
-(function () {
+(function (Game, Vector) {
 	'use strict';
 
 	function Graphics(viewport) {
@@ -40,7 +40,7 @@
 	Graphics.prototype.drawSprite = function (sprite, x, y, orientation) {
 		var translated;
 		var context = this.viewport.context;
-		if (orientation && orientation !== Orientation.NORTH) {
+		if (orientation && orientation !== Game.physics.Orientation.NORTH) {
 			// 1. Center the canvas over the center of the sprite.
 			// 2. Rotate the canvas in accordance with the object's orientation (so the direction it should be facing
 			//    is up).
@@ -380,12 +380,12 @@
 	};
 
 	TextSprite.prototype.fullWidth = function () {
-		this.w = Game.uiGraphics.viewport.width;
+		this.w = Game.getViewport().width;
 		return this;
 	};
 
 	TextSprite.prototype.fullHeight = function () {
-		this.h = Game.uiGraphics.viewport.height;
+		this.h = Game.getViewport().height;
 		return this;
 	};
 
@@ -446,14 +446,16 @@
 		graphics.drawSprite(this.sprite, gridX, gridY);
 	};
 
-	window.Graphics = Graphics;
-	window.Viewport = Viewport;
-	window.SpriteRepository = SpriteRepository;
-	window.Sprite = Sprite;
-	window.SpriteAnimator = SpriteAnimator;
-	window.SpriteStack = SpriteStack;
-	window.FontSprite = FontSprite;
-	window.TextSprite = TextSprite;
-	window.BoxSprite = BoxSprite;
-	window.Terrain = Terrain;
-})();
+	Game.graphics = {
+		Graphics: Graphics,
+		Viewport: Viewport,
+		SpriteRepository: SpriteRepository,
+		Sprite: Sprite,
+		SpriteAnimator: SpriteAnimator,
+		SpriteStack: SpriteStack,
+		FontSprite: FontSprite,
+		TextSprite: TextSprite,
+		BoxSprite: BoxSprite,
+		Terrain: Terrain
+	};
+})(Game, Vector);

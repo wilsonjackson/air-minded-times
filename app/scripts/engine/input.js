@@ -1,4 +1,6 @@
-(function () {
+/* global Game */
+
+(function (Game) {
 	'use strict';
 
 	function Input() {
@@ -74,6 +76,8 @@
 		return this.released.indexOf(button) !== -1;
 	};
 
-	window.Input = Input;
-	window.InputState = InputState;
-})();
+	Game.input = {
+		Input: Input,
+		InputState: InputState
+	};
+})(Game);

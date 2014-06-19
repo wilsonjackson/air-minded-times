@@ -1,6 +1,6 @@
 /* global Game */
 
-(function () {
+(function (Game) {
 	'use strict';
 
 	function DefaultLogger() {
@@ -27,5 +27,7 @@
 		console.error.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 	};
 
-	window.DefaultLogger = DefaultLogger;
-})();
+	Game.logging = {
+		DefaultLogger: DefaultLogger
+	};
+})(Game);

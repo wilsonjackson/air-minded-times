@@ -1,7 +1,14 @@
-/* globals Vector, ObjectFactory, ObjectType, SpriteObject, SpriteRepository, Orientation, EntityCategory */
+/* globals Game, AirMindedTimes, Vector */
 
-(function () {
+(function (Game, AirMindedTimes, Vector) {
 	'use strict';
+
+	var Orientation = Game.physics.Orientation;
+	var EntityCategory = Game.physics.EntityCategory;
+	var ObjectFactory = Game.objects.ObjectFactory;
+	var ObjectType = Game.objects.ObjectType;
+	var SpriteObject = Game.objects.SpriteObject;
+	var SpriteRepository = Game.graphics.SpriteRepository;
 
 	function Bullet() {
 		this.type = ObjectType.PROJECTILE;
@@ -74,4 +81,4 @@
 	ObjectFactory.register('projectile/bullet', Bullet);
 	ObjectFactory.register('projectile/tesla', Tesla);
 	ObjectFactory.register('projectile/spray', Spray);
-})();
+})(Game, AirMindedTimes, Vector);

@@ -1,7 +1,15 @@
-/* globals ObjectFactory, ObjectType, SpriteObject, SpriteRepository, SpriteAnimator, SpriteStack, EntityCategory */
+/* globals Game */
 
-(function () {
+(function (Game) {
 	'use strict';
+
+	var ObjectFactory = Game.objects.ObjectFactory;
+	var ObjectType = Game.objects.ObjectType;
+	var SpriteObject = Game.objects.SpriteObject;
+	var SpriteRepository = Game.graphics.SpriteRepository;
+	var SpriteAnimator = Game.graphics.SpriteAnimator;
+	var SpriteStack = Game.graphics.SpriteStack;
+	var EntityCategory = Game.physics.EntityCategory;
 
 	function Enemy() {
 		this.type = ObjectType.ENEMY;
@@ -171,4 +179,4 @@
 	ObjectFactory.register('decoration/egg-mountain', createEggPileConstructor('decoration/egg-mountain'));
 	ObjectFactory.register('decoration/hatched-egg-pile', createEggPileConstructor('decoration/hatched-egg-pile'));
 	ObjectFactory.register('decoration/hatched-egg-mound', createEggPileConstructor('decoration/hatched-egg-mound'));
-})();
+})(Game);

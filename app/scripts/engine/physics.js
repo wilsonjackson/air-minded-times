@@ -1,7 +1,7 @@
 /* jshint bitwise: false */
-/* globals Events, QuadTree, Vector, BoundingRect, BoundingCircle */
+/* globals Game, Events, QuadTree, Vector, BoundingRect, BoundingCircle */
 
-(function () {
+(function (Game, Events, QuadTree, Vector, BoundingRect, BoundingCircle) {
 	'use strict';
 
 	function isFunction(o) {
@@ -310,10 +310,12 @@
 		return this.radians;
 	};
 
+	//noinspection JSUnusedGlobalSymbols
 	Orientation.prototype.isXAxis = function () {
 		return this.radians % Math.PI !== 0;
 	};
 
+	//noinspection JSUnusedGlobalSymbols
 	Orientation.prototype.isYAxis = function () {
 		return this.radians % Math.PI === 0;
 	};
@@ -328,6 +330,7 @@
 		}
 	};
 
+	//noinspection JSUnusedGlobalSymbols
 	Orientation.prototype.translateNESW = function (north, east, south, west) {
 		switch (this.radians) {
 			case RADIANS_N:
@@ -350,7 +353,9 @@
 	Orientation.SOUTH = new Orientation(RADIANS_S);
 	Orientation.WEST = new Orientation(RADIANS_W);
 
-	window.Physics = Physics;
-	window.EntityCategory = EntityCategory;
-	window.Orientation = Orientation;
-})();
+	Game.physics = {
+		Physics: Physics,
+		EntityCategory: EntityCategory,
+		Orientation: Orientation
+	};
+})(Game, Events, QuadTree, Vector, BoundingRect, BoundingCircle);

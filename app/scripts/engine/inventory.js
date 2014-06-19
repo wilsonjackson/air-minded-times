@@ -1,6 +1,6 @@
-/* global Events */
+/* global Game, Events */
 
-(function () {
+(function (Game, Events) {
 	'use strict';
 
 	function Inventory() {
@@ -77,6 +77,8 @@
 		};
 	})();
 
-	window.Inventory = Inventory;
-	window.ItemRepository = ItemRepository;
-})();
+	Game.inventory = {
+		Inventory: Inventory,
+		ItemRepository: ItemRepository
+	};
+})(Game, Events);

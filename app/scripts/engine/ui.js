@@ -1,9 +1,11 @@
-(function () {
+/* global Game */
+
+(function (Game) {
 	'use strict';
 
 	function CoverScreen() {}
 	CoverScreen.prototype.activate = function () {};
-	CoverScreen.prototype.update = function (/*input*/) {};
+	CoverScreen.prototype.update = function (/*world, input*/) {};
 	CoverScreen.prototype.render = function (/*graphics*/) {};
 
 	function HudComponent(offset, width, height) {
@@ -29,7 +31,7 @@
 		this.removed = false;
 	};
 
-	window.Ui = (function () {
+	var Ui = (function () {
 		var hud = [null, null, null, null];
 		var offsets = [[false, false], [true, false], [true, true], [false, true]];
 
@@ -61,13 +63,13 @@
 				return hud[corner];
 			},
 
-			menu: function () {
+//			menu: function () {
+//
+//			},
 
-			},
-
-			update: function (input) {
+			update: function (world, input) {
 				if (this.activeScreen !== null) {
-					this.activeScreen.update(input);
+					this.activeScreen.update(world, input);
 				}
 			},
 
@@ -92,5 +94,8 @@
 		};
 	})();
 
-	window.CoverScreen = CoverScreen;
-})();
+	Game.ui = {
+		Ui: Ui,
+		CoverScreen: CoverScreen
+	};
+})(Game);

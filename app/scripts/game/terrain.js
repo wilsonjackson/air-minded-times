@@ -1,7 +1,10 @@
-/* global Terrain, SpriteRepository */
+/* global Game */
 
-(function () {
+(function (Game) {
 	'use strict';
+
+	var SpriteRepository = Game.graphics.SpriteRepository;
+	var Terrain = Game.graphics.Terrain;
 
 	function addTerrainSprite(name, url, tileSize, width, height, impassableTiles) {
 		for (var y = 0; y < height; y++) {
@@ -24,4 +27,4 @@
 	addTerrainSprite('terrain/level1', 'terrain/level1.png', 100, 10, 7, [
 			5 * 10 + 1, 5 * 10 + 2, 5 * 10 + 3
 	]);
-})();
+})(Game);

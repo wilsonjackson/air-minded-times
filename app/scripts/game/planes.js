@@ -1,7 +1,12 @@
-/* globals Vector, Orientation, SpriteRepository, SpriteAnimator, SpriteStack */
+/* globals Game, AirMindedTimes, Vector */
 
-(function () {
+(function (Game, AirMindedTimes, Vector) {
 	'use strict';
+
+	var Orientation = Game.physics.Orientation;
+	var SpriteRepository = Game.graphics.SpriteRepository;
+	var SpriteAnimator = Game.graphics.SpriteAnimator;
+	var SpriteStack = Game.graphics.SpriteStack;
 
 	function Plane() {
 		this.bulletType = 'projectile/bullet';
@@ -150,9 +155,9 @@
 		}
 	};
 
-	window.Planes = {
+	AirMindedTimes.planes = {
 		THE_EXTENDED_FAREWELL: TheExtendedFarewell,
 		GREEN_WONDERFUL: GreenWonderful,
 		JUSTICE_GLIDER_MKIV: JusticeGliderMkiv
 	};
-})();
+})(Game, AirMindedTimes, Vector);

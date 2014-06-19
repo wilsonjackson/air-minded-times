@@ -1,7 +1,11 @@
-/* global SpriteRepository, FontSprite, BoxSprite */
+/* global Game */
 
-(function () {
+(function (Game) {
 	'use strict';
+
+	var SpriteRepository = Game.graphics.SpriteRepository;
+	var FontSprite = Game.graphics.FontSprite;
+	var BoxSprite = Game.graphics.BoxSprite;
 
 	function isFunction(o) {
 		return !!(o && o.constructor && o.call && o.apply);
@@ -85,4 +89,4 @@
 		.forEach(function (spriteDef) {
 			SpriteRepository.add(spriteDef);
 		});
-})();
+})(Game);

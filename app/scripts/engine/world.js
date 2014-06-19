@@ -1,7 +1,10 @@
-/* global Physics, Terrain, ObjectFactory, EntityCategory */
+/* global Game */
 
-(function () {
+(function (Game) {
 	'use strict';
+
+	var Physics = Game.physics.Physics;
+	var EntityCategory = Game.physics.EntityCategory;
 
 	var DEBUG_DRAW_MAP_OBSTACLES = false;
 
@@ -46,7 +49,7 @@
 	};
 
 	World.prototype.spawnObject = function (id, x, y, orientation) {
-		this.addObject(ObjectFactory.spawn(id, x, y, orientation));
+		this.addObject(Game.objects.ObjectFactory.spawn(id, x, y, orientation));
 	};
 
 	World.prototype.firstObjectOfType = function (type) {
@@ -79,7 +82,7 @@
 
 		var world = this;
 		world.map = map;
-		world.terrain = Terrain.readMapTerrain(map.terrain);
+		world.terrain = Game.graphics.Terrain.readMapTerrain(map.terrain);
 		world.width = map.width * map.tileSize;
 		world.height = Math.ceil(world.terrain.length / map.width) * map.tileSize;
 
@@ -153,5 +156,7 @@
 		}
 	};
 
-	window.World = World;
-})();
+	Game.world = {
+		World: World
+	};
+})(Game);

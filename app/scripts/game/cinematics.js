@@ -1,7 +1,13 @@
-/* global SpriteRepository, TextSprite, CoverScreen, Input, Ui, TitleScreen */
+/* global Game, AirMindedTimes */
 
-(function () {
+(function (Game, AirMindedTimes) {
 	'use strict';
+
+	var Ui = Game.ui.Ui;
+	var CoverScreen = Game.ui.CoverScreen;
+	var Input = Game.input.Input;
+	var SpriteRepository = Game.graphics.SpriteRepository;
+	var TextSprite = Game.graphics.TextSprite;
 
 	var fontSprite = SpriteRepository.retrieve('font/fz');
 
@@ -18,9 +24,9 @@
 
 	IntroScene1.prototype = new CoverScreen();
 
-	IntroScene1.prototype.update = function (input) {
+	IntroScene1.prototype.update = function (world, input) {
 		if (input.isPressed(Input.ACTION)) {
-			Ui.activateScreen(new TitleScreen());
+			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
 			return;
 		}
 		if (--this.frames === 0) {
@@ -46,9 +52,9 @@
 
 	IntroScene2.prototype = new CoverScreen();
 
-	IntroScene2.prototype.update = function (input) {
+	IntroScene2.prototype.update = function (world, input) {
 		if (input.isPressed(Input.ACTION)) {
-			Ui.activateScreen(new TitleScreen());
+			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
 			return;
 		}
 		if (--this.frames === 0) {
@@ -75,12 +81,12 @@
 
 	IntroScene3.prototype = new CoverScreen();
 
-	IntroScene3.prototype.update = function (input) {
+	IntroScene3.prototype.update = function (world, input) {
 		if (input.isPressed(Input.ACTION)) {
-			Ui.activateScreen(new TitleScreen());
+			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
 		}
 		else if (++this.frameCount === this.frames) {
-			Ui.activateScreen(new TitleScreen());
+			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
 		}
 	};
 
@@ -116,5 +122,7 @@
 		}
 	};
 
-	window.IntroScene1 = IntroScene1;
-})();
+	AirMindedTimes.cinematics = {
+		IntroScene1: IntroScene1
+	};
+})(Game, AirMindedTimes);

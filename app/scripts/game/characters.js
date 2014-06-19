@@ -1,14 +1,21 @@
-/* global Game, CoverScreen, Ui, Input, Planes, SpriteRepository, TextSprite, PlaneSelection */
+/* global Game, AirMindedTimes */
 
-(function () {
+(function (Game, AirMindedTimes) {
 	'use strict';
 
+	var Ui = Game.ui.Ui;
+	var CoverScreen = Game.ui.CoverScreen;
+	var Input = Game.input.Input;
+	var SpriteRepository = Game.graphics.SpriteRepository;
+	var TextSprite = Game.graphics.TextSprite;
+
 	var fontSprite = SpriteRepository.retrieve('font/fz');
+	var boxSprite = SpriteRepository.retrieve('interface/box');
 
 	function CharacterSelectionScreen() {
 		this.heading = new TextSprite(fontSprite, ['Select your plane!']);
-		this.greenWonderful = new Planes.GREEN_WONDERFUL();
-		this.theExtendedFarewell = new Planes.THE_EXTENDED_FAREWELL();
+		this.greenWonderful = new AirMindedTimes.planes.GREEN_WONDERFUL();
+		this.theExtendedFarewell = new AirMindedTimes.planes.THE_EXTENDED_FAREWELL();
 		this.selection = this.greenWonderful;
 		this.selected = false;
 		this.startCountdown = 50;
@@ -17,15 +24,15 @@
 
 	CharacterSelectionScreen.prototype = new CoverScreen();
 
-	CharacterSelectionScreen.prototype.update = function (input) {
+	CharacterSelectionScreen.prototype.update = function (world, input) {
 		if (input.isPressed(Input.ACTION)) {
 			this.selected = true;
 		}
 		if (this.selected) {
 			if (--this.startCountdown === 0) {
-				PlaneSelection.plane = this.selection;
+				AirMindedTimes.player.PlaneSelection.plane = this.selection;
 				Ui.deactivateScreen();
-				Game.world.loadMap(Map.LEVEL2);
+				world.loadMap(AirMindedTimes.maps.LEVEL2);
 			}
 			if (this.startCountdown % 10 === 0) {
 				this.hideBox = !this.hideBox;
@@ -54,10 +61,9 @@
 					selectionVertCenter - fillSize / 2,
 				fillSize, fillSize);
 
-			var box = SpriteRepository.retrieve('interface/box');
-			box.setWidth(boxSize);
-			box.setHeight(boxSize);
-			graphics.drawSprite(box, center.x + selectionOffset, selectionVertCenter);
+			boxSprite.setWidth(boxSize);
+			boxSprite.setHeight(boxSize);
+			graphics.drawSprite(boxSprite, center.x + selectionOffset, selectionVertCenter);
 		}
 
 		graphics.drawSprite(this.greenWonderful.sprite, center.x - 125, selectionVertCenter);
@@ -70,5 +76,7 @@
 		graphics.drawSprite(description, center.x, selectionVertCenter + boxSize / 2 + 270);
 	};
 
-	window.CharacterSelectionScreen = CharacterSelectionScreen;
-})();
+	AirMindedTimes.characters = {
+		CharacterSelectionScreen: CharacterSelectionScreen
+	};
+})(Game, AirMindedTimes);

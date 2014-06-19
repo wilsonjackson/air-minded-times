@@ -1,16 +1,19 @@
-/* globals Game, Events, SpriteRepository, Physics, EntityCategory, Orientation, BoundingCircle, BoundingRect */
+/* globals Game, Events, BoundingCircle, BoundingRect */
 
-(function () {
+(function (Game, Events, BoundingCircle, BoundingRect) {
 	'use strict';
+
+	var Physics = Game.physics.Physics;
+	var Orientation = Game.physics.Orientation;
 
 	var DEBUG_COLLISIONS = false;
 	var DEBUG_SPRITE = false;
 
 	function SpriteObject() {
 		this.events = new Events();
-		this.sprite = SpriteRepository.NULL_SPRITE;
+		this.sprite = Game.graphics.SpriteRepository.NULL_SPRITE;
 
-		this.entityCategory = EntityCategory.OBSTACLE;
+		this.entityCategory = Game.physics.EntityCategory.OBSTACLE;
 		this.entityShape = SpriteObject.SHAPE_RECT;
 		this.entity = null;
 	}
@@ -126,7 +129,9 @@
 		PROJECTILE: 'projectile'
 	};
 
-	window.SpriteObject = SpriteObject;
-	window.ObjectFactory = ObjectFactory;
-	window.ObjectType = ObjectType;
-})();
+	Game.objects = {
+		SpriteObject: SpriteObject,
+		ObjectFactory: ObjectFactory,
+		ObjectType: ObjectType
+	};
+})(Game, Events, BoundingCircle, BoundingRect);

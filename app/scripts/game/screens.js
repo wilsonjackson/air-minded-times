@@ -1,8 +1,13 @@
-/* global Input, Ui, SpriteRepository, TextSprite, CoverScreen, CharacterSelectionScreen */
+/* global Game, AirMindedTimes */
 
-(function () {
+(function (Game, AirMindedTimes) {
 	'use strict';
 
+	var Input = Game.input.Input;
+	var Ui = Game.ui.Ui;
+	var CoverScreen = Game.ui.CoverScreen;
+	var SpriteRepository = Game.graphics.SpriteRepository;
+	var TextSprite = Game.graphics.TextSprite;
 	var titleScreenSprite = SpriteRepository.retrieve('title');
 	var fontSprite = SpriteRepository.retrieve('font/fz');
 
@@ -13,9 +18,9 @@
 
 	TitleScreen.prototype = new CoverScreen();
 
-	TitleScreen.prototype.update = function (input) {
+	TitleScreen.prototype.update = function (world, input) {
 		if (this.startOnNextTick) {
-			Ui.activateScreen(new CharacterSelectionScreen());
+			Ui.activateScreen(new AirMindedTimes.characters.CharacterSelectionScreen());
 		}
 		if (input.isPressed(Input.ACTION)) {
 			this.startOnNextTick = true;
@@ -37,7 +42,7 @@
 
 	PauseScreen.prototype = new CoverScreen();
 
-	PauseScreen.prototype.update = function (input) {
+	PauseScreen.prototype.update = function (world, input) {
 		if (input.isPressed(Input.PAUSE) && !this.firstTick) {
 			Ui.deactivateScreen();
 		}
@@ -49,6 +54,8 @@
 		graphics.drawSprite(this.text, center.x, center.y);
 	};
 
-	window.TitleScreen = TitleScreen;
-	window.PauseScreen = PauseScreen;
-})();
+	AirMindedTimes.screens = {
+		TitleScreen: TitleScreen,
+		PauseScreen: PauseScreen
+	};
+})(Game, AirMindedTimes);
