@@ -15,7 +15,7 @@
 
 	function PlayerMovement() {
 		this.changed = false;
-		AirMindedTimes.gameplay.GameplayMode.addListener(this);
+		AirMindedTimes.gameplay.GameplayMode.addObserver(this);
 	}
 
 	PlayerMovement.prototype.notify = function (mode) {
@@ -36,7 +36,7 @@
 	};
 
 	PlayerMovement.prototype.destroy = function () {
-		AirMindedTimes.gameplay.GameplayMode.removeListener(this);
+		AirMindedTimes.gameplay.GameplayMode.removeObserver(this);
 	};
 
 	var OmnidirectionalMovement = {

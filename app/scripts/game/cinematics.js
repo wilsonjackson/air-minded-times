@@ -12,7 +12,7 @@
 	var fontSprite = SpriteRepository.retrieve('font/fz');
 
 	function IntroScene1() {
-		this.frames = 200;
+		this.ticks = 200;
 		this.slide = new Slide(SpriteRepository.retrieve('intro/governments'), 10, 60, -1, 50);
 		this.text = new Slide(
 			new TextSprite(fontSprite, ['All governments have fallen.'])
@@ -29,7 +29,7 @@
 			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
 			return;
 		}
-		if (--this.frames === 0) {
+		if (--this.ticks === 0) {
 			Ui.activateScreen(new IntroScene2());
 		}
 	};
@@ -40,7 +40,7 @@
 	};
 
 	function IntroScene2() {
-		this.frames = 200;
+		this.ticks = 200;
 		this.slide = new Slide(SpriteRepository.retrieve('intro/sky-meat'), 10, 60, 1, 50);
 		this.text = new Slide(
 			new TextSprite(fontSprite, ['Sky meat has become a commodity.'])
@@ -57,7 +57,7 @@
 			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
 			return;
 		}
-		if (--this.frames === 0) {
+		if (--this.ticks === 0) {
 			Ui.activateScreen(new IntroScene3());
 		}
 	};
@@ -68,10 +68,10 @@
 	};
 
 	function IntroScene3() {
-		this.frames = 180;
-		this.frameCount = -1;
+		this.ticks = 180;
+		this.tickCount = -1;
 		this.alpha = [0, 0.25, 0.5, 0.75, 1];
-		this.alphaFrames = 25;
+		this.alphaTicks = 25;
 		this.currentAlpha = 0;
 		this.text = new TextSprite(fontSprite, ['It seems that these must certainly be...'])
 			.fullWidth()
@@ -85,14 +85,14 @@
 		if (input.isPressed(Input.ACTION)) {
 			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
 		}
-		else if (++this.frameCount === this.frames) {
+		else if (++this.tickCount === this.ticks) {
 			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
 		}
 	};
 
 	IntroScene3.prototype.render = function (graphics) {
 		var context = graphics.viewport.context;
-		if (this.alpha.length && this.frameCount % this.alphaFrames === 0) {
+		if (this.alpha.length && this.tickCount % this.alphaTicks === 0) {
 			this.currentAlpha = this.alpha.shift();
 		}
 		context.globalAlpha = this.currentAlpha;
@@ -102,7 +102,7 @@
 	};
 
 	function Slide(sprite,  firstFrame, duration, direction, yOffset) {
-		this.frameCount = 0;
+		this.tickCount = 0;
 		this.sprite = sprite;
 		this.firstFrame = firstFrame;
 		this.duration = duration;
@@ -112,7 +112,7 @@
 	}
 
 	Slide.prototype.render = function (graphics) {
-		if (++this.frameCount >= this.firstFrame) {
+		if (++this.tickCount >= this.firstFrame) {
 			if (--this.duration >= 0) {
 				this.xOffset -= this.unit;
 			}

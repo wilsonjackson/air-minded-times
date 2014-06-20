@@ -33,7 +33,7 @@
 		Game.logger.info('Starting preload');
 		Game.graphics.SpriteRepository.preload().then(function () {
 			Game.logger.info('Preload complete');
-			session.bootstrap.start();
+			session.bootstrap.start(session.world);
 			nextGameTick = new Date().getTime();
 			tick();
 		});
@@ -56,6 +56,10 @@
 		nextGameTick = new Date().getTime();
 		suspended = false;
 		session.bootstrap.resume();
+	};
+
+	Game.getWorld = function () {
+		return session.world;
 	};
 
 	Game.getViewport = function () {

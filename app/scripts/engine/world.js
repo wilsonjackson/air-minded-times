@@ -5,6 +5,7 @@
 
 	var Physics = Game.physics.Physics;
 	var EntityCategory = Game.physics.EntityCategory;
+	var ObjectType = Game.objects.ObjectType;
 
 	var DEBUG_DRAW_MAP_OBSTACLES = false;
 
@@ -12,14 +13,29 @@
 		this.graphics = graphics;
 		this.map = null;
 		this.terrain = [];
+		this.interlopers = [];
 		this.objects = [];
 		this.width = 0;
 		this.height = 0;
 		this._removeObjectCallback = this.removeObject.bind(this);
 	}
 
+	World.prototype.getPlayers = function () {
+		var players = [];
+		for (var i = 0, len = this.objects.length; i < len; i++) {
+			if (this.objects[i] !== null && this.objects[i].type === ObjectType.PLAYER) {
+				players.push(this.objects[i]);
+			}
+		}
+		return players;
+	};
+
 	World.prototype.setBackground = function (background) {
 		this.graphics.setBackground(background);
+	};
+
+	World.prototype.getCenter = function () {
+		return this.graphics.getCenter();
 	};
 
 	World.prototype.centerOn = function (x, y, w, h) {
@@ -27,7 +43,7 @@
 	};
 
 	World.prototype.addObject = function (object) {
-		this.objects.push(object);
+		this.objects[this.objects.length] = object;
 		object.onDestroy(this._removeObjectCallback);
 	};
 
@@ -40,10 +56,28 @@
 		}
 	};
 
-	World.prototype._cleanRemovedObjects = function () {
-		for (var i = 0, len = this.objects.length; i < len; i++) {
+	World.prototype.addInterloper = function (interloper) {
+		this.interlopers[this.interlopers.length] = interloper;
+		interloper.init(this);
+	};
+
+	World.prototype.removeInterloper = function (interloper) {
+		var i = this.interlopers.indexOf(interloper);
+		if (i > -1) {
+			this.interlopers[i] = null;
+		}
+	};
+
+	World.prototype._cleanAfterUpdate = function () {
+		var i, len;
+		for (i = 0, len = this.objects.length; i < len; i++) {
 			if (this.objects[i] === null) {
 				this.objects.splice(i--, 1);
+			}
+		}
+		for (i = 0, len = this.interlopers.length; i < len; i++) {
+			if (this.interlopers[i] === null) {
+				this.interlopers.splice(i--, 1);
 			}
 		}
 	};
@@ -78,6 +112,9 @@
 	};
 
 	World.prototype.loadMap = function (map) {
+		Game.logger.info('Loading new map');
+
+		var i, len;
 		this.reset();
 
 		var world = this;
@@ -94,7 +131,7 @@
 
 		this.mapEntities = [];
 		// Create impassable tile entities
-		for (var i = 0, len = world.terrain.length; i < len; i++) {
+		for (i = 0, len = world.terrain.length; i < len; i++) {
 			if (world.terrain[i].impassable) {
 				var row = Math.floor(i / map.width);
 				var col = i % map.width;
@@ -107,22 +144,40 @@
 		map.objects.forEach(function (object) {
 			world.spawnObject(object.id, object.x, object.y, object.orientation);
 		});
+
+		for (i = 0, len = this.interlopers.length; i < len; i++) {
+			if (this.interlopers[i] !== null) {
+				this.interlopers[i].mapChange(this, map);
+			}
+		}
 	};
 
 	World.prototype.update = function (inputState) {
-		var wasUpdated = false;
-		for (var i = 0, len = this.objects.length; i < len; i++) {
-			// Defend against objects deleted during update
-			if (this.objects[i] === null) {
-				continue;
+		var i, len;
+		for (i = 0, len = this.interlopers.length; i < len; i++) {
+			if (this.interlopers[i] !== null) {
+				this.interlopers[i].preUpdate(this, inputState);
 			}
-			var updated = this.objects[i].update(this, inputState);
-			wasUpdated = wasUpdated || updated;
+		}
+		for (i = 0, len = this.objects.length; i < len; i++) {
+			// Defend against objects deleted during update
+			if (this.objects[i] !== null) {
+				this.objects[i].update(this, inputState);
+			}
+		}
+		for (i = 0, len = this.interlopers.length; i < len; i++) {
+			if (this.interlopers[i] !== null) {
+				this.interlopers[i].prePhysics(this, inputState);
+			}
 		}
 		Physics.update();
+		for (i = 0, len = this.interlopers.length; i < len; i++) {
+			if (this.interlopers[i] !== null) {
+				this.interlopers[i].postUpdate(this, inputState);
+			}
+		}
 		// Clean up deleted objects after update and physics
-		this._cleanRemovedObjects();
-		return wasUpdated;
+		this._cleanAfterUpdate();
 	};
 
 	World.prototype.render = function (graphics) {
@@ -156,7 +211,15 @@
 		}
 	};
 
+	function Interloper() {}
+	Interloper.prototype.init = function (/*world*/) {};
+	Interloper.prototype.mapChange = function (/*world, map*/) {};
+	Interloper.prototype.preUpdate = function (/*world, input*/) {};
+	Interloper.prototype.prePhysics = function (/*world, input*/) {};
+	Interloper.prototype.postUpdate = function (/*world, input*/) {};
+
 	Game.world = {
-		World: World
+		World: World,
+		Interloper: Interloper
 	};
 })(Game);
