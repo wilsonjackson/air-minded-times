@@ -10,13 +10,17 @@
 
 	function notifyObservers() {
 		for (var i = 0, len = observers.length; i < len; i++) {
-			observers[i].notify(currentMode);
+			observers[i].notify(GameplayMode);
 		}
 	}
 
 	var GameplayMode = {
 		FREE_ROAM: 'FREE_ROAM',
 		SCROLLING: 'SCROLLING',
+
+		getMode: function () {
+			return currentMode;
+		},
 
 		setMode: function (mode) {
 			currentMode = mode;
@@ -26,7 +30,7 @@
 		addObserver: function (observer, suppressImmediateNotify) {
 			observers.push(observer);
 			if (currentMode && !suppressImmediateNotify) {
-				observer.notify(currentMode);
+				observer.notify(this);
 			}
 		},
 
@@ -94,7 +98,8 @@
 	};
 
 	GameplayMode.addObserver({
-		notify: function (mode) {
+		notify: function (gameplayMode) {
+			var mode = gameplayMode.getMode();
 			if (mode === GameplayMode.SCROLLING) {
 				installInterloper(Game.getWorld(), new AutoScroller());
 			}

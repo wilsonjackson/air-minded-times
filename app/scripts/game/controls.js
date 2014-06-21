@@ -18,8 +18,8 @@
 		AirMindedTimes.gameplay.GameplayMode.addObserver(this);
 	}
 
-	PlayerMovement.prototype.notify = function (mode) {
-		this.movement = movementMap[mode];
+	PlayerMovement.prototype.notify = function (gameplayMode) {
+		this.movement = movementMap[gameplayMode.getMode()];
 		this.changed = true;
 	};
 

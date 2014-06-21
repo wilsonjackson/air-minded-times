@@ -17,5 +17,14 @@
     "strict": true,
     "trailing": true,
     "smarttabs": true,
-    "jquery": true
+    "jquery": true,
+	"predef": [
+		"Game",
+		"AirMindedTimes",
+		"Vector",
+		"BoundingRect",
+		"BoundingCircle",
+		"QuadTree",
+		"Events"
+	]
 }
