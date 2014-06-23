@@ -23,6 +23,7 @@
 		"AirMindedTimes",
 		"Vector",
 		"BoundingRect",
+		"CompositeBoundingRect",
 		"BoundingCircle",
 		"QuadTree",
 		"Events"

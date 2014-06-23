@@ -5,7 +5,7 @@
 
 	var Orientation = Game.physics.Orientation;
 
-	AirMindedTimes.maps = {
+	AirMindedTimes.levels = {
 		TEST_MAP: {
 			tileSize: 100,
 			width: 14,
