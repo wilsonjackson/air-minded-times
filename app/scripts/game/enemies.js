@@ -62,7 +62,7 @@
 	Enemy.prototype.drop = function () {};
 
 	function ShellEnemy() {
-		this.hp = 5;
+		this.hp = 3;
 		this.sprite = new SpriteAnimator(25, [
 			SpriteRepository.retrieve('enemy/shell-1'),
 			SpriteRepository.retrieve('enemy/shell-2')
