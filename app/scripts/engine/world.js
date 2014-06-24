@@ -131,22 +131,12 @@
 
 		this.mapEntities = [];
 		// Create impassable tile entities
-		if (map.impassable && map.impassable.length > 0) {
-			for (i = 0, len = map.impassable.length; i < len; i++) {
-				var wall = map.impassable[i];
-				this.mapEntities[this.mapEntities.length] = Physics.newRectEntity(EntityCategory.WALL, wall[0], wall[1], wall[2], wall[3])
-					.setStatic();
-			}
-		}
-		else {
-			for (i = 0, len = world.terrain.length; i < len; i++) {
-				if (world.terrain[i].impassable) {
-					var row = Math.floor(i / map.width);
-					var col = i % map.width;
-					this.mapEntities[this.mapEntities.length] = Physics.newRectEntity(EntityCategory.WALL, col * map.tileSize, row * map.tileSize, map.tileSize, map.tileSize, world.terrain[i])
-						.setStatic();
-				}
-			}
+		var grid = new Game.map.MapGrid(map.width, map.tileSize);
+		grid.load(world.terrain);
+		var boundaryRects = grid.calculateBoundaries();
+		for (i = 0, len = boundaryRects.length; i < len; i++) {
+			this.mapEntities[this.mapEntities.length] = Physics.newEntity(EntityCategory.WALL, boundaryRects[i])
+				.setStatic();
 		}
 
 		// Populate world with level objects

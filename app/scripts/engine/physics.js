@@ -67,6 +67,8 @@
 				world = _world;
 			},
 
+			newEntity: newEntity,
+
 			newRectEntity: function (category, x, y, w, h, orientation, object) {
 				return newEntity(category, new BoundingRect(new Vector(x, y), new Vector(w, h)), orientation, object);
 			},
@@ -278,6 +280,7 @@
 	EntityCategory.retrieveMatching = function (type) {
 		var matching = [];
 		for (var i in types) {
+			//noinspection JSUnfilteredForInLoop
 			if (type.isA(types[i])) {
 				matching.push(type);
 			}
