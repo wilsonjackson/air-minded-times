@@ -85,6 +85,30 @@
 		this.distance += this.scrollSpeed;
 	};
 
+	AutoScroller.prototype.prePhysics = function (world) {
+		var player = world.getPlayers()[0];
+		var nextPlayerY = player.entity.getY() + player.entity.nextMovement.y;
+		var visibleArea = world.getVisibleArea();
+		var minPlayerY = visibleArea.top() + Math.floor(visibleArea.height() / 3);
+		var maxPlayerY = visibleArea.bottom() - player.entity.getHeight();
+
+		if (nextPlayerY < minPlayerY) {
+			player.entity.impulse(0, minPlayerY - nextPlayerY);
+		}
+		if (nextPlayerY > maxPlayerY) {
+			player.entity.impulse(0, maxPlayerY - nextPlayerY);
+		}
+	};
+
+	AutoScroller.prototype.postUpdate = function (world) {
+		var player = world.getPlayers()[0];
+		var visibleArea = world.getVisibleArea();
+		var maxPlayerY = visibleArea.bottom() - player.entity.getHeight();
+		if (player.entity.getY() > maxPlayerY) {
+			// DEATH BY SQUISHING
+		}
+	};
+
 	function PlayerScroller() {
 	}
 

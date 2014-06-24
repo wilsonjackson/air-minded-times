@@ -17,6 +17,9 @@
 		var gameModeChanger = new Game.world.Interloper();
 		gameModeChanger.mapChange = function (world, map) {
 			GameplayMode.setMode(map.gameMode || GameplayMode.FREE_ROAM);
+			if (map.controller) {
+				map.controller(world, map);
+			}
 		};
 		world.addInterloper(gameModeChanger);
 

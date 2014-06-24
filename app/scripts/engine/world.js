@@ -1,6 +1,6 @@
 /* global Game */
 
-(function (Game) {
+(function (Game, Vector, BoundingRect) {
 	'use strict';
 
 	var Physics = Game.physics.Physics;
@@ -36,6 +36,12 @@
 
 	World.prototype.getCenter = function () {
 		return this.graphics.getCenter();
+	};
+
+	World.prototype.getVisibleArea = function () {
+		return new BoundingRect(
+			new Vector(this.graphics.offsetX, this.graphics.offsetY),
+			new Vector(this.graphics.viewport.width, this.graphics.viewport.height));
 	};
 
 	World.prototype.centerOn = function (x, y, w, h) {
@@ -221,4 +227,4 @@
 		World: World,
 		Interloper: Interloper
 	};
-})(Game);
+})(Game, Vector, BoundingRect);
