@@ -186,18 +186,30 @@
 			this._drawHeight);
 	};
 
+	Sprite.prototype.toString = function () {
+		return 'Sprite(src=' + this.image.src + ', x=' + this.x + ', y=' + this.y + ', w=' + this.w + ', h=' + this.h + ')';
+	};
+
+	var spriteCopyProps = [
+		'image',
+		'x',
+		'y',
+		'w',
+		'h',
+		'margins',
+		'_drawWidth',
+		'_drawHeight'
+	];
+
 	function DelegatingSprite() {
 	}
 
-	DelegatingSprite.prototype = new Sprite();
+	DelegatingSprite.prototype = Object.create(Sprite.prototype);
 
 	DelegatingSprite.prototype._copy = function () {
 		var delegate = this.delegate;
-		for (var i in delegate) {
-			if (!(i in Sprite.prototype) && i in delegate) {
-				//noinspection JSUnfilteredForInLoop
-				this[i] = delegate[i];
-			}
+		for (var i = 0, len = spriteCopyProps.length; i < len; i++) {
+			this[spriteCopyProps[i]] = delegate[spriteCopyProps[i]];
 		}
 	};
 
@@ -207,7 +219,7 @@
 		this.reset();
 	}
 
-	SpriteAnimator.prototype = new DelegatingSprite();
+	SpriteAnimator.prototype = Object.create(DelegatingSprite.prototype);
 
 	SpriteAnimator.prototype.reset = function () {
 		this.tickCount = -1;
@@ -217,6 +229,9 @@
 	};
 
 	SpriteAnimator.prototype.update = function () {
+		for (var i = 0, len = this.frames.length; i < len; i++) {
+			this.frames[i].update();
+		}
 		if (++this.tickCount === this.interval) {
 			this.tickCount = 0;
 			++this.nextIdx;
@@ -228,52 +243,70 @@
 		}
 	};
 
+	SpriteAnimator.prototype.toString = function () {
+		return 'SpriteAnimator[' + this.frames.map(function (o) {
+			return o.toString();
+		}).join(', ') + ']';
+	};
+
 	function SpriteStack(sprites) {
-		this.spriteStack = sprites || [];
+		this.stack = sprites || [];
 		if (sprites.length > 0) {
 			this._initStack();
 		}
 	}
 
-	SpriteStack.prototype = new DelegatingSprite();
+	SpriteStack.prototype = Object.create(DelegatingSprite.prototype);
 
 	SpriteStack.prototype._initStack = function () {
-		this.delegate = this.spriteStack[0];
+		this.delegate = this.stack[0];
 		this._copy();
 	};
 
 	SpriteStack.prototype.push = function (/*sprite...*/) {
-		var init = this.spriteStack.length === 0;
-		Array.prototype.push.apply(this.spriteStack, arguments);
+		var init = this.stack.length === 0;
+		Array.prototype.push.apply(this.stack, arguments);
 		if (init) {
 			this._initStack();
 		}
 	};
 
 	SpriteStack.prototype.pop = function () {
-		return this.spriteStack.pop();
+		return this.stack.pop();
 	};
 
 	SpriteStack.prototype.get = function (index) {
-		return this.spriteStack[index];
+		return this.stack[index];
+	};
+
+	SpriteStack.prototype.swap = function (index, newSprite) {
+		var oldSprite = this.stack[index];
+		this.stack[index] = newSprite;
+		return oldSprite;
 	};
 
 	SpriteStack.prototype.update = function () {
-		for (var i = 0, len = this.spriteStack.length; i < len; i++) {
-			this.spriteStack[i].update();
+		for (var i = 0, len = this.stack.length; i < len; i++) {
+			this.stack[i].update();
 		}
 	};
 
 	SpriteStack.prototype.draw = function (context, x, y) {
-		for (var i = 0, len = this.spriteStack.length; i < len; i++) {
-			this.spriteStack[i].draw(context, x, y);
+		for (var i = 0, len = this.stack.length; i < len; i++) {
+			this.stack[i].draw(context, x, y);
 		}
+	};
+
+	SpriteStack.prototype.toString = function () {
+		return 'SpriteStack[' + this.stack.map(function (o) {
+			return o.toString();
+		}).join(', ') + ']';
 	};
 
 	function BoxSprite() {
 	}
 
-	BoxSprite.prototype = new Sprite();
+	BoxSprite.prototype = Object.create(Sprite.prototype);
 
 	BoxSprite.prototype._init = function () {
 		this.sectionSize = this.getWidth() / 3;
@@ -340,7 +373,7 @@
 		this.buffer = [];
 	}
 
-	FontSprite.prototype = new Sprite();
+	FontSprite.prototype = Object.create(Sprite.prototype);
 
 	FontSprite.prototype.text = function (text) {
 		var chars = this.chars;
@@ -365,9 +398,10 @@
 		this.w = null;
 		this.h = null;
 		this.c = false;
+		this.align = 0;
 	}
 
-	TextSprite.prototype = new Sprite();
+	TextSprite.prototype = Object.create(Sprite.prototype);
 
 	TextSprite.prototype.width = function (w) {
 		this.w = w;
@@ -394,6 +428,16 @@
 		return this;
 	};
 
+	TextSprite.prototype.left = function () {
+		this.align = -1;
+		return this;
+	};
+
+	TextSprite.prototype.right = function () {
+		this.align = 1;
+		return this;
+	};
+
 	TextSprite.prototype.getWidth = function () {
 		return this.w || this.fontSprite.getWidth() * Math.max(this.text.map(function (s) {
 			return s.length;
@@ -412,10 +456,18 @@
 
 		for (var i = 0, len = self.text.length; i < len; i++) {
 			var line = self.text[i];
+			var left;
+			if (this.align === -1) {
+				left = x - this.getWidth() / 2;
+			}
+			else if (this.align === 1) {
+				left = x + this.getWidth() / 2 - charW * line.length;
+			}
+			else {
+				left = x - (self.c ? charW * line.length : this.getWidth()) / 2;
+			}
 			self.fontSprite.text(line);
-			self.fontSprite.draw(context,
-				Math.round(x - (self.c ? charW * line.length : this.getWidth()) / 2),
-				topLineY + charH * i);
+			self.fontSprite.draw(context, Math.round(left), topLineY + charH * i);
 		}
 	};
 

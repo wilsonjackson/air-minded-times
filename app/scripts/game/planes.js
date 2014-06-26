@@ -11,17 +11,48 @@
 	function Plane() {
 		this.bulletType = 'projectile/bullet';
 		this.bulletOffsets = [0];
-		this.firingDelay = 10;
-		this.readyToFire = true;
-		this.ticksPerFrame = 7;
 		this.tickCount = 0;
 		this.sprite = new SpriteStack([]);
+		this.damageSprite = this.sprite;
+		this.state = new AliveState(this);
 	}
 
 	Plane.prototype.fire = function (entity, orientation, world) {
+		this.state.fire(entity, orientation, world);
+	};
+
+	Plane.prototype.startDamage = function () {
+		this._undamagedSprite = this.sprite.swap(0, this.damageSprite);
+	};
+
+	Plane.prototype.endDamage = function () {
+		if (this._undamagedSprite) {
+			this.sprite.swap(0, this._undamagedSprite);
+		}
+	};
+
+	Plane.prototype.update = function () {
+		this.state.update();
+	};
+
+	Plane.prototype.destroy = function () {
+		this.state.destroy();
+		delete this.state;
+	};
+
+	function AliveState(plane) {
+		this.plane = plane;
+		this.firing = false;
+		this.firingDelay = 10;
+		this.readyToFire = true;
+		this.tickCount = 0;
+		this.ticksPerFrame = 7;
+	}
+
+	AliveState.prototype.fire = function (entity, orientation, world) {
 		if (this.readyToFire) {
-			if (this.muzzleFlashSprite) {
-				this.sprite.push(this.muzzleFlashSprite);
+			if (this.plane.muzzleFlashSprite) {
+				this.plane.sprite.push(this.plane.muzzleFlashSprite);
 			}
 			this._spawnBullets(entity, orientation, world);
 			this.firing = true;
@@ -29,15 +60,39 @@
 		}
 	};
 
-	Plane.prototype._spawnBullets = function (entity, orientation, world) {
-		var bulletPosition  = this._getBulletStartPosition(entity, orientation);
-		for (var i = 0, len = this.bulletOffsets.length; i < len; i++) {
-			var offset = orientation.translateXY(this.bulletOffsets[i], 0);
-			world.spawnObject(this.bulletType, bulletPosition.x + offset.x, bulletPosition.y + offset.y, orientation);
+	AliveState.prototype.end = function () {
+		if (this.firing) {
+			this.readyToFire = true;
+			this.tickCount = 0;
 		}
 	};
 
-	Plane.prototype._getBulletStartPosition = function (entity, orientation) {
+	AliveState.prototype.update = function () {
+		if (this.firing) {
+			if (++this.tickCount === this.ticksPerFrame) {
+				this.firing = false;
+				if (this.plane.muzzleFlashSprite) {
+					this.plane.sprite.pop();
+				}
+			}
+		}
+		else if (!this.readyToFire) {
+			if (++this.tickCount >= this.firingDelay) {
+				this.readyToFire = true;
+				this.tickCount = 0;
+			}
+		}
+	};
+
+	AliveState.prototype._spawnBullets = function (entity, orientation, world) {
+		var bulletPosition = this._getBulletStartPosition(entity, orientation);
+		for (var i = 0, len = this.plane.bulletOffsets.length; i < len; i++) {
+			var offset = orientation.translateXY(this.plane.bulletOffsets[i], 0);
+			world.spawnObject(this.plane.bulletType, bulletPosition.x + offset.x, bulletPosition.y + offset.y, orientation);
+		}
+	};
+
+	AliveState.prototype._getBulletStartPosition = function (entity, orientation) {
 		switch (orientation) {
 			case Orientation.NORTH:
 				return new Vector(entity.getX() + Math.round(entity.getWidth() / 2), entity.getY());
@@ -50,24 +105,13 @@
 		}
 	};
 
-	Plane.prototype.update = function () {
-		if (this.firing) {
-			if (++this.tickCount === this.ticksPerFrame) {
-				this.firing = false;
-				if (this.muzzleFlashSprite) {
-					this.sprite.pop();
-				}
-			}
-		}
-		else if (!this.readyToFire) {
-			if (++this.tickCount >= this.firingDelay) {
-				this.readyToFire = true;
-				this.tickCount = 0;
-			}
-		}
+	AliveState.prototype.destroy = function () {
+		delete this.plane;
 	};
 
 	function TheExtendedFarewell() {
+		Plane.call(this);
+
 		this.bulletType = 'projectile/tesla';
 		this.fireModes = [
 			{bulletOffsets: [-30, 30], sprite: SpriteRepository.retrieve('aero/extended-farewell-muzzle-1')},
@@ -75,11 +119,12 @@
 		];
 		this.setFireMode(this.fireModes[0]);
 
-		this.sprite.push(
-			new SpriteAnimator(3, [
-				SpriteRepository.retrieve('aero/extended-farewell-1'),
-				SpriteRepository.retrieve('aero/extended-farewell-2')
-			]));
+		var animationFrames = [
+			SpriteRepository.retrieve('aero/extended-farewell-1'),
+			SpriteRepository.retrieve('aero/extended-farewell-2')];
+		this.sprite.push(new SpriteAnimator(3, animationFrames));
+		this.damageSprite = new SpriteAnimator(3,
+			[SpriteRepository.retrieve('aero/extended-farewell-damage')].concat(animationFrames));
 
 		this.name = 'The Extended Farewell';
 		this.description = [
@@ -92,7 +137,7 @@
 				'real or extreme damage.'];
 	}
 
-	TheExtendedFarewell.prototype = new Plane();
+	TheExtendedFarewell.prototype = Object.create(Plane.prototype);
 
 	TheExtendedFarewell.prototype.setFireMode = function (fireMode) {
 		this.muzzleFlashSprite = fireMode.sprite;
@@ -100,7 +145,7 @@
 	};
 
 	TheExtendedFarewell.prototype.fire = function () {
-		if (this.readyToFire) {
+		if (this.firingState.readyToFire) {
 			var fireMode = this.fireModes.pop();
 			this.setFireMode(fireMode);
 			this.fireModes.unshift(fireMode);
@@ -109,13 +154,17 @@
 	};
 
 	function GreenWonderful() {
-		this.sprite.push(
-			new SpriteAnimator(3, [
-				SpriteRepository.retrieve('aero/green-wonderful-1'),
-				SpriteRepository.retrieve('aero/green-wonderful-2')
-			]));
-		this.muzzleFlashSprite = SpriteRepository.retrieve('aero/green-wonderful-muzzle');
+		Plane.call(this);
+
 		this.bulletOffsets = [-14, 14];
+
+		var animationFrames = [
+			SpriteRepository.retrieve('aero/green-wonderful-1'),
+			SpriteRepository.retrieve('aero/green-wonderful-2')];
+		this.sprite.push(new SpriteAnimator(3, animationFrames));
+		this.muzzleFlashSprite = SpriteRepository.retrieve('aero/green-wonderful-muzzle');
+		this.damageSprite = new SpriteAnimator(3,
+			[SpriteRepository.retrieve('aero/green-wonderful-damage')].concat(animationFrames));
 
 		this.name = 'Green Wonderful';
 		this.description = [
@@ -128,19 +177,22 @@
 				'Bird Of The Sky".'];
 	}
 
-	GreenWonderful.prototype = new Plane();
+	GreenWonderful.prototype = Object.create(Plane.prototype);
 
 	function JusticeGliderMkiv() {
+		Plane.call(this);
+
 		this.bulletType = 'projectile/spray';
+		this.bulletOffsets = [2];
+
 		this.sprite.push(
 			new SpriteAnimator(3, [
 				SpriteRepository.retrieve('aero/justice-glider-mkiv-1'),
 				SpriteRepository.retrieve('aero/justice-glider-mkiv-2')
 			]));
-		this.bulletOffsets = [2];
 	}
 
-	JusticeGliderMkiv.prototype = new Plane();
+	JusticeGliderMkiv.prototype = Object.create(Plane.prototype);
 
 	JusticeGliderMkiv.prototype._getBulletStartPosition = function (entity, orientation) {
 		switch (orientation) {

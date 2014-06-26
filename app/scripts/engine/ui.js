@@ -84,9 +84,11 @@
 								hud[i].init(this.world);
 								hud[i].initialized = true;
 							}
+							var xOffset = hud[i].width / 2;
+							var yOffset = hud[i].height / 2;
 							hud[i].render(graphics,
-								hud[i].offset[0] ? graphics.viewport.width - hud[i].width : 0,
-								hud[i].offset[1] ? graphics.viewport.height - hud[i].height : 0);
+								hud[i].offset[0] ? graphics.viewport.width - xOffset : xOffset,
+								hud[i].offset[1] ? graphics.viewport.height - yOffset : yOffset);
 						}
 					}
 				}

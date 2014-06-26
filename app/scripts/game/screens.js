@@ -16,7 +16,7 @@
 		this.text = new TextSprite(fontSprite, ['Press the SPACE BAR to start.']);
 	}
 
-	TitleScreen.prototype = new CoverScreen();
+	TitleScreen.prototype = Object.create(CoverScreen.prototype);
 
 	TitleScreen.prototype.update = function (world, input) {
 		if (this.startOnNextTick) {
@@ -40,7 +40,7 @@
 		this.text = new TextSprite(fontSprite, ['Paused']);
 	}
 
-	PauseScreen.prototype = new CoverScreen();
+	PauseScreen.prototype = Object.create(CoverScreen.prototype);
 
 	PauseScreen.prototype.update = function (world, input) {
 		if (input.isPressed(Input.PAUSE) && !this.firstTick) {

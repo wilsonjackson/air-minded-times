@@ -11,6 +11,7 @@
 	var SpriteRepository = Game.graphics.SpriteRepository;
 
 	function Bullet() {
+		SpriteObject.call(this);
 		this.type = ObjectType.PROJECTILE;
 		this.entityCategory = EntityCategory.PROJECTILE;
 		this.sprite = SpriteRepository.retrieve('projectile/bullet');
@@ -19,7 +20,7 @@
 		this.traveled = 0;
 	}
 
-	Bullet.prototype = new SpriteObject();
+	Bullet.prototype = Object.create(SpriteObject.prototype);
 
 	Bullet.prototype._init = function () {
 		switch (this.entity.getOrientation()) {
@@ -52,12 +53,14 @@
 	};
 
 	function Tesla() {
+		Bullet.call(this);
 		this.sprite = SpriteRepository.retrieve('projectile/tesla');
 	}
 
-	Tesla.prototype = new Bullet();
+	Tesla.prototype = Object.create(Bullet.prototype);
 
 	function Spray() {
+		Bullet.call(this);
 		this.bulletSprites = [
 			SpriteRepository.retrieve('projectile/spray-1'),
 			SpriteRepository.retrieve('projectile/spray-2'),
@@ -66,7 +69,7 @@
 		this._randomSprite();
 	}
 
-	Spray.prototype = new Bullet();
+	Spray.prototype = Object.create(Bullet.prototype);
 
 	Spray.prototype._randomSprite = function () {
 		var random = Math.floor(Math.random() * this.bulletSprites.length % this.bulletSprites.length);

@@ -18,22 +18,24 @@
 	});
 
 	function SkyMeat() {
+		SpriteObject.call(this);
 		this.type = ObjectType.ITEM;
 		this.item = SKY_MEAT;
 		this.sprite = SpriteRepository.retrieve('item/sky-meat');
 		this.entityCategory = EntityCategory.ITEM;
 	}
 
-	SkyMeat.prototype = new SpriteObject();
+	SkyMeat.prototype = Object.create(SpriteObject.prototype);
 
 	function SmallSkyMeat() {
+		SpriteObject.call(this);
 		this.type = ObjectType.ITEM;
 		this.item = SKY_MEAT;
 		this.sprite = SpriteRepository.retrieve('item/small-sky-meat');
 		this.entityCategory = EntityCategory.ITEM;
 	}
 
-	SmallSkyMeat.prototype = new SpriteObject();
+	SmallSkyMeat.prototype = Object.create(SpriteObject.prototype);
 
 	ObjectFactory.register('item/sky-meat', SkyMeat);
 	ObjectFactory.register('item/small-sky-meat', SmallSkyMeat);

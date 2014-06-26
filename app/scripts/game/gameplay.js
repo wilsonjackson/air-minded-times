@@ -54,9 +54,13 @@
 		this.ticks = 0;
 	}
 
-	AutoScroller.prototype = new Interloper();
+	AutoScroller.prototype = Object.create(Interloper.prototype);
 
 	AutoScroller.prototype.init = function (world) {
+		var self = this;
+		world.getPlayers()[0].events.on('death', function () {
+			world.removeInterloper(self);
+		});
 		world.centerOn(Math.round(world.width / 2), world.height);
 		this.maxDistance = world.height - Game.getViewport().height;
 		this.easeDistance = this.maxDistance;
@@ -105,14 +109,14 @@
 		var visibleArea = world.getVisibleArea();
 		var maxPlayerY = visibleArea.bottom() - player.entity.getHeight();
 		if (player.entity.getY() > maxPlayerY) {
-			// DEATH BY SQUISHING
+			player.die();
 		}
 	};
 
 	function PlayerScroller() {
 	}
 
-	PlayerScroller.prototype = new Interloper();
+	PlayerScroller.prototype = Object.create(Interloper.prototype);
 
 	PlayerScroller.prototype.postUpdate = function (world) {
 		var player = world.firstObjectOfType(Game.objects.ObjectType.PLAYER);

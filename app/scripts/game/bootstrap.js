@@ -9,7 +9,7 @@
 	function AirMindedTimes() {
 	}
 
-	AirMindedTimes.prototype = new Game.Bootstrap();
+	AirMindedTimes.prototype = Object.create(Game.Bootstrap.prototype);
 
 	AirMindedTimes.prototype.start = function (world) {
 		Game.logger.info('Starting AirMindedTimes');

@@ -22,7 +22,7 @@
 			10, 60, 1, 450);
 	}
 
-	IntroScene1.prototype = new CoverScreen();
+	IntroScene1.prototype = Object.create(CoverScreen.prototype);
 
 	IntroScene1.prototype.update = function (world, input) {
 		if (input.isPressed(Input.ACTION)) {
@@ -50,7 +50,7 @@
 			10, 60, -1, 450);
 	}
 
-	IntroScene2.prototype = new CoverScreen();
+	IntroScene2.prototype = Object.create(CoverScreen.prototype);
 
 	IntroScene2.prototype.update = function (world, input) {
 		if (input.isPressed(Input.ACTION)) {
@@ -79,7 +79,7 @@
 			.center();
 	}
 
-	IntroScene3.prototype = new CoverScreen();
+	IntroScene3.prototype = Object.create(CoverScreen.prototype);
 
 	IntroScene3.prototype.update = function (world, input) {
 		if (input.isPressed(Input.ACTION)) {

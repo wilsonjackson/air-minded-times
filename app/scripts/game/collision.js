@@ -7,56 +7,56 @@
 	var collisionListenerMap = {};
 
 	Game.setup(function () {
-		collisionListenerMap[AirMindedTimes.gameplay.GameplayMode.FREE_ROAM] = FreeRoamCollisionListener;
-		collisionListenerMap[AirMindedTimes.gameplay.GameplayMode.SCROLLING] = ScrollingCollisionListener;
+		collisionListenerMap[AirMindedTimes.gameplay.GameplayMode.FREE_ROAM] = FreeRoamObstacleCollisionListener;
+		collisionListenerMap[AirMindedTimes.gameplay.GameplayMode.SCROLLING] = ScrollingObstacleCollisionListener;
 	});
 
-	function DelegatingCollisionListener(player) {
+	function ObstacleCollisionListener(player) {
 		this.player = player;
 		AirMindedTimes.gameplay.GameplayMode.addObserver(this);
 	}
 
-	DelegatingCollisionListener.prototype.notify = function (gameplayMode) {
+	ObstacleCollisionListener.prototype.notify = function (gameplayMode) {
 		var ListenerCtor = collisionListenerMap[gameplayMode.getMode()];
 		this.delegate = new ListenerCtor(this.player);
 	};
 
-	DelegatingCollisionListener.prototype.solveCollision = function (collision) {
+	ObstacleCollisionListener.prototype.solveCollision = function (collision) {
 		return this.delegate.solveCollision(collision);
 	};
 
-	DelegatingCollisionListener.prototype.collide = function (collision) {
+	ObstacleCollisionListener.prototype.collide = function (collision) {
 		return this.delegate.collide(collision);
 	};
 
-	DelegatingCollisionListener.prototype.destroy = function () {
+	ObstacleCollisionListener.prototype.destroy = function () {
 		this.delegate.destroy();
 		delete this.delegate;
 		delete this.player;
 	};
 
 
-	function PlayerCollisionListener() {
+	function BaseObstacleCollisionListener() {
 	}
 
-	PlayerCollisionListener.prototype.collide = function (collision) {
+	BaseObstacleCollisionListener.prototype.collide = function (collision) {
 		if (collision.entity.category.isA(EntityCategory.ITEM)) {
 			this.player.inventory.get(collision.entity.object.item).add();
 			collision.entity.object.destroy();
 		}
 	};
 
-	PlayerCollisionListener.prototype.destroy = function () {
+	BaseObstacleCollisionListener.prototype.destroy = function () {
 		delete this.player;
 	};
 
-	function FreeRoamCollisionListener(player) {
+	function FreeRoamObstacleCollisionListener(player) {
 		this.player = player;
 	}
 
-	FreeRoamCollisionListener.prototype = new PlayerCollisionListener();
+	FreeRoamObstacleCollisionListener.prototype = Object.create(BaseObstacleCollisionListener.prototype);
 
-	FreeRoamCollisionListener.prototype.solveCollision = function (collision) {
+	FreeRoamObstacleCollisionListener.prototype.solveCollision = function (collision) {
 		if (collision.entity.category.isA(EntityCategory.OBSTACLE)) {
 			var player = this.player;
 			if (player.entity.isRotated) {
@@ -76,13 +76,13 @@
 		}
 	};
 
-	function ScrollingCollisionListener(player) {
+	function ScrollingObstacleCollisionListener(player) {
 		this.player = player;
 	}
 
-	ScrollingCollisionListener.prototype = new PlayerCollisionListener();
+	ScrollingObstacleCollisionListener.prototype = Object.create(BaseObstacleCollisionListener.prototype);
 
-	ScrollingCollisionListener.prototype.solveCollision = function (collision) {
+	ScrollingObstacleCollisionListener.prototype.solveCollision = function (collision) {
 		if (collision.entity.category.isA(EntityCategory.OBSTACLE)) {
 			var player = this.player;
 			var isXMoving = player.entity.currentMovement.x !== 0;
@@ -105,6 +105,6 @@
 	};
 
 	AirMindedTimes.collision = {
-		DelegatingCollisionListener: DelegatingCollisionListener
+		ObstacleCollisionListener: ObstacleCollisionListener
 	};
 })(Game, AirMindedTimes, Vector);

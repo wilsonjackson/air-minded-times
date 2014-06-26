@@ -12,6 +12,7 @@
 	var EntityCategory = Game.physics.EntityCategory;
 
 	function Enemy() {
+		SpriteObject.call(this);
 		this.type = ObjectType.ENEMY;
 		this.entityCategory = EntityCategory.ENEMY;
 
@@ -20,7 +21,7 @@
 		this.state = new EnemyIdleState();
 	}
 
-	Enemy.prototype = new SpriteObject();
+	Enemy.prototype = Object.create(SpriteObject.prototype);
 
 	Enemy.prototype._init = function () {
 		var self = this;
@@ -62,6 +63,7 @@
 	Enemy.prototype.drop = function () {};
 
 	function ShellEnemy() {
+		Enemy.call(this);
 		this.hp = 3;
 		this.sprite = new SpriteAnimator(25, [
 			SpriteRepository.retrieve('enemy/shell-1'),
@@ -83,7 +85,7 @@
 		this.deathTicks = 15;
 	}
 
-	ShellEnemy.prototype = new Enemy();
+	ShellEnemy.prototype = Object.create(Enemy.prototype);
 
 	ShellEnemy.prototype.drop = function (world) {
 		var center = this.entity.getCenter();
@@ -91,6 +93,7 @@
 	};
 
 	function BabyEnemy() {
+		Enemy.call(this);
 		this.hp = 1;
 		this.sprite = new SpriteAnimator(25, [
 			SpriteRepository.retrieve('enemy/baby-1'),
@@ -113,7 +116,7 @@
 		this.deathTicks = 15;
 	}
 
-	BabyEnemy.prototype = new Enemy();
+	BabyEnemy.prototype = Object.create(Enemy.prototype);
 
 	BabyEnemy.prototype.drop = function (world) {
 		var center = this.entity.getCenter();
@@ -162,12 +165,13 @@
 
 	function createEggPileConstructor(spriteName) {
 		var EggPileCtor = function () {
+			SpriteObject.call(this);
 			this.type = ObjectType.DECORATION;
 			this.entityCategory = EntityCategory.OBSTACLE;
 			this.sprite = SpriteRepository.retrieve(spriteName);
 		};
 
-		EggPileCtor.prototype = new SpriteObject();
+		EggPileCtor.prototype = Object.create(SpriteObject.prototype);
 
 		return EggPileCtor;
 	}

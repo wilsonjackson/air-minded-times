@@ -13,7 +13,8 @@
 		movementMap[AirMindedTimes.gameplay.GameplayMode.SCROLLING] = UnidirectionalMovement;
 	});
 
-	function PlayerMovement() {
+	function PlayerMovement(player) {
+		this.player = player;
 		this.changed = false;
 		AirMindedTimes.gameplay.GameplayMode.addObserver(this);
 	}
@@ -23,15 +24,15 @@
 		this.changed = true;
 	};
 
-	PlayerMovement.prototype.update = function (object, world, input) {
+	PlayerMovement.prototype.update = function (world, input) {
 		if (this.changed) {
-			this.movement.enter(object);
+			this.movement.enter(this.player);
 			this.changed = false;
 		}
-		var newState = this.movement.update(object, world, input);
+		var newState = this.movement.update(this.player, world, input);
 		if (newState) {
 			this.movement = newState;
-			newState.enter(object);
+			newState.enter(this.player);
 		}
 	};
 

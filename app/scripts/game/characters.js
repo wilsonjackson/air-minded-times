@@ -22,7 +22,7 @@
 		this.hideBox = false;
 	}
 
-	CharacterSelectionScreen.prototype = new CoverScreen();
+	CharacterSelectionScreen.prototype = Object.create(CoverScreen.prototype);
 
 	CharacterSelectionScreen.prototype.update = function (world, input) {
 		if (input.isPressed(Input.ACTION)) {

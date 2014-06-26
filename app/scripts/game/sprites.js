@@ -44,10 +44,12 @@
 		spriteDef('aero/extended-farewell-2', 'sprites/sprites.png', grid(5, 5), 100, 100, [14, 0, 8, 1]),
 		spriteDef('aero/extended-farewell-muzzle-1', 'sprites/sprites.png', grid(5, 6), 100, 100, [14, 0, 8, 1]),
 		spriteDef('aero/extended-farewell-muzzle-2', 'sprites/sprites.png', grid(5, 7), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/extended-farewell-damage', 'sprites/sprites.png', grid(5, 11), 100, 100, [14, 0, 8, 1]),
 
 		spriteDef('aero/green-wonderful-1', 'sprites/sprites.png', grid(4, 4), 100, 100, [14, 0, 8, 1]),
 		spriteDef('aero/green-wonderful-2', 'sprites/sprites.png', grid(4, 5), 100, 100, [14, 0, 8, 1]),
 		spriteDef('aero/green-wonderful-muzzle', 'sprites/sprites.png', grid(4, 6), 100, 100, [14, 0, 8, 1]),
+		spriteDef('aero/green-wonderful-damage', 'sprites/sprites.png', grid(4, 11), 100, 100, [14, 0, 8, 1]),
 
 		spriteDef('aero/justice-glider-mkiv-1', 'sprites/sprites.png', grid(6, 4), 100, 100, [18, 3, 14, 5]),
 		spriteDef('aero/justice-glider-mkiv-2', 'sprites/sprites.png', grid(6, 5), 100, 100, [18, 3, 14, 5]),
