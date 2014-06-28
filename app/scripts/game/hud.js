@@ -1,6 +1,6 @@
 /* global Game */
 
-(function (Game) {
+(function (Game, AirMindedTimes) {
 	'use strict';
 
 	var Ui = Game.ui.Ui;
@@ -13,12 +13,17 @@
 
 	var meatCounterWidth = 200;
 	var meatCounterHeight = 16;
+	var healthBarWidth = 200;
+	var healthBarHeight = 16;
+
+	var player = null;
+
 	var meatCounter = Ui.addHudComponent(Ui.CORNER_NE, meatCounterWidth + sidePadding, meatCounterHeight + topPadding);
-	meatCounter.init = function (world) {
-		this.skyMeatBag = world.getPlayers()[0].inventory.get(skyMeat);
-	};
 	meatCounter.render = function (graphics, x, y) {
-		var text = new TextSprite(fontSprite, [this.skyMeatBag.qty + ' Sky Meat'])
+		if (player === null) {
+			return;
+		}
+		var text = new TextSprite(fontSprite, [player.inventory.get(skyMeat).qty + ' Sky Meat'])
 			.width(meatCounterWidth)
 			.height(meatCounterHeight)
 			.center()
@@ -26,18 +31,32 @@
 		graphics.drawSprite(text, x - sidePadding, y + topPadding);
 	};
 
-	var healthBarWidth = 200;
-	var healthBarHeight = 16;
 	var healthBar = Ui.addHudComponent(Ui.CORNER_NW, healthBarWidth + sidePadding, healthBarHeight + topPadding);
-	healthBar.init = function (world) {
-		this.player = world.getPlayers()[0];
-	};
 	healthBar.render = function (graphics, x, y) {
-		var text = new TextSprite(fontSprite, [this.player.health + ''])
+		if (player === null) {
+			return;
+		}
+		var text = new TextSprite(fontSprite, [player.health + ''])
 			.width(healthBarWidth)
 			.height(healthBarHeight)
 			.center()
 			.left();
 		graphics.drawSprite(text, x + sidePadding, y + topPadding);
 	};
-})(Game);
+
+	function HudUpdateInterloper() {
+	}
+
+	HudUpdateInterloper.prototype = Object.create(Game.world.Interloper.prototype);
+
+	HudUpdateInterloper.prototype.mapChange = function (world) {
+		player = world.getPlayers()[0];
+		player.events.on('destroy', function () {
+			player = null;
+		});
+	};
+
+	AirMindedTimes.hud = {
+		HudUpdateInterloper: HudUpdateInterloper
+	};
+})(Game, AirMindedTimes);

@@ -30,7 +30,7 @@
 		}
 		if (this.selected) {
 			if (--this.startCountdown === 0) {
-				AirMindedTimes.player.PlaneSelection.plane = this.selection;
+				AirMindedTimes.player.PlaneSelection.plane = this.selection.constructor;
 				Ui.deactivateScreen();
 				world.loadMap(AirMindedTimes.levels.LEVEL1A);
 			}

@@ -11,7 +11,7 @@
 	var ObjectType = Game.objects.ObjectType;
 
 	var PlaneSelection = {
-		plane: new AirMindedTimes.planes.GREEN_WONDERFUL()
+		plane: AirMindedTimes.planes.GREEN_WONDERFUL
 	};
 
 	function Player() {
@@ -22,7 +22,7 @@
 
 		this.movement = new AirMindedTimes.controls.PlayerMovement(this);
 		this.obstacleCollisionListener = new AirMindedTimes.collision.ObstacleCollisionListener(this);
-		this.plane = PlaneSelection.plane;
+		this.plane = new PlaneSelection.plane();
 		this.sprite = this.plane.sprite;
 		this.inventory = new Inventory();
 		this.health = 3;

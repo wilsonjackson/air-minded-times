@@ -22,6 +22,8 @@
 			}
 		};
 		world.addInterloper(gameModeChanger);
+		world.addInterloper(new AirMindedTimes.hud.HudUpdateInterloper());
+		world.addInterloper(new AirMindedTimes.gameplay.RestartOnDeathInterloper());
 
 		Ui.activateScreen(new AirMindedTimes.cinematics.IntroScene1());
 	};

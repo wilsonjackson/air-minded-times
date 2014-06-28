@@ -32,7 +32,9 @@
 	};
 
 	Plane.prototype.update = function () {
-		this.state.update();
+		if (this.state) {
+			this.state.update();
+		}
 	};
 
 	Plane.prototype.destroy = function () {
@@ -138,6 +140,7 @@
 	}
 
 	TheExtendedFarewell.prototype = Object.create(Plane.prototype);
+	TheExtendedFarewell.prototype.constructor = TheExtendedFarewell;
 
 	TheExtendedFarewell.prototype.setFireMode = function (fireMode) {
 		this.muzzleFlashSprite = fireMode.sprite;
@@ -178,6 +181,7 @@
 	}
 
 	GreenWonderful.prototype = Object.create(Plane.prototype);
+	GreenWonderful.prototype.constructor = GreenWonderful;
 
 	function JusticeGliderMkiv() {
 		Plane.call(this);
@@ -193,6 +197,7 @@
 	}
 
 	JusticeGliderMkiv.prototype = Object.create(Plane.prototype);
+	JusticeGliderMkiv.prototype.constructor = JusticeGliderMkiv;
 
 	JusticeGliderMkiv.prototype._getBulletStartPosition = function (entity, orientation) {
 		switch (orientation) {
