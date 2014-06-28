@@ -1,9 +1,9 @@
-/* globals Game, AirMindedTimes */
+/* global Engine, AirMindedTimes */
 
-(function (Game, AirMindedTimes) {
+(function (Engine, AirMindedTimes) {
 	'use strict';
 
-	var Orientation = Game.physics.Orientation;
+	var Orientation = Engine.physics.Orientation;
 
 	AirMindedTimes.levels = {
 		TEST_MAP: {
@@ -177,4 +177,4 @@
 			]
 		}
 	};
-})(Game, AirMindedTimes);
+})(Engine, AirMindedTimes);

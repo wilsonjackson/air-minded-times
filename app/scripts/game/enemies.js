@@ -1,15 +1,15 @@
-/* globals Game */
+/* global Engine */
 
-(function (Game) {
+(function (Engine) {
 	'use strict';
 
-	var ObjectFactory = Game.objects.ObjectFactory;
-	var ObjectType = Game.objects.ObjectType;
-	var SpriteObject = Game.objects.SpriteObject;
-	var SpriteRepository = Game.graphics.SpriteRepository;
-	var SpriteAnimator = Game.graphics.SpriteAnimator;
-	var SpriteStack = Game.graphics.SpriteStack;
-	var EntityCategory = Game.physics.EntityCategory;
+	var ObjectFactory = Engine.objects.ObjectFactory;
+	var ObjectType = Engine.objects.ObjectType;
+	var SpriteObject = Engine.objects.SpriteObject;
+	var SpriteRepository = Engine.graphics.SpriteRepository;
+	var SpriteAnimator = Engine.graphics.SpriteAnimator;
+	var SpriteStack = Engine.graphics.SpriteStack;
+	var EntityCategory = Engine.physics.EntityCategory;
 
 	function Enemy() {
 		SpriteObject.call(this);
@@ -183,4 +183,4 @@
 	ObjectFactory.register('decoration/egg-mountain', createEggPileConstructor('decoration/egg-mountain'));
 	ObjectFactory.register('decoration/hatched-egg-pile', createEggPileConstructor('decoration/hatched-egg-pile'));
 	ObjectFactory.register('decoration/hatched-egg-mound', createEggPileConstructor('decoration/hatched-egg-mound'));
-})(Game);
+})(Engine);

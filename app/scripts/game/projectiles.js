@@ -1,14 +1,14 @@
-/* globals Game, AirMindedTimes, Vector */
+/* global Engine, AirMindedTimes, Vector */
 
-(function (Game, AirMindedTimes, Vector) {
+(function (Engine, AirMindedTimes, Vector) {
 	'use strict';
 
-	var Orientation = Game.physics.Orientation;
-	var EntityCategory = Game.physics.EntityCategory;
-	var ObjectFactory = Game.objects.ObjectFactory;
-	var ObjectType = Game.objects.ObjectType;
-	var SpriteObject = Game.objects.SpriteObject;
-	var SpriteRepository = Game.graphics.SpriteRepository;
+	var Orientation = Engine.physics.Orientation;
+	var EntityCategory = Engine.physics.EntityCategory;
+	var ObjectFactory = Engine.objects.ObjectFactory;
+	var ObjectType = Engine.objects.ObjectType;
+	var SpriteObject = Engine.objects.SpriteObject;
+	var SpriteRepository = Engine.graphics.SpriteRepository;
 
 	function Bullet() {
 		SpriteObject.call(this);
@@ -84,4 +84,4 @@
 	ObjectFactory.register('projectile/bullet', Bullet);
 	ObjectFactory.register('projectile/tesla', Tesla);
 	ObjectFactory.register('projectile/spray', Spray);
-})(Game, AirMindedTimes, Vector);
+})(Engine, AirMindedTimes, Vector);

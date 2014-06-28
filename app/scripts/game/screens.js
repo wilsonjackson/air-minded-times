@@ -1,13 +1,13 @@
-/* global Game, AirMindedTimes */
+/* global Engine, AirMindedTimes */
 
-(function (Game, AirMindedTimes) {
+(function (Engine, AirMindedTimes) {
 	'use strict';
 
-	var Input = Game.input.Input;
-	var Ui = Game.ui.Ui;
-	var CoverScreen = Game.ui.CoverScreen;
-	var SpriteRepository = Game.graphics.SpriteRepository;
-	var TextSprite = Game.graphics.TextSprite;
+	var Input = Engine.input.Input;
+	var Ui = Engine.ui.Ui;
+	var CoverScreen = Engine.ui.CoverScreen;
+	var SpriteRepository = Engine.graphics.SpriteRepository;
+	var TextSprite = Engine.graphics.TextSprite;
 	var titleScreenSprite = SpriteRepository.retrieve('title');
 	var fontSprite = SpriteRepository.retrieve('font/fz');
 
@@ -58,4 +58,4 @@
 		TitleScreen: TitleScreen,
 		PauseScreen: PauseScreen
 	};
-})(Game, AirMindedTimes);
+})(Engine, AirMindedTimes);

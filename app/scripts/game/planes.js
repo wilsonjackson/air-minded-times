@@ -1,12 +1,12 @@
-/* globals Game, AirMindedTimes, Vector */
+/* global Engine, AirMindedTimes, Vector */
 
-(function (Game, AirMindedTimes, Vector) {
+(function (Engine, AirMindedTimes, Vector) {
 	'use strict';
 
-	var Orientation = Game.physics.Orientation;
-	var SpriteRepository = Game.graphics.SpriteRepository;
-	var SpriteAnimator = Game.graphics.SpriteAnimator;
-	var SpriteStack = Game.graphics.SpriteStack;
+	var Orientation = Engine.physics.Orientation;
+	var SpriteRepository = Engine.graphics.SpriteRepository;
+	var SpriteAnimator = Engine.graphics.SpriteAnimator;
+	var SpriteStack = Engine.graphics.SpriteStack;
 
 	function Plane() {
 		this.bulletType = 'projectile/bullet';
@@ -217,4 +217,4 @@
 		GREEN_WONDERFUL: GreenWonderful,
 		JUSTICE_GLIDER_MKIV: JusticeGliderMkiv
 	};
-})(Game, AirMindedTimes, Vector);
+})(Engine, AirMindedTimes, Vector);

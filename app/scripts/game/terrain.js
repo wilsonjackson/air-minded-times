@@ -1,10 +1,10 @@
-/* global Game */
+/* global Engine */
 
-(function (Game) {
+(function (Engine) {
 	'use strict';
 
-	var SpriteRepository = Game.graphics.SpriteRepository;
-	var Terrain = Game.graphics.Terrain;
+	var SpriteRepository = Engine.graphics.SpriteRepository;
+	var Terrain = Engine.graphics.Terrain;
 
 	function addTerrainSprite(name, url, tileSize, width, height, impassableTiles) {
 		for (var y = 0; y < height; y++) {
@@ -30,4 +30,4 @@
 			5 * 10 + 3,
 			5 * 10 + 4
 	]);
-})(Game);
+})(Engine);

@@ -8,19 +8,19 @@
 	var nextGameTick;
 	var suspended = false;
 
-	var Game = {};
+	var Engine = {};
 
-	Game.tick = 0;
-	Game.delta = 0;
+	Engine.tick = 0;
+	Engine.delta = 0;
 
-	Game.setup = function (callback) {
+	Engine.setup = function (callback) {
 		checkNotInitialized();
 		setup.push(callback);
 	};
 
-	Game.init = function (config) {
+	Engine.init = function (config) {
 		checkNotInitialized();
-		this.logger = new Game.logging.DefaultLogger();
+		this.logger = new Engine.logging.DefaultLogger();
 		setup.forEach(function (callback) {
 			callback();
 		});
@@ -29,53 +29,53 @@
 		registerGlobalEventHandlers();
 	};
 
-	Game.start = function () {
-		Game.logger.info('Starting preload');
-		Game.graphics.SpriteRepository.preload().then(function () {
-			Game.logger.info('Preload complete');
+	Engine.start = function () {
+		Engine.logger.info('Starting preload');
+		Engine.graphics.SpriteRepository.preload().then(function () {
+			Engine.logger.info('Preload complete');
 			session.bootstrap.start(session.world);
 			nextGameTick = new Date().getTime();
 			tick();
 		});
 	};
 
-	Game.suspend = function () {
+	Engine.suspend = function () {
 		if (suspended) {
 			return;
 		}
-		Game.logger.info('Game suspended');
+		Engine.logger.info('Game suspended');
 		suspended = true;
 		session.bootstrap.suspend();
 	};
 
-	Game.resume = function () {
+	Engine.resume = function () {
 		if (!suspended) {
 			return;
 		}
-		Game.logger.info('Game resumed');
+		Engine.logger.info('Game resumed');
 		nextGameTick = new Date().getTime();
 		suspended = false;
 		session.bootstrap.resume();
 	};
 
-	Game.getWorld = function () {
+	Engine.getWorld = function () {
 		return session.world;
 	};
 
-	Game.getViewport = function () {
+	Engine.getViewport = function () {
 		return session.viewport;
 	};
 
-	Game.Bootstrap = function () {};
-	Game.Bootstrap.prototype.start = function () {
+	Engine.Bootstrap = function () {};
+	Engine.Bootstrap.prototype.start = function () {
 		throw 'The game must implement a start method.';
 	};
-	Game.Bootstrap.prototype.preUpdate = function (/*world, input*/) {};
-	Game.Bootstrap.prototype.postUpdate = function (/*world, input*/) {};
-	Game.Bootstrap.prototype.preRender = function (/*graphics*/) {};
-	Game.Bootstrap.prototype.postRender = function (/*graphics*/) {};
-	Game.Bootstrap.prototype.suspend = function () {};
-	Game.Bootstrap.prototype.resume = function () {};
+	Engine.Bootstrap.prototype.preUpdate = function (/*world, input*/) {};
+	Engine.Bootstrap.prototype.postUpdate = function (/*world, input*/) {};
+	Engine.Bootstrap.prototype.preRender = function (/*graphics*/) {};
+	Engine.Bootstrap.prototype.postRender = function (/*graphics*/) {};
+	Engine.Bootstrap.prototype.suspend = function () {};
+	Engine.Bootstrap.prototype.resume = function () {};
 
 	function GameSession(config) {
 		if (!config.canvas || !(config.canvas instanceof HTMLCanvasElement)) {
@@ -86,13 +86,13 @@
 		}
 
 		this.bootstrap = config.bootstrap;
-		this.viewport = new Game.graphics.Viewport(config.canvas);
-		this.input = new Game.input.Input();
-		this.graphics = new Game.graphics.Graphics(this.viewport);
-		this.uiGraphics = new Game.graphics.Graphics(this.viewport);
-		this.world = new Game.world.World(this.graphics);
-		Game.ui.Ui.init(this.world);
-		Game.physics.Physics.init(this.world);
+		this.viewport = new Engine.graphics.Viewport(config.canvas);
+		this.input = new Engine.input.Input();
+		this.graphics = new Engine.graphics.Graphics(this.viewport);
+		this.uiGraphics = new Engine.graphics.Graphics(this.viewport);
+		this.world = new Engine.world.World(this.graphics);
+		Engine.ui.Ui.init(this.world);
+		Engine.physics.Physics.init(this.world);
 	}
 
 	GameSession.prototype.run = (function () {
@@ -107,7 +107,7 @@
 		var renderStats = createStats(1).after(tickStats);
 
 		return function () {
-			Ui = Game.ui.Ui;
+			Ui = Engine.ui.Ui;
 			loops = 0;
 
 			// Suspended game bails immediately
@@ -116,8 +116,8 @@
 			}
 
 			while ((time = new Date().getTime()) > nextGameTick && loops < maxFrameSkip) {
-				++Game.tick;
-				Game.delta = time - nextGameTick;
+				++Engine.tick;
+				Engine.delta = time - nextGameTick;
 				tickStats.begin();
 				// Process input
 				var inputState = this.input.readInput();
@@ -157,7 +157,7 @@
 
 	function checkNotInitialized() {
 		if (session) {
-			throw 'Game already initialized';
+			throw 'Engine already initialized';
 		}
 	}
 
@@ -183,20 +183,20 @@
 	function registerGlobalEventHandlers() {
 		document.addEventListener('visibilitychange', function () {
 			if (document.hidden) {
-				Game.suspend();
+				Engine.suspend();
 			}
 			else {
-				Game.resume();
+				Engine.resume();
 			}
 		}, false);
 
 		window.addEventListener('blur', function () {
-			Game.suspend();
+			Engine.suspend();
 		}, false);
 		window.addEventListener('focus', function () {
-			Game.resume();
+			Engine.resume();
 		}, false);
 	}
 
-	window.Game = Game;
+	window.Engine = Engine;
 })(window, document);

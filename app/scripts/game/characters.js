@@ -1,13 +1,13 @@
-/* global Game, AirMindedTimes */
+/* global Engine, AirMindedTimes */
 
-(function (Game, AirMindedTimes) {
+(function (Engine, AirMindedTimes) {
 	'use strict';
 
-	var Ui = Game.ui.Ui;
-	var CoverScreen = Game.ui.CoverScreen;
-	var Input = Game.input.Input;
-	var SpriteRepository = Game.graphics.SpriteRepository;
-	var TextSprite = Game.graphics.TextSprite;
+	var Ui = Engine.ui.Ui;
+	var CoverScreen = Engine.ui.CoverScreen;
+	var Input = Engine.input.Input;
+	var SpriteRepository = Engine.graphics.SpriteRepository;
+	var TextSprite = Engine.graphics.TextSprite;
 
 	var fontSprite = SpriteRepository.retrieve('font/fz');
 	var boxSprite = SpriteRepository.retrieve('interface/box');
@@ -79,4 +79,4 @@
 	AirMindedTimes.characters = {
 		CharacterSelectionScreen: CharacterSelectionScreen
 	};
-})(Game, AirMindedTimes);
+})(Engine, AirMindedTimes);

@@ -1,6 +1,6 @@
-/* global Game */
+/* global Engine */
 
-(function (Game, document) {
+(function (Engine, document) {
 	'use strict';
 
 	function CoverScreen() {}
@@ -99,7 +99,7 @@
 	//noinspection JSUnusedGlobalSymbols
 	var Effects = {
 		snapshotCanvas: function () {
-			var mainCanvas = Game.getViewport().canvas;
+			var mainCanvas = Engine.getViewport().canvas;
 			var snapshot = document.createElement('canvas');
 			snapshot.setAttribute('width', mainCanvas.getAttribute('width'));
 			snapshot.setAttribute('height', mainCanvas.getAttribute('height'));
@@ -218,9 +218,9 @@
 		}
 	};
 
-	Game.ui = {
+	Engine.ui = {
 		Ui: Ui,
 		CoverScreen: CoverScreen,
 		Effects: Effects
 	};
-})(Game, document);
+})(Engine, document);

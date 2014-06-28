@@ -1,19 +1,19 @@
-/* globals Game, Events, BoundingCircle, BoundingRect */
+/* global Engine, Events, BoundingCircle, BoundingRect */
 
-(function (Game, Events, BoundingCircle, BoundingRect) {
+(function (Engine, Events, BoundingCircle, BoundingRect) {
 	'use strict';
 
-	var Physics = Game.physics.Physics;
-	var Orientation = Game.physics.Orientation;
+	var Physics = Engine.physics.Physics;
+	var Orientation = Engine.physics.Orientation;
 
 	var DEBUG_COLLISIONS = false;
 	var DEBUG_SPRITE = false;
 
 	function SpriteObject() {
 		this.events = new Events();
-		this.sprite = Game.graphics.SpriteRepository.NULL_SPRITE;
+		this.sprite = Engine.graphics.SpriteRepository.NULL_SPRITE;
 
-		this.entityCategory = Game.physics.EntityCategory.OBSTACLE;
+		this.entityCategory = Engine.physics.EntityCategory.OBSTACLE;
 		this.entityShape = SpriteObject.SHAPE_RECT;
 		this.entity = null;
 	}
@@ -116,7 +116,7 @@
 			},
 
 			spawn: function (id, x, y, orientation) {
-				Game.logger.debug('Spawning ' + id + ' at ' + x + ',' + y);
+				Engine.logger.debug('Spawning ' + id + ' at ' + x + ',' + y);
 				var object = this.create(id);
 				object.init(x, y, orientation || Orientation.NORTH);
 				return object;
@@ -132,9 +132,9 @@
 		PROJECTILE: 'projectile'
 	};
 
-	Game.objects = {
+	Engine.objects = {
 		SpriteObject: SpriteObject,
 		ObjectFactory: ObjectFactory,
 		ObjectType: ObjectType
 	};
-})(Game, Events, BoundingCircle, BoundingRect);
+})(Engine, Events, BoundingCircle, BoundingRect);

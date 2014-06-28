@@ -1,11 +1,11 @@
-/* global Game */
+/* global Engine */
 
-(function (Game, Vector, BoundingRect) {
+(function (Engine, Vector, BoundingRect) {
 	'use strict';
 
-	var Physics = Game.physics.Physics;
-	var EntityCategory = Game.physics.EntityCategory;
-	var ObjectType = Game.objects.ObjectType;
+	var Physics = Engine.physics.Physics;
+	var EntityCategory = Engine.physics.EntityCategory;
+	var ObjectType = Engine.objects.ObjectType;
 
 	var DEBUG_DRAW_MAP_OBSTACLES = false;
 
@@ -89,7 +89,7 @@
 	};
 
 	World.prototype.spawnObject = function (id, x, y, orientation) {
-		this.addObject(Game.objects.ObjectFactory.spawn(id, x, y, orientation));
+		this.addObject(Engine.objects.ObjectFactory.spawn(id, x, y, orientation));
 	};
 
 	World.prototype.firstObjectOfType = function (type) {
@@ -118,14 +118,14 @@
 	};
 
 	World.prototype.loadMap = function (map) {
-		Game.logger.info('Loading new map');
+		Engine.logger.info('Loading new map');
 
 		var i, len;
 		this.reset();
 
 		var world = this;
 		world.map = map;
-		world.terrain = Game.graphics.Terrain.readMapTerrain(map.terrain);
+		world.terrain = Engine.graphics.Terrain.readMapTerrain(map.terrain);
 		world.width = map.width * map.tileSize;
 		world.height = Math.ceil(world.terrain.length / map.width) * map.tileSize;
 
@@ -137,7 +137,7 @@
 
 		this.mapEntities = [];
 		// Create impassable tile entities
-		var grid = new Game.map.MapGrid(map.width, map.tileSize);
+		var grid = new Engine.map.MapGrid(map.width, map.tileSize);
 		grid.load(world.terrain);
 		var boundaryRects = grid.calculateBoundaries();
 		for (i = 0, len = boundaryRects.length; i < len; i++) {
@@ -223,8 +223,8 @@
 	Interloper.prototype.prePhysics = function (/*world, input*/) {};
 	Interloper.prototype.postUpdate = function (/*world, input*/) {};
 
-	Game.world = {
+	Engine.world = {
 		World: World,
 		Interloper: Interloper
 	};
-})(Game, Vector, BoundingRect);
+})(Engine, Vector, BoundingRect);

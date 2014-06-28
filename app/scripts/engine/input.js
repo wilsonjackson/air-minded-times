@@ -1,6 +1,6 @@
-/* global Game */
+/* global Engine */
 
-(function (Game) {
+(function (Engine) {
 	'use strict';
 
 	function Input() {
@@ -88,8 +88,8 @@
 		return this.released.indexOf(button) !== -1;
 	};
 
-	Game.input = {
+	Engine.input = {
 		Input: Input,
 		InputState: InputState
 	};
-})(Game);
+})(Engine);

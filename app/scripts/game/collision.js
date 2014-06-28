@@ -1,12 +1,12 @@
-(function (Game, AirMindedTimes, Vector) {
+(function (Engine, AirMindedTimes, Vector) {
 	'use strict';
 
-	var EntityCategory = Game.physics.EntityCategory;
-	var Orientation = Game.physics.Orientation;
+	var EntityCategory = Engine.physics.EntityCategory;
+	var Orientation = Engine.physics.Orientation;
 
 	var collisionListenerMap = {};
 
-	Game.setup(function () {
+	Engine.setup(function () {
 		collisionListenerMap[AirMindedTimes.gameplay.GameplayMode.FREE_ROAM] = FreeRoamObstacleCollisionListener;
 		collisionListenerMap[AirMindedTimes.gameplay.GameplayMode.SCROLLING] = ScrollingObstacleCollisionListener;
 	});
@@ -107,4 +107,4 @@
 	AirMindedTimes.collision = {
 		ObstacleCollisionListener: ObstacleCollisionListener
 	};
-})(Game, AirMindedTimes, Vector);
+})(Engine, AirMindedTimes, Vector);

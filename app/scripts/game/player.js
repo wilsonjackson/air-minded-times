@@ -1,14 +1,14 @@
-(function (Game, AirMindedTimes) {
+(function (Engine, AirMindedTimes) {
 	'use strict';
 
-	var EntityCategory = Game.physics.EntityCategory;
-	var Input = Game.input.Input;
-	var SpriteRepository = Game.graphics.SpriteRepository;
-	var SpriteAnimator = Game.graphics.SpriteAnimator;
-	var SpriteStack = Game.graphics.SpriteStack;
-	var Inventory = Game.inventory.Inventory;
-	var SpriteObject = Game.objects.SpriteObject;
-	var ObjectType = Game.objects.ObjectType;
+	var EntityCategory = Engine.physics.EntityCategory;
+	var Input = Engine.input.Input;
+	var SpriteRepository = Engine.graphics.SpriteRepository;
+	var SpriteAnimator = Engine.graphics.SpriteAnimator;
+	var SpriteStack = Engine.graphics.SpriteStack;
+	var Inventory = Engine.inventory.Inventory;
+	var SpriteObject = Engine.objects.SpriteObject;
+	var ObjectType = Engine.objects.ObjectType;
 
 	var PlaneSelection = {
 		plane: AirMindedTimes.planes.GREEN_WONDERFUL
@@ -96,9 +96,9 @@
 		this.deathTicks = 15;
 	};
 
-	Game.objects.ObjectFactory.register('player', Player);
+	Engine.objects.ObjectFactory.register('player', Player);
 
 	AirMindedTimes.player = {
 		PlaneSelection: PlaneSelection
 	};
-})(Game, AirMindedTimes);
+})(Engine, AirMindedTimes);

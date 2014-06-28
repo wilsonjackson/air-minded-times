@@ -1,6 +1,6 @@
-/* global Game, Events */
+/* global Engine, Events */
 
-(function (Game, Events) {
+(function (Engine, Events) {
 	'use strict';
 
 	function Inventory() {
@@ -77,8 +77,8 @@
 		};
 	})();
 
-	Game.inventory = {
+	Engine.inventory = {
 		Inventory: Inventory,
 		ItemRepository: ItemRepository
 	};
-})(Game, Events);
+})(Engine, Events);

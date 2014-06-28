@@ -1,14 +1,14 @@
-/* global Game, AirMindedTimes */
+/* global Engine, AirMindedTimes */
 
-(function (Game, AirMindedTimes) {
+(function (Engine, AirMindedTimes) {
 	'use strict';
 
-	var Input = Game.input.Input;
-	var Orientation = Game.physics.Orientation;
+	var Input = Engine.input.Input;
+	var Orientation = Engine.physics.Orientation;
 
 	var movementMap = {};
 
-	Game.setup(function () {
+	Engine.setup(function () {
 		movementMap[AirMindedTimes.gameplay.GameplayMode.FREE_ROAM] = OmnidirectionalMovement;
 		movementMap[AirMindedTimes.gameplay.GameplayMode.SCROLLING] = UnidirectionalMovement;
 	});
@@ -135,4 +135,4 @@
 	AirMindedTimes.controls = {
 		PlayerMovement: PlayerMovement
 	};
-})(Game, AirMindedTimes);
+})(Engine, AirMindedTimes);

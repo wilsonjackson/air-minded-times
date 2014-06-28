@@ -1,13 +1,13 @@
-/* global Game */
+/* global Engine */
 
-(function (Game, AirMindedTimes) {
+(function (Engine, AirMindedTimes) {
 	'use strict';
 
-	var Ui = Game.ui.Ui;
-	var TextSprite = Game.graphics.TextSprite;
+	var Ui = Engine.ui.Ui;
+	var TextSprite = Engine.graphics.TextSprite;
 
-	var fontSprite = Game.graphics.SpriteRepository.retrieve('font/fz');
-	var skyMeat = Game.inventory.ItemRepository.retrieve('sky-meat');
+	var fontSprite = Engine.graphics.SpriteRepository.retrieve('font/fz');
+	var skyMeat = Engine.inventory.ItemRepository.retrieve('sky-meat');
 	var topPadding = 5;
 	var sidePadding = 5;
 
@@ -47,7 +47,7 @@
 	function HudUpdateInterloper() {
 	}
 
-	HudUpdateInterloper.prototype = Object.create(Game.world.Interloper.prototype);
+	HudUpdateInterloper.prototype = Object.create(Engine.world.Interloper.prototype);
 
 	HudUpdateInterloper.prototype.mapChange = function (world) {
 		player = world.getPlayers()[0];
@@ -59,4 +59,4 @@
 	AirMindedTimes.hud = {
 		HudUpdateInterloper: HudUpdateInterloper
 	};
-})(Game, AirMindedTimes);
+})(Engine, AirMindedTimes);

@@ -1,7 +1,7 @@
 /* jshint bitwise: false */
-/* globals Game, Events, QuadTree, Vector, BoundingRect, BoundingCircle */
+/* globals Engine, Events, QuadTree, Vector, BoundingRect, BoundingCircle */
 
-(function (Game, Events, QuadTree, Vector, BoundingRect, BoundingCircle) {
+(function (Engine, Events, QuadTree, Vector, BoundingRect, BoundingCircle) {
 	'use strict';
 
 	function isFunction(o) {
@@ -356,9 +356,9 @@
 	Orientation.SOUTH = new Orientation(RADIANS_S);
 	Orientation.WEST = new Orientation(RADIANS_W);
 
-	Game.physics = {
+	Engine.physics = {
 		Physics: Physics,
 		EntityCategory: EntityCategory,
 		Orientation: Orientation
 	};
-})(Game, Events, QuadTree, Vector, BoundingRect, BoundingCircle);
+})(Engine, Events, QuadTree, Vector, BoundingRect, BoundingCircle);

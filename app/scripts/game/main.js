@@ -1,11 +1,11 @@
-/* global Game, AirMindedTimes */
+/* global Engine, AirMindedTimes */
 
 document.addEventListener('DOMContentLoaded', function () {
 	'use strict';
 
-	Game.init({
+	Engine.init({
 		canvas: document.getElementById('viewport'),
 		bootstrap: new AirMindedTimes()
 	});
-	Game.start();
+	Engine.start();
 });

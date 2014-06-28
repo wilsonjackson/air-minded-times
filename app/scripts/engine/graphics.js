@@ -1,6 +1,6 @@
-/* globals Game, Vector */
+/* global Engine, Vector */
 
-(function (Game, Vector) {
+(function (Engine, Vector) {
 	'use strict';
 
 	function Graphics(viewport) {
@@ -40,7 +40,7 @@
 	Graphics.prototype.drawSprite = function (sprite, x, y, orientation) {
 		var translated;
 		var context = this.viewport.context;
-		if (orientation && orientation !== Game.physics.Orientation.NORTH) {
+		if (orientation && orientation !== Engine.physics.Orientation.NORTH) {
 			// 1. Center the canvas over the center of the sprite.
 			// 2. Rotate the canvas in accordance with the object's orientation (so the direction it should be facing
 			//    is up).
@@ -85,12 +85,12 @@
 				var callback = null;
 				var urls = Object.keys(images);
 				var countdown = urls.length;
-				Game.logger.debug('Preloading ' + countdown + ' sprite(s)');
+				Engine.logger.debug('Preloading ' + countdown + ' sprite(s)');
 
 				urls.forEach(function(url) {
 					images[url].onload = function () {
 						countdown--;
-						Game.logger.debug(url + ' loaded; ' + countdown + ' sprite(s) remaining');
+						Engine.logger.debug(url + ' loaded; ' + countdown + ' sprite(s) remaining');
 						if (countdown === 0 && callback) {
 							callback();
 						}
@@ -414,12 +414,12 @@
 	};
 
 	TextSprite.prototype.fullWidth = function () {
-		this.w = Game.getViewport().width;
+		this.w = Engine.getViewport().width;
 		return this;
 	};
 
 	TextSprite.prototype.fullHeight = function () {
-		this.h = Game.getViewport().height;
+		this.h = Engine.getViewport().height;
 		return this;
 	};
 
@@ -498,7 +498,7 @@
 		graphics.drawSprite(this.sprite, gridX, gridY);
 	};
 
-	Game.graphics = {
+	Engine.graphics = {
 		Graphics: Graphics,
 		Viewport: Viewport,
 		SpriteRepository: SpriteRepository,
@@ -510,4 +510,4 @@
 		BoxSprite: BoxSprite,
 		Terrain: Terrain
 	};
-})(Game, Vector);
+})(Engine, Vector);

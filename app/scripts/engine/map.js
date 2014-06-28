@@ -1,4 +1,4 @@
-(function (Game, Vector, BoundingRect) {
+(function (Engine, Vector, BoundingRect) {
 	'use strict';
 
 	var AXIS_X = 'x';
@@ -180,7 +180,7 @@
 		return 'Wall(axis=' + this.axis + ', length=' + this.nodes.length + ', start=' + start + ')';
 	};
 
-	Game.map = {
+	Engine.map = {
 		MapGrid: MapGrid
 	};
-})(Game, Vector, BoundingRect);
+})(Engine, Vector, BoundingRect);

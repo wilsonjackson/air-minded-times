@@ -1,9 +1,9 @@
-/* global Game, AirMindedTimes, Vector */
+/* global Engine, AirMindedTimes, Vector */
 
-(function (Game, AirMindedTimes, Vector) {
+(function (Engine, AirMindedTimes, Vector) {
 	'use strict';
 
-	var Interloper = Game.world.Interloper;
+	var Interloper = Engine.world.Interloper;
 
 	var currentMode;
 	var observers = [];
@@ -62,7 +62,7 @@
 			world.removeInterloper(self);
 		});
 		world.centerOn(Math.round(world.width / 2), world.height);
-		this.maxDistance = world.height - Game.getViewport().height;
+		this.maxDistance = world.height - Engine.getViewport().height;
 		this.easeDistance = this.maxDistance;
 		for (var s = 1; s <= this.maxScrollSpeed; s++) {
 			this.easeDistance -= s * this.easeTicks;
@@ -119,7 +119,7 @@
 	PlayerScroller.prototype = Object.create(Interloper.prototype);
 
 	PlayerScroller.prototype.postUpdate = function (world) {
-		var player = world.firstObjectOfType(Game.objects.ObjectType.PLAYER);
+		var player = world.firstObjectOfType(Engine.objects.ObjectType.PLAYER);
 		if (player) {
 			world.centerOn(player.entity.getX(), player.entity.getY(), player.entity.getWidth(), player.entity.getHeight());
 		}
@@ -129,10 +129,10 @@
 		notify: function (gameplayMode) {
 			var mode = gameplayMode.getMode();
 			if (mode === GameplayMode.SCROLLING) {
-				installInterloper(Game.getWorld(), new AutoScroller());
+				installInterloper(Engine.getWorld(), new AutoScroller());
 			}
 			if (mode === GameplayMode.FREE_ROAM) {
-				installInterloper(Game.getWorld(), new PlayerScroller());
+				installInterloper(Engine.getWorld(), new PlayerScroller());
 			}
 		}
 	});
@@ -176,4 +176,4 @@
 		GameplayMode: GameplayMode,
 		RestartOnDeathInterloper: RestartOnDeathInterloper
 	};
-})(Game, AirMindedTimes, Vector);
+})(Engine, AirMindedTimes, Vector);

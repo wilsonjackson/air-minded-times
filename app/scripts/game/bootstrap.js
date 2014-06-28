@@ -1,20 +1,20 @@
-/* global Game */
+/* global Engine */
 
-(function (Game, window) {
+(function (Engine, window) {
 	'use strict';
 
-	var Ui = Game.ui.Ui;
-	var Input = Game.input.Input;
+	var Ui = Engine.ui.Ui;
+	var Input = Engine.input.Input;
 
 	function AirMindedTimes() {
 	}
 
-	AirMindedTimes.prototype = Object.create(Game.Bootstrap.prototype);
+	AirMindedTimes.prototype = Object.create(Engine.Bootstrap.prototype);
 
 	AirMindedTimes.prototype.start = function (world) {
-		Game.logger.info('Starting AirMindedTimes');
+		Engine.logger.info('Starting AirMindedTimes');
 		var GameplayMode = AirMindedTimes.gameplay.GameplayMode;
-		var gameModeChanger = new Game.world.Interloper();
+		var gameModeChanger = new Engine.world.Interloper();
 		gameModeChanger.mapChange = function (world, map) {
 			GameplayMode.setMode(map.gameMode || GameplayMode.FREE_ROAM);
 			if (map.controller) {
@@ -41,4 +41,4 @@
 	};
 
 	window.AirMindedTimes = AirMindedTimes;
-})(Game, window);
+})(Engine, window);

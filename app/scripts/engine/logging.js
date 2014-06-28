@@ -1,6 +1,6 @@
-/* global Game */
+/* global Engine */
 
-(function (Game) {
+(function (Engine) {
 	'use strict';
 
 	function DefaultLogger() {
@@ -8,26 +8,26 @@
 	}
 
 	DefaultLogger.prototype.trace = function (/*message*/) {
-		console.trace.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
+		console.trace.apply(console, ['[' + Engine.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 	};
 
 	DefaultLogger.prototype.debug = function (/*message*/) {
-		console.debug.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
+		console.debug.apply(console, ['[' + Engine.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 	};
 
 	DefaultLogger.prototype.info = function (/*message*/) {
-		console.info.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
+		console.info.apply(console, ['[' + Engine.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 	};
 
 	DefaultLogger.prototype.warn = function (/*message*/) {
-		console.warn.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
+		console.warn.apply(console, ['[' + Engine.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 	};
 
 	DefaultLogger.prototype.error = function (/*message*/) {
-		console.error.apply(console, ['[' + Game.tick + ']'].concat(Array.prototype.slice.call(arguments)));
+		console.error.apply(console, ['[' + Engine.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 	};
 
-	Game.logging = {
+	Engine.logging = {
 		DefaultLogger: DefaultLogger
 	};
-})(Game);
+})(Engine);

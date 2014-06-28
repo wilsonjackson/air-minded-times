@@ -19,7 +19,7 @@
     "smarttabs": true,
     "jquery": true,
 	"predef": [
-		"Game",
+		"Engine",
 		"AirMindedTimes",
 		"Vector",
 		"BoundingRect",
