@@ -16,15 +16,16 @@
 
 	function Player() {
 		SpriteObject.call(this);
+		var currentGame = AirMindedTimes.game.Game.current();
 
 		this.type = ObjectType.PLAYER;
 		this.entityCategory = EntityCategory.PLAYER;
 
 		this.movement = new AirMindedTimes.controls.PlayerMovement(this);
 		this.obstacleCollisionListener = new AirMindedTimes.collision.ObstacleCollisionListener(this);
-		this.plane = new PlaneSelection.plane();
+		this.plane = currentGame.createPlane();
 		this.sprite = this.plane.sprite;
-		this.inventory = new Inventory();
+		this.inventory = currentGame.getInventory();
 		this.health = 3;
 		this.invulnerable = 0;
 		this.speed = 4;

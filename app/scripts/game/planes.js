@@ -148,7 +148,7 @@
 	};
 
 	TheExtendedFarewell.prototype.fire = function () {
-		if (this.firingState.readyToFire) {
+		if (this.state.readyToFire) {
 			var fireMode = this.fireModes.pop();
 			this.setFireMode(fireMode);
 			this.fireModes.unshift(fireMode);

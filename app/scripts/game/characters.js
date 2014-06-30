@@ -30,9 +30,9 @@
 		}
 		if (this.selected) {
 			if (--this.startCountdown === 0) {
-				AirMindedTimes.player.PlaneSelection.plane = this.selection.constructor;
 				Ui.deactivateScreen();
-				world.loadMap(AirMindedTimes.levels.LEVEL1A);
+				AirMindedTimes.game.Game.startNew(world, this.selection.constructor)
+					.startNextLevel();
 			}
 			if (this.startCountdown % 10 === 0) {
 				this.hideBox = !this.hideBox;
