@@ -3,6 +3,7 @@ Engine.module('world.items.ItemRepository', function () {
 
 	var items = {};
 
+	//noinspection UnnecessaryLocalVariableJS
 	var ItemRepository = {
 		add: function (item) {
 			return (items[item.id] = item);
@@ -13,7 +14,5 @@ Engine.module('world.items.ItemRepository', function () {
 		}
 	};
 
-	return {
-		ItemRepository: ItemRepository
-	};
+	return ItemRepository;
 });

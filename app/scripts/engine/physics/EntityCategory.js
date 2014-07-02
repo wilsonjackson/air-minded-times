@@ -53,7 +53,5 @@ Engine.module('physics.EntityCategory', function () {
 	EntityCategory.PROJECTILE = EntityCategory.add('projectile');
 	EntityCategory.DECORATION = EntityCategory.add('decoration');
 
-	return {
-		EntityCategory: EntityCategory
-	};
+	return EntityCategory;
 });

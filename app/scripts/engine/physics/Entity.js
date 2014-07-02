@@ -119,7 +119,5 @@ Engine.module('physics.Entity', function () {
 		return 'Entity(id=' + this._id + ', category=' + this.category + ')';
 	};
 
-	return {
-		Entity: Entity
-	};
+	return Entity;
 });

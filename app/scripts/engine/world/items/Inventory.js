@@ -1,9 +1,7 @@
 Engine.module('world.items.Inventory',
 	['world.items.ItemBag'],
-	function () {
+	function (ItemBag) {
 		'use strict';
-
-		var ItemBag = Engine.world.items.ItemBag;
 
 		function Inventory() {
 			// Index holds an ItemBag for every item ever added or retrieved, regardless of qty.
@@ -45,7 +43,5 @@ Engine.module('world.items.Inventory',
 			this._items.splice(0, this._items.length);
 		};
 
-		return {
-			Inventory: Inventory
-		};
+		return Inventory;
 	});

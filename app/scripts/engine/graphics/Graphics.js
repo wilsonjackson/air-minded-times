@@ -1,9 +1,7 @@
 Engine.module('graphics.Graphics',
 	['physics.Orientation'],
-	function () {
+	function (Orientation) {
 		'use strict';
-
-		var Orientation = Engine.physics.Orientation;
 
 		function Graphics(viewport) {
 			this.viewport = viewport;
@@ -31,7 +29,5 @@ Engine.module('graphics.Graphics',
 			}
 		};
 
-		return {
-			Graphics: Graphics
-		};
+		return Graphics;
 	});

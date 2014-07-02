@@ -68,7 +68,5 @@ Engine.module('world.map.Node', function () {
 		return 'Node(position=' + this.position + ')';
 	};
 
-	return {
-		Node: Node
-	};
+	return Node;
 });

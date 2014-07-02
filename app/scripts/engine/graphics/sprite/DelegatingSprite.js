@@ -1,9 +1,7 @@
 Engine.module('graphics.sprite.DelegatingSprite',
 	['graphics.sprite.Sprite'],
-	function () {
+	function (Sprite) {
 		'use strict';
-
-		var Sprite = Engine.graphics.sprite.Sprite;
 
 		var spriteCopyProps = [
 			'image',
@@ -28,7 +26,5 @@ Engine.module('graphics.sprite.DelegatingSprite',
 			}
 		};
 
-		return {
-			DelegatingSprite: DelegatingSprite
-		};
+		return DelegatingSprite;
 	});

@@ -3,11 +3,8 @@ Engine.module('world.map.MapGrid',
 		'world.map.Node',
 		'world.map.Wall'
 	],
-	function () {
+	function (Node, Wall) {
 		'use strict';
-
-		var Node = Engine.world.map.Node;
-		var Wall = Engine.world.map.Wall;
 
 		function MapGrid(width, tileSize) {
 			this.width = width;
@@ -93,7 +90,5 @@ Engine.module('world.map.MapGrid',
 			}).join(', ') + '])';
 		};
 
-		return {
-			MapGrid: MapGrid
-		};
+		return MapGrid;
 	});

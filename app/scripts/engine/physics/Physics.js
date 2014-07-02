@@ -1,11 +1,7 @@
 Engine.module('physics.Physics',
 	['physics.Collision', 'physics.Entity', 'physics.Orientation'],
-	function () {
+	function (Collision, Entity, Orientation) {
 		'use strict';
-
-		var Collision = Engine.physics.Collision;
-		var Entity = Engine.physics.Entity;
-		var Orientation = Engine.physics.Orientation;
 
 		var entityUid = 0;
 
@@ -130,7 +126,5 @@ Engine.module('physics.Physics',
 			return this.createEntity(category, new BoundingCircle(new Vector(x, y), r), Orientation.NORTH, object);
 		};
 
-		return {
-			Physics: Physics
-		};
+		return Physics;
 	});

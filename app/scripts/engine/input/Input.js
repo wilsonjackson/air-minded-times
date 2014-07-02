@@ -1,9 +1,7 @@
 Engine.module('input.Input',
 	['input.InputState'],
-	function () {
+	function (InputState) {
 		'use strict';
-
-		var InputState = Engine.input.InputState;
 
 		function Input() {
 			var keyMap = {
@@ -71,7 +69,5 @@ Engine.module('input.Input',
 				stateSnapshot);
 		};
 
-		return {
-			Input: Input
-		};
+		return Input;
 	});

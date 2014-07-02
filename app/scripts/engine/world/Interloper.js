@@ -8,7 +8,5 @@ Engine.module('world.Interloper', function () {
 	Interloper.prototype.prePhysics = function (/*world, input*/) {};
 	Interloper.prototype.postUpdate = function (/*world, input*/) {};
 
-	return {
-		Interloper: Interloper
-	};
+	return Interloper;
 });

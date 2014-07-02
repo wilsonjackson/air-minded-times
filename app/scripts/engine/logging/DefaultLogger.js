@@ -24,7 +24,5 @@ Engine.module('logging.DefaultLogger', function () {
 		console.error.apply(console, ['[' + Engine.tick + ']'].concat(Array.prototype.slice.call(arguments)));
 	};
 
-	return {
-		DefaultLogger: DefaultLogger
-	};
+	return DefaultLogger;
 });

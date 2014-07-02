@@ -6,7 +6,5 @@ Engine.module('physics.Collision', function () {
 		this.intersection = intersection;
 	}
 
-	return {
-		Collision: Collision
-	};
+	return Collision;
 });

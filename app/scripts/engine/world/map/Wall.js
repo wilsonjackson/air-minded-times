@@ -1,9 +1,7 @@
 Engine.module('world.map.Wall',
 	['world.map.Node'],
-	function () {
+	function (Node) {
 		'use strict';
-
-		var Node = Engine.world.map.Node;
 
 		function Wall(axis) {
 			this.axis = axis;
@@ -36,7 +34,5 @@ Engine.module('world.map.Wall',
 			return 'Wall(axis=' + this.axis + ', length=' + this.nodes.length + ', start=' + start + ')';
 		};
 
-		return {
-			Wall: Wall
-		};
+		return Wall;
 	});

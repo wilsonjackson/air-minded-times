@@ -1,6 +1,7 @@
 Engine.module('world.objects.ObjectType', function () {
 	'use strict';
 
+	//noinspection UnnecessaryLocalVariableJS
 	var ObjectType = {
 		PLAYER: 'player',
 		ENEMY: 'enemy',
@@ -9,7 +10,5 @@ Engine.module('world.objects.ObjectType', function () {
 		PROJECTILE: 'projectile'
 	};
 
-	return {
-		ObjectType: ObjectType
-	};
+	return ObjectType;
 });

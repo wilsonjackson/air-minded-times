@@ -4,6 +4,7 @@
 	'use strict';
 
 	var modules = {};
+	var artifacts = {};
 	var session;
 	var nextGameTick;
 	var suspended = false;
@@ -16,14 +17,14 @@
 	Engine.init = function (config) {
 		checkNotInitialized();
 		loadModules();
-		this.logger = new Engine.logging.DefaultLogger();
+		this.logger = new artifacts['logging.DefaultLogger']();
 		session = new GameSession(config);
 		registerGlobalEventHandlers();
 	};
 
 	Engine.start = function () {
 		Engine.logger.info('Starting preload');
-		Engine.graphics.sprite.SpriteRepository.preload().then(function () {
+		artifacts['graphics.sprite.SpriteRepository'].preload().then(function () {
 			Engine.logger.info('Preload complete');
 			session.bootstrap.start();
 			nextGameTick = new Date().getTime();
@@ -109,7 +110,7 @@
 
 	function mod(name, stack, loaded) {
 		if (loaded[name]) {
-			return;
+			return artifacts[name];
 		}
 		if (name.indexOf('.') === -1) {
 			throw 'Module name must include a dot';
@@ -124,15 +125,17 @@
 		var hasDeps = !!modules[name][0].push;
 		var deps = hasDeps ? modules[name][0] : [];
 		var fn = modules[name][hasDeps ? 1 : 0];
+		var args = [];
 
 		stack.push(name);
 		for (var i = 0, len = deps.length; i < len; i++) {
-			mod(deps[i], stack, loaded);
+			args.push(mod(deps[i], stack, loaded));
 		}
 		stack.pop();
 
-		Engine.ns(name.substr(0, name.lastIndexOf('.')), fn());
+		artifacts[name] = fn.apply(null, args);
 		loaded[name] = true;
+		return artifacts[name];
 	}
 
 	Engine.Bootstrap = function () {};
@@ -154,16 +157,9 @@
 			throw 'bootstrap object is required';
 		}
 
-		var bsSegments = config.bootstrap.split('.');
-		console.log(config.bootstrap, bsSegments);
-		var Bootstrap = Engine;
-		while (bsSegments.length > 0) {
-			Bootstrap = Bootstrap[bsSegments.shift()];
-		}
-
-		this.bootstrap = new Bootstrap();
-		this.viewport = new Engine.graphics.Viewport(config.canvas);
-		this.input = new Engine.input.Input();
+		this.bootstrap = new artifacts[config.bootstrap]();
+		this.viewport = new artifacts['graphics.Viewport'](config.canvas);
+		this.input = new artifacts['input.Input']();
 		this.scene = null;
 		this.scenes = [];
 	}

@@ -8,16 +8,8 @@ Engine.module('world.World',
 		'graphics.Scene',
 		'graphics.Terrain'
 	],
-	function () {
+	function (Physics, EntityCategory, ObjectFactory, ObjectType, MapGrid, Scene, Terrain) {
 		'use strict';
-
-		var Physics = Engine.physics.Physics;
-		var EntityCategory = Engine.physics.EntityCategory;
-		var ObjectFactory = Engine.world.objects.ObjectFactory;
-		var ObjectType = Engine.world.objects.ObjectType;
-		var MapGrid = Engine.world.map.MapGrid;
-		var Scene = Engine.graphics.Scene;
-		var Terrain = Engine.graphics.Terrain;
 
 		var DEBUG_DRAW_MAP_OBSTACLES = false;
 
@@ -89,6 +81,7 @@ Engine.module('world.World',
 			this.addObject(ObjectFactory.spawn(id, x, y, orientation));
 		};
 
+		//noinspection JSUnusedGlobalSymbols
 		World.prototype.firstObjectOfType = function (type) {
 			for (var i = 0, len = this.objects.length; i < len; i++) {
 				if (this.objects[i].type === type) {
@@ -213,7 +206,5 @@ Engine.module('world.World',
 			}
 		};
 
-		return {
-			World: World
-		};
+		return World;
 	});

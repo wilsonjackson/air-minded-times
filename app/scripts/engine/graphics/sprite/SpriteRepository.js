@@ -1,9 +1,7 @@
 Engine.module('graphics.sprite.SpriteRepository',
 	['graphics.sprite.Sprite'],
-	function () {
+	function (Sprite) {
 		'use strict';
-
-		var Sprite = Engine.graphics.sprite.Sprite;
 
 		var images = {};
 		var sprites = {};
@@ -61,7 +59,5 @@ Engine.module('graphics.sprite.SpriteRepository',
 			}
 		};
 
-		return {
-			SpriteRepository: SpriteRepository
-		};
+		return SpriteRepository;
 	});

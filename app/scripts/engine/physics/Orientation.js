@@ -58,7 +58,5 @@ Engine.module('physics.Orientation', function () {
 	Orientation.SOUTH = new Orientation(RADIANS_S);
 	Orientation.WEST = new Orientation(RADIANS_W);
 
-	return {
-		Orientation: Orientation
-	};
+	return Orientation;
 });

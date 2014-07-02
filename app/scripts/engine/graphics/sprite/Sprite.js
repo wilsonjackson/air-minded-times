@@ -66,7 +66,5 @@ Engine.module('graphics.sprite.Sprite', function () {
 		return 'Sprite(src=' + this.image.src + ', x=' + this.x + ', y=' + this.y + ', w=' + this.w + ', h=' + this.h + ')';
 	};
 
-	return {
-		Sprite: Sprite
-	};
+	return Sprite;
 });

@@ -1,11 +1,10 @@
 Engine.module('world.objects.ObjectFactory',
 	['physics.Orientation'],
-	function () {
+	function (Orientation) {
 		'use strict';
 
-		var Orientation = Engine.physics.Orientation;
-
 		var types = {};
+		//noinspection UnnecessaryLocalVariableJS
 		var ObjectFactory = {
 			register: function (id, ctor) {
 				types[id] = ctor;
@@ -24,7 +23,5 @@ Engine.module('world.objects.ObjectFactory',
 			}
 		};
 
-		return {
-			ObjectFactory: ObjectFactory
-		};
+		return ObjectFactory;
 	});

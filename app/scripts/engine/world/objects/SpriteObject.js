@@ -1,11 +1,7 @@
 Engine.module('world.objects.SpriteObject',
 	['physics.Physics', 'physics.EntityCategory', 'graphics.sprite.SpriteRepository'],
-	function () {
+	function (Physics, EntityCategory, SpriteRepository) {
 		'use strict';
-
-		var Physics = Engine.physics.Physics;
-		var EntityCategory = Engine.physics.EntityCategory;
-		var SpriteRepository = Engine.graphics.sprite.SpriteRepository;
 
 		var DEBUG_COLLISIONS = false;
 		var DEBUG_SPRITE = false;
@@ -103,7 +99,5 @@ Engine.module('world.objects.SpriteObject',
 		SpriteObject.SHAPE_CIRCLE = 'CIRCLE';
 		SpriteObject.SHAPE_RECT = 'RECT';
 
-		return {
-			SpriteObject: SpriteObject
-		};
+		return SpriteObject;
 	});

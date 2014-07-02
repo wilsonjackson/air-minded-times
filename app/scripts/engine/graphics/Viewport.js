@@ -1,9 +1,7 @@
 Engine.module('graphics.Viewport',
 	['graphics.Graphics'],
-	function () {
+	function (Graphics) {
 		'use strict';
-
-		var Graphics = Engine.graphics.Graphics;
 
 		function Viewport(canvas) {
 			this.canvas = canvas;
@@ -48,7 +46,5 @@ Engine.module('graphics.Viewport',
 			return new Vector(x, y).subtract(this.sceneOffset);
 		};
 
-		return {
-			Viewport: Viewport
-		};
+		return Viewport;
 	});

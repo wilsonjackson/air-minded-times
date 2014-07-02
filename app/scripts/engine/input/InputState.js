@@ -20,7 +20,5 @@ Engine.module('input.InputState', function () {
 		return this.released.indexOf(button) !== -1;
 	};
 
-	return {
-		InputState: InputState
-	};
+	return InputState;
 });

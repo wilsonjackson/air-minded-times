@@ -1,9 +1,7 @@
 Engine.module('graphics.sprite.FontSprite',
 	['graphics.sprite.Sprite'],
-	function () {
+	function (Sprite) {
 		'use strict';
-
-		var Sprite = Engine.graphics.sprite.Sprite;
 
 		function FontSprite() {
 			this.chars = ' !"# %&\'[]*+,-. 0123456789     ? ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -29,7 +27,5 @@ Engine.module('graphics.sprite.FontSprite',
 			this.buffer = [];
 		};
 
-		return {
-			FontSprite: FontSprite
-		};
+		return FontSprite;
 	});

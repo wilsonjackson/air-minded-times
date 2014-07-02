@@ -1,9 +1,7 @@
 Engine.module('graphics.sprite.SpriteAnimator',
 	['graphics.sprite.DelegatingSprite'],
-	function () {
+	function (DelegatingSprite) {
 		'use strict';
-
-		var DelegatingSprite = Engine.graphics.sprite.DelegatingSprite;
 
 		function SpriteAnimator(interval, sprites) {
 			this.interval = interval || 10;
@@ -41,7 +39,5 @@ Engine.module('graphics.sprite.SpriteAnimator',
 			}).join(', ') + ']';
 		};
 
-		return {
-			SpriteAnimator: SpriteAnimator
-		};
+		return SpriteAnimator;
 	});

@@ -6,7 +6,5 @@ Engine.module('graphics.Scene', function () {
 	Scene.prototype.update = function (/*input*/) {};
 	Scene.prototype.render = function (/*viewport*/) {};
 
-	return {
-		Scene: Scene
-	};
+	return Scene;
 });

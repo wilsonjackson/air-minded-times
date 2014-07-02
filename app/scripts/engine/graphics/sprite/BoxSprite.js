@@ -1,9 +1,7 @@
 Engine.module('graphics.sprite.BoxSprite',
 	['graphics.sprite.Sprite'],
-	function () {
+	function (Sprite) {
 		'use strict';
-
-		var Sprite = Engine.graphics.sprite.Sprite;
 
 		function BoxSprite() {
 		}
@@ -70,7 +68,5 @@ Engine.module('graphics.sprite.BoxSprite',
 		BoxSprite.SECTION_SW = [0, 2];
 		BoxSprite.SECTION_W = [0, 1];
 
-		return {
-			BoxSprite: BoxSprite
-		};
+		return BoxSprite;
 	});

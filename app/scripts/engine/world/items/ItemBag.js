@@ -21,7 +21,5 @@ Engine.module('world.items.ItemBag', function () {
 		}
 	};
 
-	return {
-		ItemBag: ItemBag
-	};
+	return ItemBag;
 });

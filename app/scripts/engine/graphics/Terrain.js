@@ -1,11 +1,10 @@
 Engine.module('graphics.Terrain',
 	['graphics.Tile'],
-	function () {
+	function (Tile) {
 		'use strict';
 
-		var Tile = Engine.graphics.Tile;
-
 		var indexed = [null];
+		//noinspection UnnecessaryLocalVariableJS
 		var Terrain = {
 			add: function (sprite, impassable) {
 				var tile = new Tile(sprite, impassable);
@@ -23,7 +22,5 @@ Engine.module('graphics.Terrain',
 			}
 		};
 
-		return {
-			Terrain: Terrain
-		};
+		return Terrain;
 	});

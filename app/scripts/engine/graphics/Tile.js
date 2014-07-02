@@ -10,7 +10,5 @@ Engine.module('graphics.Tile', function () {
 		viewport.getGraphics().drawSprite(this.sprite, gridX, gridY);
 	};
 
-	return {
-		Tile: Tile
-	};
+	return Tile;
 });

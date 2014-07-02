@@ -1,9 +1,7 @@
 Engine.module('graphics.sprite.SpriteStack',
 	['graphics.sprite.DelegatingSprite'],
-	function () {
+	function (DelegatingSprite) {
 		'use strict';
-
-		var DelegatingSprite = Engine.graphics.sprite.DelegatingSprite;
 
 		function SpriteStack(sprites) {
 			this.stack = sprites || [];
@@ -59,7 +57,5 @@ Engine.module('graphics.sprite.SpriteStack',
 			}).join(', ') + ']';
 		};
 
-		return {
-			SpriteStack: SpriteStack
-		};
+		return SpriteStack;
 	});
