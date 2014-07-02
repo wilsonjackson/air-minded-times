@@ -1,6 +1,6 @@
 /* global Engine */
 
-(function (Engine, Vector, BoundingRect) {
+(function (Engine) {
 	'use strict';
 
 	var Physics = Engine.physics.Physics;
@@ -9,8 +9,8 @@
 
 	var DEBUG_DRAW_MAP_OBSTACLES = false;
 
-	function World(graphics) {
-		this.graphics = graphics;
+	function World() {
+		this.physics = new Engine.physics.Physics(this);
 		this.map = null;
 		this.terrain = [];
 		this.interlopers = [];
@@ -19,6 +19,8 @@
 		this.height = 0;
 		this._removeObjectCallback = this.removeObject.bind(this);
 	}
+
+	World.prototype = Object.create(Engine.graphics.Scene.prototype);
 
 	World.prototype.getPlayers = function () {
 		var players = [];
@@ -30,26 +32,9 @@
 		return players;
 	};
 
-	World.prototype.setBackground = function (background) {
-		this.graphics.setBackground(background);
-	};
-
-	World.prototype.getCenter = function () {
-		return this.graphics.getCenter();
-	};
-
-	World.prototype.getVisibleArea = function () {
-		return new BoundingRect(
-			new Vector(this.graphics.offsetX, this.graphics.offsetY),
-			new Vector(this.graphics.viewport.width, this.graphics.viewport.height));
-	};
-
-	World.prototype.centerOn = function (x, y, w, h) {
-		this.graphics.centerOn(x, y, w, h, this.width, this.height);
-	};
-
 	World.prototype.addObject = function (object) {
 		this.objects[this.objects.length] = object;
+		this.physics.addEntity(object.entity);
 		object.onDestroy(this._removeObjectCallback);
 	};
 
@@ -107,7 +92,7 @@
 				this.objects[i].destroy();
 			}
 		}
-		Physics.destroyAllEntities();
+		this.physics.destroyAllEntities();
 
 		this.map = null;
 		this.mapEntities = [];
@@ -130,10 +115,10 @@
 		world.height = Math.ceil(world.terrain.length / map.width) * map.tileSize;
 
 		// Create physical map boundaries
-		Physics.newRectEntity(EntityCategory.EDGE, 0, -map.tileSize, world.width, map.tileSize, world).setStatic();
-		Physics.newRectEntity(EntityCategory.EDGE, world.width, 0, map.tileSize, world.height, world).setStatic();
-		Physics.newRectEntity(EntityCategory.EDGE, 0, world.height, world.width, map.tileSize, world).setStatic();
-		Physics.newRectEntity(EntityCategory.EDGE, -map.tileSize, 0, map.tileSize, world.height, world).setStatic();
+		this.physics.addEntity(Physics.createRectEntity(EntityCategory.EDGE, 0, -map.tileSize, world.width, map.tileSize, world).setStatic());
+		this.physics.addEntity(Physics.createRectEntity(EntityCategory.EDGE, world.width, 0, map.tileSize, world.height, world).setStatic());
+		this.physics.addEntity(Physics.createRectEntity(EntityCategory.EDGE, 0, world.height, world.width, map.tileSize, world).setStatic());
+		this.physics.addEntity(Physics.createRectEntity(EntityCategory.EDGE, -map.tileSize, 0, map.tileSize, world.height, world).setStatic());
 
 		this.mapEntities = [];
 		// Create impassable tile entities
@@ -141,8 +126,8 @@
 		grid.load(world.terrain);
 		var boundaryRects = grid.calculateBoundaries();
 		for (i = 0, len = boundaryRects.length; i < len; i++) {
-			this.mapEntities[this.mapEntities.length] = Physics.newEntity(EntityCategory.WALL, boundaryRects[i])
-				.setStatic();
+			this.mapEntities[this.mapEntities.length] = this.physics.addEntity(
+				Physics.createEntity(EntityCategory.WALL, boundaryRects[i]).setStatic());
 		}
 
 		// Populate world with level objects
@@ -175,7 +160,7 @@
 				this.interlopers[i].prePhysics(this, inputState);
 			}
 		}
-		Physics.update();
+		this.physics.update();
 		for (i = 0, len = this.interlopers.length; i < len; i++) {
 			if (this.interlopers[i] !== null) {
 				this.interlopers[i].postUpdate(this, inputState);
@@ -185,32 +170,32 @@
 		this._cleanAfterUpdate();
 	};
 
-	World.prototype.render = function (graphics) {
+	World.prototype.render = function (viewport) {
 		// Pre-calculate the visible part of the map and only render enough tiles to keep it filled.
 		// Safety conditions are attached to the calculation of the last row and last column to ensure it never tries
 		// to render a tile that doesn't exist (when you're near the extreme right or bottom edge).
-		var firstRow = Math.floor(graphics.offsetY / this.map.tileSize);
-		var lastRow = Math.min(firstRow + Math.ceil(graphics.viewport.height / this.map.tileSize) + 1, this.terrain.length / this.map.width);
-		var firstCol = Math.floor(graphics.offsetX / this.map.tileSize);
-		var lastCol = Math.min(firstCol + Math.ceil(graphics.viewport.width / this.map.tileSize) + 1, this.map.width);
+		var firstRow = Math.floor(viewport.sceneOffset.y / this.map.tileSize);
+		var lastRow = Math.min(firstRow + Math.ceil(viewport.height / this.map.tileSize) + 1, this.terrain.length / this.map.width);
+		var firstCol = Math.floor(viewport.sceneOffset.x / this.map.tileSize);
+		var lastCol = Math.min(firstCol + Math.ceil(viewport.width / this.map.tileSize) + 1, this.map.width);
 		var halfTileSize = Math.round(this.map.tileSize / 2);
 		for (var row = firstRow; row < lastRow; row++) {
 			for (var col = firstCol; col < lastCol; col++) {
-				this.terrain[(row * this.map.width + col)].render(graphics, col * this.map.tileSize + halfTileSize, row * this.map.tileSize + halfTileSize);
+				this.terrain[(row * this.map.width + col)].render(viewport, col * this.map.tileSize + halfTileSize, row * this.map.tileSize + halfTileSize);
 			}
 		}
 
 		for (var i = 0, len = this.objects.length; i < len; i++) {
-			this.objects[i].render(graphics);
+			this.objects[i].render(viewport);
 		}
 
 		if (DEBUG_DRAW_MAP_OBSTACLES) {
 			for (var j = 0, jlen = this.mapEntities.length; j < jlen; j++) {
 				var mapEntity = this.mapEntities[j];
-				graphics.viewport.context.strokeStyle = mapEntity.category.isA(EntityCategory.OBSTACLE) ? '#ff0' : '#0f0';
-				graphics.viewport.context.strokeRect(
-						mapEntity.getX() - graphics.offsetX,
-						mapEntity.getY() - graphics.offsetY,
+				viewport.context.strokeStyle = mapEntity.category.isA(EntityCategory.OBSTACLE) ? '#ff0' : '#0f0';
+				viewport.context.strokeRect(
+						mapEntity.getX() - viewport.sceneOffset.x,
+						mapEntity.getY() - viewport.sceneOffset.y,
 					mapEntity.getWidth(), mapEntity.getHeight());
 			}
 		}
@@ -227,4 +212,4 @@
 		World: World,
 		Interloper: Interloper
 	};
-})(Engine, Vector, BoundingRect);
+})(Engine);

@@ -7,19 +7,24 @@
 	var collisionListenerMap = {};
 
 	Engine.setup(function () {
-		collisionListenerMap[AirMindedTimes.gameplay.GameplayMode.FREE_ROAM] = FreeRoamObstacleCollisionListener;
-		collisionListenerMap[AirMindedTimes.gameplay.GameplayMode.SCROLLING] = ScrollingObstacleCollisionListener;
+		collisionListenerMap[AirMindedTimes.game.Game.MODE.FREE_ROAM] = FreeRoamObstacleCollisionListener;
+		collisionListenerMap[AirMindedTimes.game.Game.MODE.SCROLLING] = ScrollingObstacleCollisionListener;
 	});
 
-	function ObstacleCollisionListener(player) {
-		this.player = player;
-		AirMindedTimes.gameplay.GameplayMode.addObserver(this);
+	function modeToListener(mode, player) {
+		var ListenerCtor = collisionListenerMap[mode];
+		return new ListenerCtor(player);
 	}
 
-	ObstacleCollisionListener.prototype.notify = function (gameplayMode) {
-		var ListenerCtor = collisionListenerMap[gameplayMode.getMode()];
-		this.delegate = new ListenerCtor(this.player);
-	};
+	function ObstacleCollisionListener(player) {
+		var self = this;
+		self.player = player;
+		self.delegate = new FreeRoamObstacleCollisionListener(player);
+		self.onModeChange = function (mode) {
+			self.delegate = modeToListener(mode, self.player);
+		};
+		AirMindedTimes.game.Game.current().on('modechange', self.onModeChange);
+	}
 
 	ObstacleCollisionListener.prototype.solveCollision = function (collision) {
 		return this.delegate.solveCollision(collision);
@@ -30,11 +35,11 @@
 	};
 
 	ObstacleCollisionListener.prototype.destroy = function () {
+		AirMindedTimes.game.Game.current().off('modechange', this.onModeChange);
 		this.delegate.destroy();
 		delete this.delegate;
 		delete this.player;
 	};
-
 
 	function BaseObstacleCollisionListener() {
 	}

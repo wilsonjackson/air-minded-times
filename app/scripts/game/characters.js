@@ -4,7 +4,7 @@
 	'use strict';
 
 	var Ui = Engine.ui.Ui;
-	var CoverScreen = Engine.ui.CoverScreen;
+	var Scene = Engine.graphics.Scene;
 	var Input = Engine.input.Input;
 	var SpriteRepository = Engine.graphics.SpriteRepository;
 	var TextSprite = Engine.graphics.TextSprite;
@@ -22,16 +22,15 @@
 		this.hideBox = false;
 	}
 
-	CharacterSelectionScreen.prototype = Object.create(CoverScreen.prototype);
+	CharacterSelectionScreen.prototype = Object.create(Scene.prototype);
 
-	CharacterSelectionScreen.prototype.update = function (world, input) {
+	CharacterSelectionScreen.prototype.update = function (input) {
 		if (input.isPressed(Input.ACTION)) {
 			this.selected = true;
 		}
 		if (this.selected) {
 			if (--this.startCountdown === 0) {
-				Ui.deactivateScreen();
-				AirMindedTimes.game.Game.startNew(world, this.selection.constructor)
+				AirMindedTimes.game.Game.start(this.selection.constructor)
 					.startNextLevel();
 			}
 			if (this.startCountdown % 10 === 0) {
@@ -45,8 +44,9 @@
 		this.theExtendedFarewell.sprite.update();
 	};
 
-	CharacterSelectionScreen.prototype.render = function (graphics) {
-		var center = graphics.getCenter();
+	CharacterSelectionScreen.prototype.render = function (viewport) {
+		var center = viewport.getCenter();
+		var graphics = viewport.getGraphics();
 		var selectionOffset = this.selection === this.greenWonderful ? -125 : 125;
 		var selectionVertCenter = center.y - 80;
 		var boxSize = 180;
@@ -55,8 +55,8 @@
 		graphics.drawSprite(this.heading, center.x, 100);
 
 		if (!this.hideBox) {
-			graphics.viewport.context.fillStyle = '#fff';
-			graphics.viewport.context.fillRect(
+			viewport.context.fillStyle = '#fff';
+			viewport.context.fillRect(
 					center.x + selectionOffset - fillSize / 2,
 					selectionVertCenter - fillSize / 2,
 				fillSize, fillSize);

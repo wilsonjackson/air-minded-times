@@ -3,8 +3,7 @@
 (function (Engine, AirMindedTimes) {
 	'use strict';
 
-	var Ui = Engine.ui.Ui;
-	var CoverScreen = Engine.ui.CoverScreen;
+	var Scene = Engine.graphics.Scene;
 	var Input = Engine.input.Input;
 	var SpriteRepository = Engine.graphics.SpriteRepository;
 	var TextSprite = Engine.graphics.TextSprite;
@@ -22,21 +21,21 @@
 			10, 60, 1, 450);
 	}
 
-	IntroScene1.prototype = Object.create(CoverScreen.prototype);
+	IntroScene1.prototype = Object.create(Scene.prototype);
 
-	IntroScene1.prototype.update = function (world, input) {
+	IntroScene1.prototype.update = function (input) {
 		if (input.isPressed(Input.ACTION)) {
-			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
+			Engine.setScene(new AirMindedTimes.screens.TitleScreen());
 			return;
 		}
 		if (--this.ticks === 0) {
-			Ui.activateScreen(new IntroScene2());
+			Engine.setScene(new IntroScene2());
 		}
 	};
 
-	IntroScene1.prototype.render = function (graphics) {
-		this.slide.render(graphics);
-		this.text.render(graphics);
+	IntroScene1.prototype.render = function (viewport) {
+		this.slide.render(viewport);
+		this.text.render(viewport);
 	};
 
 	function IntroScene2() {
@@ -50,21 +49,21 @@
 			10, 60, -1, 450);
 	}
 
-	IntroScene2.prototype = Object.create(CoverScreen.prototype);
+	IntroScene2.prototype = Object.create(Scene.prototype);
 
-	IntroScene2.prototype.update = function (world, input) {
+	IntroScene2.prototype.update = function (input) {
 		if (input.isPressed(Input.ACTION)) {
-			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
+			Engine.setScene(new AirMindedTimes.screens.TitleScreen());
 			return;
 		}
 		if (--this.ticks === 0) {
-			Ui.activateScreen(new IntroScene3());
+			Engine.setScene(new IntroScene3());
 		}
 	};
 
-	IntroScene2.prototype.render = function (graphics) {
-		this.slide.render(graphics);
-		this.text.render(graphics);
+	IntroScene2.prototype.render = function (viewport) {
+		this.slide.render(viewport);
+		this.text.render(viewport);
 	};
 
 	function IntroScene3() {
@@ -79,25 +78,25 @@
 			.center();
 	}
 
-	IntroScene3.prototype = Object.create(CoverScreen.prototype);
+	IntroScene3.prototype = Object.create(Scene.prototype);
 
-	IntroScene3.prototype.update = function (world, input) {
+	IntroScene3.prototype.update = function (input) {
 		if (input.isPressed(Input.ACTION)) {
-			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
+			Engine.setScene(new AirMindedTimes.screens.TitleScreen());
 		}
 		else if (++this.tickCount === this.ticks) {
-			Ui.activateScreen(new AirMindedTimes.screens.TitleScreen());
+			Engine.setScene(new AirMindedTimes.screens.TitleScreen());
 		}
 	};
 
-	IntroScene3.prototype.render = function (graphics) {
-		var context = graphics.viewport.context;
+	IntroScene3.prototype.render = function (viewport) {
+		var context = viewport.context;
 		if (this.alpha.length && this.tickCount % this.alphaTicks === 0) {
 			this.currentAlpha = this.alpha.shift();
 		}
 		context.globalAlpha = this.currentAlpha;
-		var center = graphics.getCenter();
-		graphics.drawSprite(this.text, center.x, center.y);
+		var center = viewport.getCenter();
+		viewport.getGraphics().drawSprite(this.text, center.x, center.y);
 		context.globalAlpha = 1;
 	};
 
@@ -111,12 +110,12 @@
 		this.unit = sprite.getWidth() / duration * direction;
 	}
 
-	Slide.prototype.render = function (graphics) {
+	Slide.prototype.render = function (viewport) {
 		if (++this.tickCount >= this.firstFrame) {
 			if (--this.duration >= 0) {
 				this.xOffset -= this.unit;
 			}
-			graphics.drawSprite(this.sprite,
+			viewport.getGraphics().drawSprite(this.sprite,
 					Math.round(this.xOffset + this.sprite.getWidth() / 2),
 					Math.round(this.yOffset + this.sprite.getHeight() / 2));
 		}

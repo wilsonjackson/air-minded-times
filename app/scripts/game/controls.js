@@ -9,20 +9,21 @@
 	var movementMap = {};
 
 	Engine.setup(function () {
-		movementMap[AirMindedTimes.gameplay.GameplayMode.FREE_ROAM] = OmnidirectionalMovement;
-		movementMap[AirMindedTimes.gameplay.GameplayMode.SCROLLING] = UnidirectionalMovement;
+		movementMap[AirMindedTimes.game.Game.MODE.FREE_ROAM] = OmnidirectionalMovement;
+		movementMap[AirMindedTimes.game.Game.MODE.SCROLLING] = UnidirectionalMovement;
 	});
 
 	function PlayerMovement(player) {
-		this.player = player;
-		this.changed = false;
-		AirMindedTimes.gameplay.GameplayMode.addObserver(this);
+		var self = this;
+		self.player = player;
+		self.changed = false;
+		self.movement = OmnidirectionalMovement;
+		self.onModeChange = function (mode) {
+			self.movement = movementMap[mode];
+			self.changed = true;
+		};
+		AirMindedTimes.game.Game.current().on('modechange', self.onModeChange);
 	}
-
-	PlayerMovement.prototype.notify = function (gameplayMode) {
-		this.movement = movementMap[gameplayMode.getMode()];
-		this.changed = true;
-	};
 
 	PlayerMovement.prototype.update = function (world, input) {
 		if (this.changed) {
@@ -37,7 +38,7 @@
 	};
 
 	PlayerMovement.prototype.destroy = function () {
-		AirMindedTimes.gameplay.GameplayMode.removeObserver(this);
+		AirMindedTimes.game.Game.current().off('modechange', self.onModeChange);
 	};
 
 	var OmnidirectionalMovement = {

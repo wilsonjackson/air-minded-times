@@ -3,39 +3,57 @@
 (function (Engine, Vector) {
 	'use strict';
 
-	function Graphics(viewport) {
-		this.viewport = viewport;
+	function Viewport(canvas) {
+		this.canvas = canvas;
+		this.context = canvas.getContext('2d');
+		this.width = canvas.width;
+		this.height = canvas.height;
 		this.background = '#000000';
-		this.offsetX = 0;
-		this.offsetY = 0;
+		this.sceneOffset = new Vector(0, 0);
+		this._graphics = null;
 	}
 
-	Graphics.prototype.clear = function () {
-		this.viewport.context.fillStyle = this.background;
-		this.viewport.context.fillRect(0, 0, this.viewport.width, this.viewport.height);
+	Viewport.prototype.clear = function () {
+		this.context.fillStyle = this.background;
+		this.context.fillRect(0, 0, this.width, this.height);
 	};
 
-	Graphics.prototype.setBackground = function (background) {
-		this.background = background;
+	Viewport.prototype.getGraphics = function () {
+		if (this._graphics === null) {
+			this._graphics = new Graphics(this);
+		}
+		return this._graphics;
 	};
 
-	Graphics.prototype.centerOn = function (x, y, w, h, worldWidth, worldHeight) {
-		this.offsetX = Math.round(Math.min(Math.max(0, x - ((this.viewport.width - (w || 0)) / 2)), worldWidth - this.viewport.width));
-		this.offsetY = Math.round(Math.min(Math.max(0, y - ((this.viewport.height - (h || 0)) / 2)), worldHeight - this.viewport.height));
+	Viewport.prototype.getCenter = function () {
+		return this.sceneOffset.add(new Vector(Math.round(this.width / 2), Math.round(this.height / 2)));
 	};
 
-	Graphics.prototype.translate = function (x, y) {
-		return {
-			x: x - this.offsetX,
-			y: y - this.offsetY
-		};
+	Viewport.prototype.getVisibleArea = function () {
+		return new BoundingRect(
+			new Vector(this.sceneOffset.x, this.sceneOffset.y),
+			new Vector(this.width, this.height));
 	};
 
-	Graphics.prototype.getCenter = function () {
-		return new Vector(
-				Math.round(this.viewport.width / 2) + this.offsetX,
-				Math.round(this.viewport.height / 2) + this.offsetY);
+	Viewport.prototype.centerOn = function (x, y, w, h) {
+		var scene = Engine.getScene();
+		this.sceneOffset = new Vector(
+			Math.round(Math.min(Math.max(0, x - ((this.width - (w || 0)) / 2)), scene.width - this.width)),
+			Math.round(Math.min(Math.max(0, y - ((this.height - (h || 0)) / 2)), scene.height - this.height)));
 	};
+
+	Viewport.prototype.translate = function (x, y) {
+		return new Vector(x, y).subtract(this.sceneOffset);
+	};
+
+	function Scene() {}
+	Scene.prototype.activate = function () {};
+	Scene.prototype.update = function (/*input*/) {};
+	Scene.prototype.render = function (/*viewport*/) {};
+
+	function Graphics(viewport) {
+		this.viewport = viewport;
+	}
 
 	Graphics.prototype.drawSprite = function (sprite, x, y, orientation) {
 		var translated;
@@ -47,24 +65,17 @@
 			// 3. Tell the sprite to draw itself centered on the canvas.
 			// 4. Revert canvas to original center and rotation.
 			context.save();
-			translated = this.translate(x, y);
+			translated = this.viewport.translate(x, y);
 			context.translate(translated.x, translated.y);
 			context.rotate(orientation.asRadians());
 			sprite.draw(context, 0, 0);
 			context.restore();
 		}
 		else {
-			translated = this.translate(x, y);
+			translated = this.viewport.translate(x, y);
 			sprite.draw(context, translated.x, translated.y);
 		}
 	};
-
-	function Viewport(canvas) {
-		this.canvas = canvas;
-		this.context = canvas.getContext('2d');
-		this.width = canvas.width;
-		this.height = canvas.height;
-	}
 
 	var SpriteRepository = (function () {
 		var images = {};
@@ -494,13 +505,14 @@
 		this.impassable = impassable;
 	}
 
-	Tile.prototype.render = function (graphics, gridX, gridY) {
-		graphics.drawSprite(this.sprite, gridX, gridY);
+	Tile.prototype.render = function (viewport, gridX, gridY) {
+		viewport.getGraphics().drawSprite(this.sprite, gridX, gridY);
 	};
 
 	Engine.graphics = {
-		Graphics: Graphics,
 		Viewport: Viewport,
+		Scene: Scene,
+		Graphics: Graphics,
 		SpriteRepository: SpriteRepository,
 		Sprite: Sprite,
 		SpriteAnimator: SpriteAnimator,

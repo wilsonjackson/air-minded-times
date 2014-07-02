@@ -33,7 +33,7 @@
 		Engine.logger.info('Starting preload');
 		Engine.graphics.SpriteRepository.preload().then(function () {
 			Engine.logger.info('Preload complete');
-			session.bootstrap.start(session.world);
+			session.bootstrap.start();
 			nextGameTick = new Date().getTime();
 			tick();
 		});
@@ -58,22 +58,43 @@
 		session.bootstrap.resume();
 	};
 
-	Engine.getWorld = function () {
-		return session.world;
-	};
-
 	Engine.getViewport = function () {
 		return session.viewport;
+	};
+
+	Engine.getScene = function () {
+		return session.scene;
+	};
+
+	Engine.setScene = function (scene) {
+		session.scene = scene;
+		scene.activate();
+	};
+
+	Engine.pushScene = function (scene) {
+		session.scenes.push(session.scene);
+		session.scene = scene;
+		scene.activate();
+	};
+
+	Engine.popScene = function () {
+		if (session.scenes.length > 0) {
+			session.scene = session.scenes.pop();
+			session.scene.activate();
+		}
+		else {
+			session.scene = null;
+		}
 	};
 
 	Engine.Bootstrap = function () {};
 	Engine.Bootstrap.prototype.start = function () {
 		throw 'The game must implement a start method.';
 	};
-	Engine.Bootstrap.prototype.preUpdate = function (/*world, input*/) {};
-	Engine.Bootstrap.prototype.postUpdate = function (/*world, input*/) {};
-	Engine.Bootstrap.prototype.preRender = function (/*graphics*/) {};
-	Engine.Bootstrap.prototype.postRender = function (/*graphics*/) {};
+	Engine.Bootstrap.prototype.preUpdate = function (/*input*/) {};
+	Engine.Bootstrap.prototype.postUpdate = function (/*input*/) {};
+	Engine.Bootstrap.prototype.preRender = function (/*viewport*/) {};
+	Engine.Bootstrap.prototype.postRender = function (/*viewport*/) {};
 	Engine.Bootstrap.prototype.suspend = function () {};
 	Engine.Bootstrap.prototype.resume = function () {};
 
@@ -88,15 +109,11 @@
 		this.bootstrap = config.bootstrap;
 		this.viewport = new Engine.graphics.Viewport(config.canvas);
 		this.input = new Engine.input.Input();
-		this.graphics = new Engine.graphics.Graphics(this.viewport);
-		this.uiGraphics = new Engine.graphics.Graphics(this.viewport);
-		this.world = new Engine.world.World(this.graphics);
-		Engine.ui.Ui.init(this.world);
-		Engine.physics.Physics.init(this.world);
+		this.scene = null;
+		this.scenes = [];
 	}
 
 	GameSession.prototype.run = (function () {
-		var Ui;
 		var loops = 0;
 		var skipTicks = 1000 / 50; // Target 50fps game updates
 		var maxFrameSkip = 10;
@@ -107,11 +124,10 @@
 		var renderStats = createStats(1).after(tickStats);
 
 		return function () {
-			Ui = Engine.ui.Ui;
 			loops = 0;
 
-			// Suspended game bails immediately
-			if (suspended) {
+			// Suspended/uninitialized game bails immediately
+			if (suspended || this.scene === null) {
 				return;
 			}
 
@@ -123,12 +139,9 @@
 				var inputState = this.input.readInput();
 
 				// Update
-				this.bootstrap.preUpdate(this.world, inputState);
-				Ui.update(this.world, inputState);
-				if (!Ui.isScreenActive()) {
-					this.world.update(inputState);
-				}
-				this.bootstrap.postUpdate(this.world, inputState);
+				this.bootstrap.preUpdate(this.scene, inputState);
+				this.scene.update(inputState);
+				this.bootstrap.postUpdate(this.scene, inputState);
 
 				nextGameTick += skipTicks;
 				loops++;
@@ -137,13 +150,10 @@
 
 			// Render
 			renderStats.begin();
-			this.bootstrap.preRender(this.graphics);
-			this.graphics.clear();
-			if (!Ui.isScreenActive()) {
-				this.world.render(this.graphics);
-			}
-			Ui.render(this.uiGraphics);
-			this.bootstrap.postRender(this.graphics);
+			this.bootstrap.preRender(this.scene, this.viewport);
+			this.viewport.clear();
+			this.scene.render(this.viewport);
+			this.bootstrap.postRender(this.scene, this.viewport);
 			renderStats.end();
 
 			fpsStats.update();

@@ -24,11 +24,11 @@
 		var topEdge = y - Math.round(dimensions.y / 2);
 		switch (this.entityShape) {
 			case SpriteObject.SHAPE_CIRCLE:
-				this.entity = Physics.newCircleEntity(
+				this.entity = Physics.createCircleEntity(
 					this.entityCategory, leftEdge, topEdge, dimensions.x() / 2, orientation, this);
 				break;
 			case SpriteObject.SHAPE_RECT:
-				this.entity = Physics.newRectEntity(
+				this.entity = Physics.createRectEntity(
 					this.entityCategory, leftEdge, topEdge, dimensions.x, dimensions.y, orientation, this);
 				break;
 		}
@@ -55,9 +55,9 @@
 		return false;
 	};
 
-	SpriteObject.prototype.render = function (graphics) {
+	SpriteObject.prototype.render = function (viewport) {
 		var context;
-		graphics.drawSprite(this.sprite,
+		viewport.getGraphics().drawSprite(this.sprite,
 			this.entity.getX() + Math.round(this.entity.getWidth() / 2),
 			this.entity.getY() + Math.round(this.entity.getHeight() / 2),
 			this.entity.getOrientation());
@@ -69,30 +69,30 @@
 				x: Math.round((this.entity.getWidth() - spriteSize.x) / 2),
 				y: Math.round((this.entity.getHeight() - spriteSize.y) / 2)
 			};
-			context = graphics.viewport.context;
+			context = viewport.context;
 			context.strokeStyle = '#00f';
 			context.strokeRect(
-					this.entity.getX() + 0.5 + spriteOffset.x - graphics.offsetX,
-					this.entity.getY() + 0.5 + spriteOffset.y - graphics.offsetY,
+					this.entity.getX() + 0.5 + spriteOffset.x - viewport.sceneOffset.x,
+					this.entity.getY() + 0.5 + spriteOffset.y - viewport.sceneOffset.y,
 					this.sprite.getWidth() + this.sprite.getLeftMargin() + this.sprite.getRightMargin(),
 					this.sprite.getHeight() + this.sprite.getTopMargin() + this.sprite.getBottomMargin());
 		}
 		if (DEBUG_COLLISIONS) {
-			context = graphics.viewport.context;
+			context = viewport.context;
 			context.strokeStyle = this.entity.isColliding ? '#f00' : '#fff';
 			if (this.entity.bounds instanceof BoundingCircle) {
 				var halfW = this.entity.getWidth() / 2;
 				context.save();
 				context.beginPath();
-				context.arc(this.entity.getX() + halfW - graphics.offsetX, this.entity.getY() + halfW - graphics.offsetY, halfW, 0, Math.PI * 2);
+				context.arc(this.entity.getX() + halfW - viewport.sceneOffset.x, this.entity.getY() + halfW - viewport.sceneOffset.y, halfW, 0, Math.PI * 2);
 				context.stroke();
 				context.closePath();
 				context.restore();
 			}
 			if (this.entity.bounds instanceof BoundingRect) {
 				context.strokeRect(
-						this.entity.getX() + 0.5 - graphics.offsetX,
-						this.entity.getY() + 0.5 - graphics.offsetY,
+						this.entity.getX() + 0.5 - viewport.sceneOffset.x,
+						this.entity.getY() + 0.5 - viewport.sceneOffset.y,
 						this.entity.getWidth(),
 						this.entity.getHeight());
 			}

@@ -6,7 +6,6 @@
 	var SpriteRepository = Engine.graphics.SpriteRepository;
 	var SpriteAnimator = Engine.graphics.SpriteAnimator;
 	var SpriteStack = Engine.graphics.SpriteStack;
-	var Inventory = Engine.inventory.Inventory;
 	var SpriteObject = Engine.objects.SpriteObject;
 	var ObjectType = Engine.objects.ObjectType;
 

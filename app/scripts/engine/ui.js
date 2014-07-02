@@ -3,21 +3,17 @@
 (function (Engine, document) {
 	'use strict';
 
-	function CoverScreen() {}
-	CoverScreen.prototype.activate = function () {};
-	CoverScreen.prototype.update = function (/*world, input*/) {};
-	CoverScreen.prototype.render = function (/*graphics*/) {};
+	function Scene() {}
+	Scene.prototype.activate = function () {};
+	Scene.prototype.update = function (/*world, input*/) {};
+	Scene.prototype.render = function (/*viewport*/) {};
 
 	function HudComponent(offset, width, height) {
 		this.offset = offset;
 		this.width = width;
 		this.height = height;
-		this.initialized = false;
 		this.removed = false;
 	}
-
-	HudComponent.prototype.init = function () {
-	};
 
 	HudComponent.prototype.remove = function () {
 		this.removed = true;
@@ -45,19 +41,6 @@
 				this.world = world;
 			},
 
-			activateScreen: function (screen) {
-				this.activeScreen = screen;
-				screen.activate();
-			},
-
-			deactivateScreen: function () {
-				this.activeScreen = null;
-			},
-
-			isScreenActive: function () {
-				return this.activeScreen !== null;
-			},
-
 			addHudComponent: function (corner, width, height) {
 				hud[corner] = new HudComponent(offsets[corner], width, height);
 				return hud[corner];
@@ -67,28 +50,24 @@
 //
 //			},
 
-			update: function (world, input) {
+			update: function (input) {
 				if (this.activeScreen !== null) {
-					this.activeScreen.update(world, input);
+					this.activeScreen.update(input);
 				}
 			},
 
-			render: function (graphics) {
+			render: function (viewport) {
 				if (this.activeScreen !== null) {
-					this.activeScreen.render(graphics);
+					this.activeScreen.render(viewport);
 				}
 				else {
 					for (var i = 0; i < 4; i++) {
 						if (hud[i] !== null) {
-							if (!hud[i].initialized) {
-								hud[i].init(this.world);
-								hud[i].initialized = true;
-							}
 							var xOffset = hud[i].width / 2;
 							var yOffset = hud[i].height / 2;
-							hud[i].render(graphics,
-								hud[i].offset[0] ? graphics.viewport.width - xOffset : xOffset,
-								hud[i].offset[1] ? graphics.viewport.height - yOffset : yOffset);
+							hud[i].render(viewport,
+								hud[i].offset[0] ? viewport.width - xOffset : xOffset,
+								hud[i].offset[1] ? viewport.height - yOffset : yOffset);
 						}
 					}
 				}
@@ -116,11 +95,11 @@
 			ticks = ticks || 30;
 			var tick = 0;
 			var snapshot = this.snapshotCanvas();
-			var screen = new CoverScreen();
-			screen.update = function () {
+			var scene = new Scene();
+			scene.update = function () {
 				if (tick === ticks) {
 					snapshot.parentElement.removeChild(snapshot);
-					Ui.deactivateScreen();
+					Engine.popScene();
 					if (callback) {
 						callback();
 					}
@@ -128,15 +107,15 @@
 				}
 				++tick;
 			};
-			screen.render = function (graphics) {
-				var context = graphics.viewport.context;
+			scene.render = function (viewport) {
+				var context = viewport.context;
 				context.drawImage(snapshot, 0, 0);
 				context.globalAlpha = (1 / ticks) * tick;
 				context.fillStyle = '#000';
-				context.fillRect(0, 0, graphics.viewport.width, graphics.viewport.height);
+				context.fillRect(0, 0, viewport.width, viewport.height);
 				context.globalAlpha = 1;
 			};
-			Ui.activateScreen(screen);
+			Engine.pushScene(scene);
 		},
 
 		mosaic: function (steps, stepTicks, callback) {
@@ -151,11 +130,11 @@
 			var pixels = snapshotContext.getImageData(0, 0, snapshot.width, snapshot.height).data;
 			var stepImageData = snapshotContext.createImageData(snapshot.width, snapshot.height);
 			var stepPixels = stepImageData.data;
-			var screen = new CoverScreen();
-			screen.update = function () {
+			var scene = new Scene();
+			scene.update = function () {
 				if (step === steps && tick === stepTicks) {
 					snapshot.parentElement.removeChild(snapshot);
-					Ui.deactivateScreen();
+					Engine.popScene();
 					if (callback) {
 						callback();
 					}
@@ -167,7 +146,7 @@
 				}
 				++tick;
 			};
-			screen.render = function (graphics) {
+			scene.render = function (viewport) {
 				var pixelsPerTile = 4 * step;
 				var xTiles = Math.floor(snapshot.width / pixelsPerTile);
 				var yTiles = Math.floor(snapshot.height / pixelsPerTile);
@@ -212,15 +191,15 @@
 					}
 					snapshotContext.putImageData(stepImageData, 0, 0);
 				}
-				graphics.viewport.context.drawImage(snapshot, 0, 0);
+				viewport.context.drawImage(snapshot, 0, 0);
 			};
-			Ui.activateScreen(screen);
+			Engine.pushScene(scene);
 		}
 	};
 
 	Engine.ui = {
 		Ui: Ui,
-		CoverScreen: CoverScreen,
+		Scene: Scene,
 		Effects: Effects
 	};
 })(Engine, document);
