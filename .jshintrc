@@ -20,7 +20,6 @@
     "jquery": true,
 	"predef": [
 		"Engine",
-		"AirMindedTimes",
 		"Vector",
 		"BoundingRect",
 		"CompositeBoundingRect",
