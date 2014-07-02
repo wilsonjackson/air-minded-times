@@ -86,7 +86,7 @@ Engine.module('amt.objects.Player',
 		};
 
 		Player.prototype.die = function () {
-			this.events.trigger('death', this);
+			this.trigger('death', this);
 			this.entity.collidable = false;
 			this.sprite = new SpriteAnimator(5, [
 				new SpriteStack([

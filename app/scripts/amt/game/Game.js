@@ -1,12 +1,13 @@
 Engine.module('amt.game.Game',
 	[
+		'util.Events',
 		'world.Interloper',
 		'world.World',
 		'world.items.Inventory',
 		'amt.game.Levels',
 		'amt.behavior.RestartOnDeathInterloper'
 	],
-	function (Interloper, World, Inventory, Levels, RestartOnDeathInterloper) {
+	function (Events, Interloper, World, Inventory, Levels, RestartOnDeathInterloper) {
 		'use strict';
 
 		var currentGame = null;

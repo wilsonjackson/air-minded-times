@@ -25,6 +25,11 @@
 		"CompositeBoundingRect",
 		"BoundingCircle",
 		"QuadTree",
-		"Events"
+		"Events",
+
+		"describe",
+		"it",
+		"beforeEach",
+		"expect"
 	]
 }

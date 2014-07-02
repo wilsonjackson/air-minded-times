@@ -1,4 +1,4 @@
-(function () {
+Engine.module('util.QuadTree', function () {
 	'use strict';
 
 	var MAX_OBJECTS = 10;
@@ -112,5 +112,5 @@
 		return 'QuadTree{' + this.objects.map(toString).join(',') + '}[' + this.nodes.map(toString).join(',') + ']';
 	};
 
-	window.QuadTree = QuadTree;
-})();
+	return QuadTree;
+});

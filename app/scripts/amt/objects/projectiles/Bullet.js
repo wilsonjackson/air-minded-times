@@ -1,5 +1,6 @@
 Engine.module('amt.objects.projectiles.Bullet',
 	[
+		'math.Vector',
 		'physics.Orientation',
 		'physics.EntityCategory',
 		'world.objects.ObjectFactory',
@@ -7,7 +8,7 @@ Engine.module('amt.objects.projectiles.Bullet',
 		'world.objects.SpriteObject',
 		'graphics.sprite.SpriteRepository'
 	],
-	function (Orientation, EntityCategory, ObjectFactory, ObjectType, SpriteObject, SpriteRepository) {
+	function (Vector, Orientation, EntityCategory, ObjectFactory, ObjectType, SpriteObject, SpriteRepository) {
 		'use strict';
 
 		function Bullet() {

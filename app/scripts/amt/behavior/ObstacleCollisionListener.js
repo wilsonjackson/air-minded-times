@@ -1,10 +1,11 @@
 Engine.module('amt.behavior.ObstacleCollisionListener',
 	[
+		'math.Vector',
 		'physics.EntityCategory',
 		'physics.Orientation',
 		'amt.game.Game'
 	],
-	function (EntityCategory, Orientation, Game) {
+	function (Vector, EntityCategory, Orientation, Game) {
 		'use strict';
 
 		var collisionListenerMap = {};

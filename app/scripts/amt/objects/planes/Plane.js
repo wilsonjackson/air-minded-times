@@ -1,9 +1,10 @@
 Engine.module('amt.objects.planes.Plane',
 	[
+		'math.Vector',
 		'physics.Orientation',
 		'graphics.sprite.SpriteStack'
 	],
-	function (Orientation, SpriteStack) {
+	function (Vector, Orientation, SpriteStack) {
 		'use strict';
 
 		function Plane() {

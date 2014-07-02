@@ -13,8 +13,8 @@ Engine.module('world.items.Inventory',
 		Inventory.prototype._add = function (item, qty) {
 			var inv = this;
 			var itemBag = new ItemBag(item, qty);
-			itemBag.events.on('nonzero', Array.prototype.push.bind(this._items));
-			itemBag.events.on('zero', function () {
+			itemBag.on('nonzero', Array.prototype.push.bind(this._items));
+			itemBag.on('zero', function () {
 				var idx = inv._items.indexOf(itemBag);
 				if (idx > -1) {
 					inv._items.splice(idx, 1);

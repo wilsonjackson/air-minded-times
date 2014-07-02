@@ -1,9 +1,10 @@
 Engine.module('world.map.MapGrid',
 	[
+		'math.Vector',
 		'world.map.Node',
 		'world.map.Wall'
 	],
-	function (Node, Wall) {
+	function (Vector, Node, Wall) {
 		'use strict';
 
 		function MapGrid(width, tileSize) {

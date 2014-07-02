@@ -13,7 +13,7 @@ Engine.module('amt.behavior.RestartOnDeathInterloper',
 
 		RestartOnDeathInterloper.prototype.mapChange = function (world) {
 			var self = this;
-			world.getPlayers()[0].events.on('death', function () {
+			world.getPlayers()[0].on('death', function () {
 				self.playerDied = true;
 				self.tickCount = 0;
 			});

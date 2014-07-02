@@ -1,11 +1,12 @@
 Engine.module('amt.objects.planes.JusticeGliderMkiv',
 	[
+		'math.Vector',
 		'graphics.sprite.SpriteRepository',
 		'graphics.sprite.SpriteAnimator',
 		'physics.Orientation',
 		'amt.objects.planes.Plane'
 	],
-	function (SpriteRepository, SpriteAnimator, Orientation, Plane) {
+	function (Vector, SpriteRepository, SpriteAnimator, Orientation, Plane) {
 		'use strict';
 
 		function JusticeGliderMkiv() {

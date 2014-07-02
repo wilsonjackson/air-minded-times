@@ -1,4 +1,4 @@
-(function () {
+Engine.module('util.Events', function () {
 	'use strict';
 
 	function Events() {
@@ -29,12 +29,24 @@
 		}
 	};
 
+	Events.prototype.destroy = function () {
+		delete this.events;
+	};
+
 	Events.mixin = function (object) {
-		var events = new Events();
+		var events = object.__events = new Events();
 		object.on = events.on.bind(events);
 		object.off = events.off.bind(events);
 		object.trigger = events.trigger.bind(events);
 	};
 
-	window.Events = Events;
-})();
+	Events.destroyMixin = function (object) {
+		delete object.on;
+		delete object.off;
+		delete object.trigger;
+		object.__events.destroy();
+		delete object.__events;
+	};
+
+	return Events;
+});

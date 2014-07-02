@@ -1,6 +1,10 @@
 Engine.module('graphics.Viewport',
-	['graphics.Graphics'],
-	function (Graphics) {
+	[
+		'math.Vector',
+		'math.BoundingRect',
+		'graphics.Graphics'
+	],
+	function (Vector, BoundingRect, Graphics) {
 		'use strict';
 
 		function Viewport(canvas) {

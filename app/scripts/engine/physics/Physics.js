@@ -1,6 +1,14 @@
 Engine.module('physics.Physics',
-	['physics.Collision', 'physics.Entity', 'physics.Orientation'],
-	function (Collision, Entity, Orientation) {
+	[
+		'math.Vector',
+		'math.BoundingRect',
+		'math.BoundingCircle',
+		'util.QuadTree',
+		'physics.Collision',
+		'physics.Entity',
+		'physics.Orientation'
+	],
+	function (Vector, BoundingRect, BoundingCircle, QuadTree, Collision, Entity, Orientation) {
 		'use strict';
 
 		var entityUid = 0;
@@ -16,6 +24,9 @@ Engine.module('physics.Physics',
 				(isFunction(entityA.collidable) && entityA.collidable(entityB)) ||
 				(isFunction(entityB.collidable) && entityB.collidable(entityA))) {
 
+				if (!entityA.bounds || !entityB.bounds) {
+					console.log('null bounds ', entityA.toString(), entityA.bounds, entityB.toString(), entityB.bounds);
+				}
 				var intersection = entityA.bounds.intersection(entityB.bounds);
 				if (intersection !== null) {
 					var collisionA = new Collision(entityB, intersection);
@@ -84,8 +95,8 @@ Engine.module('physics.Physics',
 			}
 			for (i = 0; i < len; i++) {
 				var entity = this.entities[i];
-				if (!entity || entity.isDestroyed) {
-					// Safety check, as entities may be destroyed/deleted by collision handlers.
+				if (!entity) {
+					// Safety check, as entities may be deleted by collision handlers.
 					continue;
 				}
 
@@ -96,7 +107,7 @@ Engine.module('physics.Physics',
 				}
 				var nearby = quadTree.retrieve(entityToQuadTreeObject(entity));
 				var nlen = nearby.length;
-				for (j = 0; j < nlen && !entity.isDestroyed; j++) {
+				for (j = 0; j < nlen && entity.collidable !== false; j++) {
 					var nearbyEntity = nearby[j].e;
 					var alreadyChecked = compared[nearbyEntity._id] && compared[nearbyEntity._id][entity._id];
 					if (alreadyChecked || nearbyEntity.collidable === false || nearbyEntity === entity ||

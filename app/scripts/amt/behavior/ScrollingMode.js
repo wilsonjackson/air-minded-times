@@ -1,9 +1,10 @@
 Engine.module('amt.behavior.ScrollingMode',
 	[
+		'math.Vector',
 		'world.Interloper',
 		'amt.game.Game'
 	],
-	function (Interloper, Game) {
+	function (Vector, Interloper, Game) {
 		'use strict';
 
 		Game.on('start', function (game) {
@@ -42,7 +43,7 @@ Engine.module('amt.behavior.ScrollingMode',
 
 		AutoScroller.prototype.init = function (world) {
 			var self = this;
-			world.getPlayers()[0].events.on('death', function () {
+			world.getPlayers()[0].on('death', function () {
 				world.removeInterloper(self);
 			});
 			Engine.getViewport().centerOn(Math.round(world.width / 2), world.height);

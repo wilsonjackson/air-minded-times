@@ -1,13 +1,20 @@
 Engine.module('world.objects.SpriteObject',
-	['physics.Physics', 'physics.EntityCategory', 'graphics.sprite.SpriteRepository'],
-	function (Physics, EntityCategory, SpriteRepository) {
+	[
+		'math.BoundingRect',
+		'math.BoundingCircle',
+		'util.Events',
+		'physics.Physics',
+		'physics.EntityCategory',
+		'graphics.sprite.SpriteRepository'
+	],
+	function (BoundingRect, BoundingCircle, Events, Physics, EntityCategory, SpriteRepository) {
 		'use strict';
 
 		var DEBUG_COLLISIONS = false;
 		var DEBUG_SPRITE = false;
 
 		function SpriteObject() {
-			this.events = new Events();
+			Events.mixin(this);
 			this.sprite = SpriteRepository.NULL_SPRITE;
 
 			this.entityCategory = EntityCategory.OBSTACLE;
@@ -35,14 +42,14 @@ Engine.module('world.objects.SpriteObject',
 		};
 
 		SpriteObject.prototype.onDestroy = function (fn) {
-			this.events.on('destroy', fn);
+			this.on('destroy', fn);
 		};
 
 		SpriteObject.prototype.destroy = function () {
-			this.events.trigger('destroy', this);
+			this.trigger('destroy', this);
 			this.entity.destroy();
-			delete this.events;
 			delete this.entity;
+			Events.destroyMixin(this);
 			if (this._destroy) {
 				this._destroy();
 			}

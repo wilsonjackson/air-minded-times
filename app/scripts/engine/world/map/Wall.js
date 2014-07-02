@@ -1,6 +1,10 @@
 Engine.module('world.map.Wall',
-	['world.map.Node'],
-	function (Node) {
+	[
+		'math.Vector',
+		'math.BoundingRect',
+		'world.map.Node'
+	],
+	function (Vector, BoundingRect, Node) {
 		'use strict';
 
 		function Wall(axis) {
