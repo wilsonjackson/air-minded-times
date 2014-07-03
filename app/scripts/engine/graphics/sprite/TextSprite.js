@@ -63,22 +63,29 @@ Engine.module('graphics.sprite.TextSprite',
 			var self = this;
 			var charW = self.fontSprite.getWidth();
 			var charH = self.fontSprite.getHeight();
-			var topLineY = Math.round(y - (self.c ? charH * self.text.length : this.getHeight()) / 2);
+			var topLineY;
+
+			if (self.c) {
+				topLineY = y - Math.round(this.getHeight() / 2 + charH * self.text.length / 2) + charH;
+			}
+			else {
+				topLineY = y - this.getHeight() + charH;
+			}
 
 			for (var i = 0, len = self.text.length; i < len; i++) {
 				var line = self.text[i];
 				var left;
 				if (this.align === -1) {
-					left = x - this.getWidth() / 2;
+					left = x;
 				}
 				else if (this.align === 1) {
-					left = x + this.getWidth() / 2 - charW * line.length;
+					left = x + this.getWidth() - charW * line.length;
 				}
 				else {
-					left = x - (self.c ? charW * line.length : this.getWidth()) / 2;
+					left = x + Math.round((this.getWidth() - charW * line.length) / 2);
 				}
 				self.fontSprite.text(line);
-				self.fontSprite.draw(context, Math.round(left), topLineY + charH * i);
+				self.fontSprite.draw(context, left, topLineY + charH * i);
 			}
 		};
 

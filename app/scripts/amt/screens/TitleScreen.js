@@ -15,7 +15,9 @@ Engine.module('amt.screens.TitleScreen',
 
 		function TitleScreen() {
 			this.startOnNextTick = false;
-			this.text = new TextSprite(fontSprite, ['Press the SPACE BAR to start.']);
+			this.text = new TextSprite(fontSprite, ['Press the SPACE BAR to start.'])
+				.fullWidth()
+				.center();
 		}
 
 		TitleScreen.prototype = Object.create(Scene.prototype);
@@ -30,12 +32,9 @@ Engine.module('amt.screens.TitleScreen',
 		};
 
 		TitleScreen.prototype.render = function (viewport) {
-			var screenWidth = viewport.width;
-			var screenHeight = viewport.height;
-
 			var graphics = viewport.getGraphics();
-			graphics.drawSprite(titleScreenSprite, screenWidth / 2, screenHeight / 2);
-			graphics.drawSprite(this.text, viewport.getCenter().x, 625);
+			graphics.drawSprite(titleScreenSprite, 0, viewport.height);
+			graphics.drawSprite(this.text, 0, 632);
 		};
 
 		return TitleScreen;

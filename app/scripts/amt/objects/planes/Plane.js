@@ -9,6 +9,7 @@ Engine.module('amt.objects.planes.Plane',
 
 		function Plane() {
 			this.bulletType = 'projectile/bullet';
+			this.bulletWidth = 10;
 			this.bulletOffsets = [0];
 			this.tickCount = 0;
 			this.sprite = new SpriteStack([]);
@@ -88,7 +89,7 @@ Engine.module('amt.objects.planes.Plane',
 		AliveState.prototype._spawnBullets = function (entity, orientation, world) {
 			var bulletPosition = this._getBulletStartPosition(entity, orientation);
 			for (var i = 0, len = this.plane.bulletOffsets.length; i < len; i++) {
-				var offset = orientation.translateXY(this.plane.bulletOffsets[i], 0);
+				var offset = orientation.translateXY(Math.round(this.plane.bulletOffsets[i] - this.plane.bulletWidth / 2), 0);
 				world.spawnObject(this.plane.bulletType, bulletPosition.x + offset.x, bulletPosition.y + offset.y, orientation);
 			}
 		};

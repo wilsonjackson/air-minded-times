@@ -21,7 +21,7 @@ Engine.module('graphics.sprite.FontSprite',
 			var self = this;
 			var n = 0;
 			this.buffer.forEach(function (index) {
-				context.drawImage(self.image, self.x + index * self.w, self.y, self.w, self.h, x + n, y, self.w, self.h);
+				context.drawImage(self.image, self.x + index * self.w, self.y, self.w, self.h, x + n, y - self.h, self.w, self.h);
 				n += self.w;
 			});
 			this.buffer = [];

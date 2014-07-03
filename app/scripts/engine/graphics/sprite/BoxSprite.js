@@ -23,12 +23,10 @@ Engine.module('graphics.sprite.BoxSprite',
 		BoxSprite.prototype.draw = function (context, x, y) {
 			var self = this;
 			var size = this.sectionSize;
-			var halfW = this.width / 2;
-			var halfH = this.height / 2;
-			var left = x - halfW;
-			var top = y - halfH;
-			var right = x + halfW - size;
-			var bottom = y + halfH - size;
+			var left = x;
+			var top = y - this.height;
+			var right = x + this.width - size;
+			var bottom = y - size;
 
 			// Top & bottom
 			var hOffset = right - left - size;

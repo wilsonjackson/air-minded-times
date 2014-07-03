@@ -47,7 +47,8 @@ Engine.module('graphics.sprite.SpriteStack',
 
 		SpriteStack.prototype.draw = function (context, x, y) {
 			for (var i = 0, len = this.stack.length; i < len; i++) {
-				this.stack[i].draw(context, x, y);
+				var translated = this.translatePosition(this.delegate, this.stack[i], x, y);
+				this.stack[i].draw(context, translated.x, translated.y);
 			}
 		};
 

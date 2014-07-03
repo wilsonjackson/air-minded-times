@@ -9,9 +9,7 @@ Engine.module('graphics.sprite.DelegatingSprite',
 			'y',
 			'w',
 			'h',
-			'margins',
-			'_drawWidth',
-			'_drawHeight'
+			'margins'
 		];
 
 		function DelegatingSprite() {
@@ -24,6 +22,13 @@ Engine.module('graphics.sprite.DelegatingSprite',
 			for (var i = 0, len = spriteCopyProps.length; i < len; i++) {
 				this[spriteCopyProps[i]] = delegate[spriteCopyProps[i]];
 			}
+		};
+
+		DelegatingSprite.prototype.translatePosition = function (referenceSprite, sprite, x, y) {
+			return {
+				x: x + Math.round((referenceSprite.getHitboxWidth() - sprite.getHitboxWidth()) / 2),
+				y: y - Math.round((referenceSprite.getHitboxHeight() - sprite.getHitboxHeight()) / 2)
+			};
 		};
 
 		return DelegatingSprite;

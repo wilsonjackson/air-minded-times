@@ -35,8 +35,7 @@ Engine.module('amt.objects.enemies.ShellEnemy',
 		ShellEnemy.prototype = Object.create(Enemy.prototype);
 
 		ShellEnemy.prototype.drop = function (world) {
-			var center = this.entity.getCenter();
-			world.spawnObject('item/sky-meat', center.x, center.y);
+			world.spawnObjectAt('item/sky-meat', this);
 		};
 
 		ObjectFactory.register('enemy/shell', ShellEnemy);

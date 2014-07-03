@@ -1,11 +1,14 @@
 Engine.module('graphics.sprite.SpriteAnimator',
-	['graphics.sprite.DelegatingSprite'],
+	[
+		'graphics.sprite.DelegatingSprite'
+	],
 	function (DelegatingSprite) {
 		'use strict';
 
 		function SpriteAnimator(interval, sprites) {
 			this.interval = interval || 10;
 			this.frames = sprites;
+			this.referenceSprite = this.frames[0];
 			this.reset();
 		}
 
@@ -31,6 +34,11 @@ Engine.module('graphics.sprite.SpriteAnimator',
 				this.delegate = this.frames[this.nextIdx];
 				this._copy();
 			}
+		};
+
+		SpriteAnimator.prototype.draw = function (context, x, y) {
+			var translated = this.translatePosition(this.referenceSprite, this.delegate, x, y);
+			DelegatingSprite.prototype.draw.call(this, context, translated.x, translated.y);
 		};
 
 		SpriteAnimator.prototype.toString = function () {

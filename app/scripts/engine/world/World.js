@@ -81,6 +81,11 @@ Engine.module('world.World',
 			this.addObject(ObjectFactory.spawn(id, x, y, orientation));
 		};
 
+		World.prototype.spawnObjectAt = function (id, object, orientation) {
+			var center = object.entity.getCenter();
+			this.addObject(ObjectFactory.spawnAtCenter(id, center.x, center.y, orientation));
+		};
+
 		//noinspection JSUnusedGlobalSymbols
 		World.prototype.firstObjectOfType = function (type) {
 			for (var i = 0, len = this.objects.length; i < len; i++) {
@@ -190,10 +195,9 @@ Engine.module('world.World',
 			var lastRow = Math.min(firstRow + Math.ceil(viewport.height / this.map.tileSize) + 1, this.terrain.length / this.map.width);
 			var firstCol = Math.floor(viewport.sceneOffset.x / this.map.tileSize);
 			var lastCol = Math.min(firstCol + Math.ceil(viewport.width / this.map.tileSize) + 1, this.map.width);
-			var halfTileSize = Math.round(this.map.tileSize / 2);
 			for (var row = firstRow; row < lastRow; row++) {
 				for (var col = firstCol; col < lastCol; col++) {
-					this.terrain[(row * this.map.width + col)].render(viewport, col * this.map.tileSize + halfTileSize, row * this.map.tileSize + halfTileSize);
+					this.terrain[(row * this.map.width + col)].render(viewport, col * this.map.tileSize, row * this.map.tileSize + this.map.tileSize);
 				}
 			}
 

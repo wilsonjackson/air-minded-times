@@ -13,7 +13,10 @@ Engine.module('amt.screens.PauseScreen',
 
 		function PauseScreen() {
 			this.firstTick = true;
-			this.text = new TextSprite(fontSprite, ['Paused']);
+			this.text = new TextSprite(fontSprite, ['Paused'])
+				.fullWidth()
+				.fullHeight()
+				.center();
 		}
 
 		PauseScreen.prototype = Object.create(Scene.prototype);
@@ -26,8 +29,9 @@ Engine.module('amt.screens.PauseScreen',
 		};
 
 		PauseScreen.prototype.render = function (viewport) {
-			var center = viewport.getCenter();
-			viewport.getGraphics().drawSprite(this.text, center.x, center.y);
+		// Creates a sub-view to bypass any scene offset in the global viewport
+			viewport.subView(0, 0, viewport.width, viewport.height)
+				.getGraphics().drawSprite(this.text, 0, viewport.height);
 		};
 
 		return PauseScreen;

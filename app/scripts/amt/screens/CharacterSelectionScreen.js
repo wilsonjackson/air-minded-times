@@ -16,7 +16,7 @@ Engine.module('amt.screens.CharacterSelectionScreen',
 		var boxSprite = SpriteRepository.retrieve('interface/box');
 
 		function CharacterSelectionScreen() {
-			this.heading = new TextSprite(fontSprite, ['Select your plane!']);
+			this.heading = new TextSprite(fontSprite, ['Select your plane!']).fullWidth();
 			this.greenWonderful = new GreenWonderful();
 			this.theExtendedFarewell = new TheExtendedFarewell();
 			this.selection = this.greenWonderful;
@@ -49,33 +49,42 @@ Engine.module('amt.screens.CharacterSelectionScreen',
 		CharacterSelectionScreen.prototype.render = function (viewport) {
 			var center = viewport.getCenter();
 			var graphics = viewport.getGraphics();
-			var selectionOffset = this.selection === this.greenWonderful ? -125 : 125;
-			var selectionVertCenter = center.y - 80;
 			var boxSize = 180;
-			var fillSize = boxSize - 6;
+			var columnCenterOffset = 125;
+			var selectionOffset = (this.selection === this.greenWonderful ? -columnCenterOffset : columnCenterOffset);
+			var selectionBottom = center.y + 10;
+			var fillMargin = 6;
+			var fillSize = boxSize - fillMargin;
 
-			graphics.drawSprite(this.heading, center.x, 100);
+			graphics.drawSprite(this.heading, 0, 115);
 
 			if (!this.hideBox) {
-				viewport.context.fillStyle = '#fff';
-				viewport.context.fillRect(
+				graphics.drawRect(
 						center.x + selectionOffset - fillSize / 2,
-						selectionVertCenter - fillSize / 2,
-					fillSize, fillSize);
+						selectionBottom - fillMargin / 2,
+						fillSize, fillSize,
+					{fill: '#fff'});
 
 				boxSprite.setWidth(boxSize);
 				boxSprite.setHeight(boxSize);
-				graphics.drawSprite(boxSprite, center.x + selectionOffset, selectionVertCenter);
+				graphics.drawSprite(boxSprite, center.x + selectionOffset - boxSize / 2, selectionBottom);
 			}
 
-			graphics.drawSprite(this.greenWonderful.sprite, center.x - 125, selectionVertCenter);
-			graphics.drawSprite(this.theExtendedFarewell.sprite, center.x + 125, selectionVertCenter);
+			graphics.drawSprite(
+				this.greenWonderful.sprite,
+				center.x - columnCenterOffset - Math.round(this.greenWonderful.sprite.getHitboxWidth() / 2),
+				selectionBottom - Math.round((boxSize - this.greenWonderful.sprite.getHitboxHeight()) / 2));
+			graphics.drawSprite(
+				this.theExtendedFarewell.sprite,
+				center.x + columnCenterOffset - Math.round(this.theExtendedFarewell.sprite.getHitboxWidth() / 2),
+				selectionBottom - Math.round((boxSize - this.theExtendedFarewell.sprite.getHitboxHeight()) / 2));
 
-			graphics.drawSprite(new TextSprite(fontSprite, [this.selection.name]), center.x, selectionVertCenter + boxSize / 2 + 60);
-			var description = new TextSprite(fontSprite, this.selection.description);
-			description.width(600);
-			description.height(300);
-			graphics.drawSprite(description, center.x, selectionVertCenter + boxSize / 2 + 270);
+			graphics.drawSprite(new TextSprite(fontSprite, [this.selection.name]).fullWidth(), 0, selectionBottom + 70);
+			var description = new TextSprite(fontSprite, this.selection.description)
+				.width(600)
+				.height(250)
+				.left();
+			graphics.drawSprite(description, (viewport.width - 600) / 2, selectionBottom + 370);
 		};
 
 		return CharacterSelectionScreen;

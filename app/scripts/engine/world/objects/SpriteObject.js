@@ -23,9 +23,10 @@ Engine.module('world.objects.SpriteObject',
 		}
 
 		SpriteObject.prototype.init = function (x, y, orientation) {
-			var dimensions = orientation.translateXY(this.sprite.getWidth(), this.sprite.getHeight());
-			var leftEdge = x - Math.round(dimensions.x / 2);
-			var topEdge = y - Math.round(dimensions.y / 2);
+			var dimensions = orientation.translateXY(this.sprite.getHitboxWidth(), this.sprite.getHitboxHeight());
+			var margins = orientation.translateXY(this.sprite.getLeftMargin(), this.sprite.getBottomMargin());
+			var leftEdge = x + margins.x;
+			var topEdge = y - dimensions.y - margins.y;
 			switch (this.entityShape) {
 				case SpriteObject.SHAPE_CIRCLE:
 					this.entity = Physics.createCircleEntity(
@@ -62,13 +63,13 @@ Engine.module('world.objects.SpriteObject',
 		SpriteObject.prototype.render = function (viewport) {
 			var context;
 			viewport.getGraphics().drawSprite(this.sprite,
-					this.entity.getX() + Math.round(this.entity.getWidth() / 2),
-					this.entity.getY() + Math.round(this.entity.getHeight() / 2),
+					this.entity.getX(),
+					this.entity.getY() + this.entity.getHeight(),
 				this.entity.getOrientation());
 			if (DEBUG_SPRITE) {
 				var spriteSize = this.entity.getOrientation().translateXY(
-						this.sprite.getWidth() + this.sprite.getLeftMargin() + this.sprite.getRightMargin(),
-						this.sprite.getHeight() + this.sprite.getTopMargin() + this.sprite.getBottomMargin());
+						this.sprite.getWidth(),
+						this.sprite.getHeight());
 				var spriteOffset = {
 					x: Math.round((this.entity.getWidth() - spriteSize.x) / 2),
 					y: Math.round((this.entity.getHeight() - spriteSize.y) / 2)
@@ -78,8 +79,8 @@ Engine.module('world.objects.SpriteObject',
 				context.strokeRect(
 						this.entity.getX() + 0.5 + spriteOffset.x - viewport.sceneOffset.x,
 						this.entity.getY() + 0.5 + spriteOffset.y - viewport.sceneOffset.y,
-						this.sprite.getWidth() + this.sprite.getLeftMargin() + this.sprite.getRightMargin(),
-						this.sprite.getHeight() + this.sprite.getTopMargin() + this.sprite.getBottomMargin());
+						this.sprite.getWidth(),
+						this.sprite.getHeight());
 			}
 			if (DEBUG_COLLISIONS) {
 				context = viewport.context;

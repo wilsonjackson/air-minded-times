@@ -64,11 +64,11 @@ Engine.module('amt.game.Sprites',
 			spriteDef('enemy/baby-3', 'sprites/sprites.png', grid(4, 7).sub(1, 0), 50, 50),
 			spriteDef('enemy/baby-4', 'sprites/sprites.png', grid(4, 7).sub(1, 1), 50, 50),
 
-			spriteDef('decoration/egg-pile', 'sprites/sprites.png', grid(2, 6), 100, 100),
-			spriteDef('decoration/egg-mound', 'sprites/sprites.png', grid(2, 8), 100, 100),
-			spriteDef('decoration/egg-mountain', 'sprites/sprites.png', grid(0, 7), 200, 200),
-			spriteDef('decoration/hatched-egg-pile', 'sprites/sprites.png', grid(2, 7), 100, 100),
-			spriteDef('decoration/hatched-egg-mound', 'sprites/sprites.png', grid(0, 9), 200, 100),
+			spriteDef('decoration/egg-pile', 'sprites/sprites.png', grid(2, 6), 100, 100, [20, 4, 12, 4]),
+			spriteDef('decoration/egg-mound', 'sprites/sprites.png', grid(2, 8), 100, 100, [16, 1, 15, 0]),
+			spriteDef('decoration/egg-mountain', 'sprites/sprites.png', grid(0, 7), 200, 200, [43, 25, 40, 20]),
+			spriteDef('decoration/hatched-egg-pile', 'sprites/sprites.png', grid(2, 7), 100, 100, [20, 4, 12, 4]),
+			spriteDef('decoration/hatched-egg-mound', 'sprites/sprites.png', grid(0, 9), 200, 100, [18, 32, 12, 39]),
 
 			// Projectiles
 			spriteDef('projectile/bullet', 'sprites/sprites.png', grid(2, 5).sub(0, 0).sub(0, 0), 10, 10),
@@ -87,7 +87,8 @@ Engine.module('amt.game.Sprites',
 			spriteDef('item/small-sky-meat', 'sprites/sprites.png', grid(2, 4).sub(0, 0), 50, 50),
 
 			// Fonts
-			spriteDef('font/fz', 'fonts/fz-fantasy_zone-sega.png', grid(0, 0), 16, 16, FontSprite)]
+			spriteDef('font/fz', 'fonts/fz-fantasy_zone-sega.png', grid(0, 0), 16, 16, FontSprite)
+		]
 			.forEach(function (spriteDef) {
 				SpriteRepository.add(spriteDef);
 			});

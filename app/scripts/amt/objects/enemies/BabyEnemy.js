@@ -36,8 +36,7 @@ Engine.module('amt.objects.enemies.BabyEnemy',
 		BabyEnemy.prototype = Object.create(Enemy.prototype);
 
 		BabyEnemy.prototype.drop = function (world) {
-			var center = this.entity.getCenter();
-			world.spawnObject('item/small-sky-meat', center.x, center.y);
+			world.spawnObjectAt('item/small-sky-meat', this);
 		};
 
 		ObjectFactory.register('enemy/baby', BabyEnemy);

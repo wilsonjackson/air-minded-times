@@ -14,13 +14,13 @@ Engine.module('amt.screens.Intro',
 
 		function IntroScene1() {
 			this.ticks = 200;
-			this.slide = new Slide(SpriteRepository.retrieve('intro/governments'), 10, 60, -1, 50);
+			this.slide = new Slide(SpriteRepository.retrieve('intro/governments'), 10, 60, -1, 450);
 			this.text = new Slide(
 				new TextSprite(fontSprite, ['All governments have fallen.'])
 					.fullWidth()
 					.height(200)
 					.center(),
-				10, 60, 1, 450);
+				10, 60, 1, 650);
 		}
 
 		IntroScene1.prototype = Object.create(Scene.prototype);
@@ -42,13 +42,13 @@ Engine.module('amt.screens.Intro',
 
 		function IntroScene2() {
 			this.ticks = 200;
-			this.slide = new Slide(SpriteRepository.retrieve('intro/sky-meat'), 10, 60, 1, 50);
+			this.slide = new Slide(SpriteRepository.retrieve('intro/sky-meat'), 10, 60, 1, 450);
 			this.text = new Slide(
 				new TextSprite(fontSprite, ['Sky meat has become a commodity.'])
 					.fullWidth()
 					.height(200)
 					.center(),
-				10, 60, -1, 450);
+				10, 60, -1, 650);
 		}
 
 		IntroScene2.prototype = Object.create(Scene.prototype);
@@ -97,12 +97,11 @@ Engine.module('amt.screens.Intro',
 				this.currentAlpha = this.alpha.shift();
 			}
 			context.globalAlpha = this.currentAlpha;
-			var center = viewport.getCenter();
-			viewport.getGraphics().drawSprite(this.text, center.x, center.y);
+			viewport.getGraphics().drawSprite(this.text, 0, viewport.height);
 			context.globalAlpha = 1;
 		};
 
-		function Slide(sprite,  firstFrame, duration, direction, yOffset) {
+		function Slide(sprite, firstFrame, duration, direction, yOffset) {
 			this.tickCount = 0;
 			this.sprite = sprite;
 			this.firstFrame = firstFrame;
@@ -117,9 +116,7 @@ Engine.module('amt.screens.Intro',
 				if (--this.duration >= 0) {
 					this.xOffset -= this.unit;
 				}
-				viewport.getGraphics().drawSprite(this.sprite,
-					Math.round(this.xOffset + this.sprite.getWidth() / 2),
-					Math.round(this.yOffset + this.sprite.getHeight() / 2));
+				viewport.getGraphics().drawSprite(this.sprite, this.xOffset, this.yOffset);
 			}
 		};
 

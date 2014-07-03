@@ -13,8 +13,6 @@ Engine.module('graphics.sprite.Sprite', function () {
 		this.w = w;
 		this.h = h;
 		this.margins = margins || [0, 0, 0, 0];
-		this._drawWidth = this.getWidth();
-		this._drawHeight = this.getHeight();
 		// Inform subclasses of initialization.
 		if (this._init) {
 			this._init();
@@ -22,13 +20,22 @@ Engine.module('graphics.sprite.Sprite', function () {
 	};
 
 	Sprite.prototype.getWidth = function () {
-		return this.w - this.margins[1] - this.margins[3];
+		return this.w;
 	};
 
 	Sprite.prototype.getHeight = function () {
+		return this.h;
+	};
+
+	Sprite.prototype.getHitboxWidth = function () {
+		return this.w - this.margins[1] - this.margins[3];
+	};
+
+	Sprite.prototype.getHitboxHeight = function () {
 		return this.h - this.margins[0] - this.margins[2];
 	};
 
+	//noinspection JSUnusedGlobalSymbols
 	Sprite.prototype.getTopMargin = function () {
 		return this.margins[0];
 	};
@@ -37,6 +44,7 @@ Engine.module('graphics.sprite.Sprite', function () {
 		return this.margins[3];
 	};
 
+	//noinspection JSUnusedGlobalSymbols
 	Sprite.prototype.getRightMargin = function () {
 		return this.margins[1];
 	};
@@ -51,15 +59,16 @@ Engine.module('graphics.sprite.Sprite', function () {
 	};
 
 	Sprite.prototype.draw = function (context, x, y) {
+		// Anchor at bottom left corner
 		context.drawImage(this.image,
-				this.x + this.margins[3],
-				this.y + this.margins[0],
-			this._drawWidth,
-			this._drawHeight,
-				x - Math.round(this.getWidth() / 2),
-				y - Math.round(this.getHeight() / 2),
-			this._drawWidth,
-			this._drawHeight);
+			this.x,
+			this.y,
+			this.w,
+			this.h,
+			x - this.margins[3],
+			y - this.h + this.margins[2],
+			this.w,
+			this.h);
 	};
 
 	Sprite.prototype.toString = function () {
