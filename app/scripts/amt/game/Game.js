@@ -4,10 +4,12 @@ Engine.module('amt.game.Game',
 		'world.Interloper',
 		'world.World',
 		'world.items.Inventory',
+		'graphics.CompositeScene',
+		'amt.game.Hud',
 		'amt.game.Levels',
 		'amt.behavior.RestartOnDeathInterloper'
 	],
-	function (Events, Interloper, World, Inventory, Levels, RestartOnDeathInterloper) {
+	function (Events, Interloper, World, Inventory, CompositeScene, Hud, Levels, RestartOnDeathInterloper) {
 		'use strict';
 
 		var currentGame = null;
@@ -84,7 +86,7 @@ Engine.module('amt.game.Game',
 			}
 			var world = new World();
 			currentGame = new Game(world, planeCtor);
-			Engine.setScene(world);
+			Engine.setScene(new CompositeScene(world, new Hud(currentGame)));
 			Game.trigger('start', currentGame);
 			return currentGame;
 		};

@@ -176,6 +176,13 @@ Engine.module('world.World',
 		};
 
 		World.prototype.render = function (viewport) {
+			var i, len;
+			for (i = 0, len = this.interlopers.length; i < len; i++) {
+				if (this.interlopers[i] !== null) {
+					this.interlopers[i].preRender(this, viewport);
+				}
+			}
+
 			// Pre-calculate the visible part of the map and only render enough tiles to keep it filled.
 			// Safety conditions are attached to the calculation of the last row and last column to ensure it never tries
 			// to render a tile that doesn't exist (when you're near the extreme right or bottom edge).
@@ -190,18 +197,24 @@ Engine.module('world.World',
 				}
 			}
 
-			for (var i = 0, len = this.objects.length; i < len; i++) {
+			for (i = 0, len = this.objects.length; i < len; i++) {
 				this.objects[i].render(viewport);
 			}
 
 			if (DEBUG_DRAW_MAP_OBSTACLES) {
-				for (var j = 0, jlen = this.mapEntities.length; j < jlen; j++) {
-					var mapEntity = this.mapEntities[j];
+				for (i = 0, len = this.mapEntities.length; i < len; i++) {
+					var mapEntity = this.mapEntities[i];
 					viewport.context.strokeStyle = mapEntity.category.isA(EntityCategory.OBSTACLE) ? '#ff0' : '#0f0';
 					viewport.context.strokeRect(
 							mapEntity.getX() - viewport.sceneOffset.x,
 							mapEntity.getY() - viewport.sceneOffset.y,
 						mapEntity.getWidth(), mapEntity.getHeight());
+				}
+			}
+
+			for (i = 0, len = this.interlopers.length; i < len; i++) {
+				if (this.interlopers[i] !== null) {
+					this.interlopers[i].postRender(this, viewport);
 				}
 			}
 		};

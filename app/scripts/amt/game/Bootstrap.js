@@ -18,13 +18,15 @@ Engine.module('amt.game.Bootstrap',
 		};
 
 		Bootstrap.prototype.preUpdate = function (scene, input) {
-			if (input.isPressed(Input.PAUSE)) {
+			if (input.isPressed(Input.PAUSE) && !(scene instanceof PauseScreen)) {
 				Engine.pushScene(new PauseScreen());
 			}
 		};
 
 		Bootstrap.prototype.suspend = function () {
-//		Engine.pushScene(new AirMindedTimes.screens.PauseScreen());
+			if (!(Engine.getScene() instanceof PauseScreen)) {
+				Engine.pushScene(new PauseScreen());
+			}
 		};
 
 		return Bootstrap;

@@ -37,24 +37,33 @@ Engine.module('amt.behavior.ScrollingMode',
 			this.easedIn = false;
 			this.easeTicks = 35;
 			this.ticks = 0;
+			this.scrollPos = null;
+			this.minPlayerY = 0;
+			this.maxPlayerY = 0;
 		}
 
 		AutoScroller.prototype = Object.create(Interloper.prototype);
 
 		AutoScroller.prototype.init = function (world) {
 			var self = this;
-			world.getPlayers()[0].on('death', function () {
+			var viewport = Engine.getViewport();
+			var player = Game.current().getPlayer();
+			player.on('death', function () {
 				world.removeInterloper(self);
 			});
-			Engine.getViewport().centerOn(Math.round(world.width / 2), world.height);
-			this.maxDistance = world.height - Engine.getViewport().height;
+
+			this.maxDistance = world.height - viewport.height;
 			this.easeDistance = this.maxDistance;
 			for (var s = 1; s <= this.maxScrollSpeed; s++) {
 				this.easeDistance -= s * this.easeTicks;
 			}
+
+			this.scrollPos = new Vector(Math.round(world.width / 2), world.height);
+			this.minPlayerY = world.height - viewport.height / 3 * 2;
+			this.maxPlayerY = world.height - player.entity.getHeight();
 		};
 
-		AutoScroller.prototype.preUpdate = function (world) {
+		AutoScroller.prototype.preUpdate = function () {
 			if (!this.easedIn && this.scrollSpeed < this.maxScrollSpeed && ++this.ticks % this.easeTicks === 0) {
 				this.scrollSpeed++;
 				if (this.scrollSpeed === this.maxScrollSpeed) {
@@ -67,36 +76,36 @@ Engine.module('amt.behavior.ScrollingMode',
 			}
 
 			var scrollVector = new Vector(0, this.scrollSpeed * this.scrollDirection);
-			var viewport = Engine.getViewport();
-			var newCenter = viewport.getCenter().add(scrollVector);
-			viewport.centerOn(newCenter.x, newCenter.y);
-			world.getPlayers()[0].entity.impulse(scrollVector.x, scrollVector.y);
+			Game.current().getPlayer().entity.impulse(scrollVector.x, scrollVector.y);
+			this.scrollPos = this.scrollPos.add(scrollVector);
+			this.minPlayerY += scrollVector.y;
+			this.maxPlayerY += scrollVector.y;
 
 			this.distance += this.scrollSpeed;
 		};
 
-		AutoScroller.prototype.prePhysics = function (world) {
-			var player = world.getPlayers()[0];
+		AutoScroller.prototype.prePhysics = function () {
+			var player = Game.current().getPlayer();
 			var nextPlayerY = player.entity.getY() + player.entity.nextMovement.y;
-			var visibleArea = Engine.getViewport().getVisibleArea();
-			var minPlayerY = visibleArea.top() + Math.floor(visibleArea.height() / 3);
-			var maxPlayerY = visibleArea.bottom() - player.entity.getHeight();
 
-			if (nextPlayerY < minPlayerY) {
-				player.entity.impulse(0, minPlayerY - nextPlayerY);
+			if (nextPlayerY < this.minPlayerY) {
+				player.entity.impulse(0, this.minPlayerY - nextPlayerY);
 			}
-			if (nextPlayerY > maxPlayerY) {
-				player.entity.impulse(0, maxPlayerY - nextPlayerY);
+			if (nextPlayerY > this.maxPlayerY) {
+				player.entity.impulse(0, this.maxPlayerY - nextPlayerY);
 			}
 		};
 
-		AutoScroller.prototype.postUpdate = function (world) {
-			var player = world.getPlayers()[0];
-			var visibleArea = Engine.getViewport().getVisibleArea();
-			var maxPlayerY = visibleArea.bottom() - player.entity.getHeight();
-			if (player.entity.getY() > maxPlayerY) {
+		AutoScroller.prototype.postUpdate = function () {
+			var player = Game.current().getPlayer();
+			if (player.entity.getY() > this.maxPlayerY) {
 				player.die();
 			}
+		};
+
+		AutoScroller.prototype.preRender = function (world, viewport) {
+			viewport.centerOn(this.scrollPos.x, this.scrollPos.y, 0, 0, world.width, world.height);
+			this.scrollPos = viewport.getCenter();
 		};
 
 		function PlayerScroller() {
@@ -104,10 +113,16 @@ Engine.module('amt.behavior.ScrollingMode',
 
 		PlayerScroller.prototype = Object.create(Interloper.prototype);
 
-		PlayerScroller.prototype.postUpdate = function (world) {
-			var player = world.getPlayers()[0];
+		PlayerScroller.prototype.preRender = function (world, viewport) {
+			var player = Game.current().getPlayer();
 			if (player) {
-				Engine.getViewport().centerOn(player.entity.getX(), player.entity.getY(), player.entity.getWidth(), player.entity.getHeight());
+				viewport.centerOn(
+					player.entity.getX(),
+					player.entity.getY(),
+					player.entity.getWidth(),
+					player.entity.getHeight(),
+					world.width,
+					world.height);
 			}
 		};
 	});

@@ -24,9 +24,6 @@ Engine.module('physics.Physics',
 				(isFunction(entityA.collidable) && entityA.collidable(entityB)) ||
 				(isFunction(entityB.collidable) && entityB.collidable(entityA))) {
 
-				if (!entityA.bounds || !entityB.bounds) {
-					console.log('null bounds ', entityA.toString(), entityA.bounds, entityB.toString(), entityB.bounds);
-				}
 				var intersection = entityA.bounds.intersection(entityB.bounds);
 				if (intersection !== null) {
 					var collisionA = new Collision(entityB, intersection);
